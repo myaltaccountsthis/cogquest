@@ -8,10 +8,11 @@ using UnityEngine.UIElements;
 
 public class TilemapHandler : MonoBehaviour
 {
+	/*
 	Tilemap tilemap;
 	SpriteRenderer selectionBox;
 	new Camera camera;
-
+	
 	private Dictionary<Vector3Int, TileBuilding> tileBuildings;
 	
 	void Awake()
@@ -19,7 +20,7 @@ public class TilemapHandler : MonoBehaviour
 		tilemap = GameObject.FindGameObjectWithTag("Tilemap").GetComponent<Tilemap>();
 		selectionBox = GameObject.FindGameObjectWithTag("SelectionBox").GetComponent<SpriteRenderer>();
 		camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-
+		
 		tileBuildings = new Dictionary<Vector3Int, TileBuilding>()
 		{
 			{ new Vector3Int(0, 0, 0), new Dynamo(Vector2Int.zero) }
@@ -84,4 +85,5 @@ public class TilemapHandler : MonoBehaviour
 			tilemap.SetTile(pos, tileBuilding.GetTile());
 		}
 	}
+	*/
 }
