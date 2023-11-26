@@ -68,12 +68,12 @@ public class CameraManager : MonoBehaviour
         }
         
         // zoom, shift to keep cursor at same world point
-        // Vector3 worldPoint1 = camera.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 worldPoint1 = camera.ScreenToWorldPoint(Input.mousePosition);
         cameraSize = Mathf.Clamp(cameraSize * Mathf.Pow(cameraZoomFactor, -Input.mouseScrollDelta.y), minCameraSize, maxCameraSize);
         camera.orthographicSize = cameraSize;
         
-        // Vector3 worldPoint2 = camera.ScreenToWorldPoint(Input.mousePosition);
-        // cameraCenter += worldPoint1 - worldPoint2;
+        Vector3 worldPoint2 = camera.ScreenToWorldPoint(Input.mousePosition);
+        cameraCenter += worldPoint1 - worldPoint2;
 
         cameraCenter.x = Mathf.Clamp(cameraCenter.x, cameraXrange[0], cameraXrange[1]);
         cameraCenter.y = Mathf.Clamp(cameraCenter.y, cameraYrange[0], cameraYrange[1]);

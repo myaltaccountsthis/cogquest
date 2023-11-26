@@ -17,7 +17,6 @@ public abstract class Building : MonoBehaviour
 			transform.position = value;
 		}
 	}
-	// public virtual bool NeedsRepainting => false;
 
 	public Building(Vector3 position)
 	{
@@ -33,26 +32,7 @@ public abstract class Building : MonoBehaviour
 	{
 		GetComponent<SpriteRenderer>().sprite = GetSprite();
 	}
-
 	
-	
-	/*
-	public Vector2Int[] GetTilePositions()
-	{
-		Vector2Int[] arr = new Vector2Int[size.x * size.y];
-		for (int y =  0; y < size.y; y++)
-		{
-			for (int x = 0; x < size.x; x++)
-				arr[y * size.x + x] = new Vector2Int(position.x + x, position.y + y);
-		}
-		return arr;
-	}
-	*/
-
-	// public abstract void OnUpdate(float deltaTime);
 
 	public abstract Sprite GetSprite();
-	
-
-	// public abstract Tile GetTile();
 }

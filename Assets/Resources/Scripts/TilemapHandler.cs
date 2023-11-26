@@ -8,12 +8,9 @@ using UnityEngine.UIElements;
 
 public class TilemapHandler : MonoBehaviour
 {
-	/*
 	Tilemap tilemap;
 	SpriteRenderer selectionBox;
 	new Camera camera;
-	
-	private Dictionary<Vector3Int, TileBuilding> tileBuildings;
 	
 	void Awake()
 	{
@@ -21,11 +18,6 @@ public class TilemapHandler : MonoBehaviour
 		selectionBox = GameObject.FindGameObjectWithTag("SelectionBox").GetComponent<SpriteRenderer>();
 		camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 		
-		tileBuildings = new Dictionary<Vector3Int, TileBuilding>()
-		{
-			{ new Vector3Int(0, 0, 0), new Dynamo(Vector2Int.zero) }
-
-		};
 	}
 
 	void Start()
@@ -46,26 +38,13 @@ public class TilemapHandler : MonoBehaviour
 
 			if (Input.GetMouseButtonDown(0))
 			{
-				if (tile != null && tileBuildings.TryGetValue(gridPos, out TileBuilding tileBuilding))
-				{
-					tileBuilding.OnInteract();
-				}
 			}
 		}
 		else
 		{
 			selectionBox.enabled = false;
 		}
-
-		foreach (TileBuilding tileBuilding in tileBuildings.Values)
-		{
-			tileBuilding.OnUpdate(Time.deltaTime);
-			if (tileBuilding.NeedsRepainting)
-			{
-				foreach (Vector2Int pos in tileBuilding.GetTilePositions())
-					RepaintTile((Vector3Int) pos);
-			}
-		}
+		
 	}
 
 	private Vector3Int GetMouseTilePosition()
@@ -80,10 +59,6 @@ public class TilemapHandler : MonoBehaviour
 
 	private void RepaintTile(Vector3Int pos)
 	{
-		if (tileBuildings.TryGetValue(pos, out TileBuilding tileBuilding))
-		{
-			tilemap.SetTile(pos, tileBuilding.GetTile());
-		}
+
 	}
-	*/
 }

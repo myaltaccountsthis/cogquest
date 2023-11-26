@@ -10,19 +10,16 @@ public class Dynamo : Building
 	
 	static Dynamo()
 	{
+		// Might load this dynamically for all buildings, unless implementation will vary
 		sprites = Resources.LoadAll<Sprite>("Sprite Sheets/Buildings/Dynamo");
 	}
 
 	private const float activeDuration = 30f;
 	public float durationLeft { get; private set; }
 
-	// public override bool NeedsRepainting => shouldRepaint;
-	// private bool shouldRepaint;
-
 	public Dynamo(Vector3 position) : base(position)
 	{
 		durationLeft = 0f;
-		// shouldRepaint = false;
 	}
 
 	void Update()
@@ -30,7 +27,6 @@ public class Dynamo : Building
 		// repaint if this crosses a (currently hardcoded) interval
 		if (durationLeft % 10f < Time.deltaTime && durationLeft != 0f)
 			RenderSprite();
-			// shouldRepaint = true;
 		durationLeft = Mathf.Max(durationLeft - Time.deltaTime, 0f);
 	}
 
