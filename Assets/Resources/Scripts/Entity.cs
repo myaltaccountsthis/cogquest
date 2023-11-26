@@ -4,9 +4,11 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
-    public abstract int MAX_HEALTH { get; }
-    public abstract Dictionary<string, int> cost { get; }
-    public int health { get; private set; }
+    [SerializeField]
+    private float MAX_HEALTH { get; }
+    [SerializeField]
+    private Dictionary<string, int> cost { get; }
+    public float health { get; private set; }
 
     // Start is called before the first frame update
     void Start()

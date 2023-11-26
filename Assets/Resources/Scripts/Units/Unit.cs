@@ -4,7 +4,9 @@ using UnityEngine;
 
 public abstract class Unit : Entity
 {
-    public abstract float AGGRO_RADIUS { get; }
+    [SerializeField]
+    private float AGGRO_RADIUS { get; }
+    private float SPEED { get; }
 
     // Start is called before the first frame update
     void Start()
