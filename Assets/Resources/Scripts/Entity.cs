@@ -4,9 +4,27 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
-    public float MAX_HEALTH { get; }
-    public Dictionary<string, int> cost { get; }
-    public float health { get; protected set; }
+    [SerializeField]
+    protected float MAX_HEALTH;
+    protected float health;
+    [SerializeField]
+    protected Dictionary<string, int> cost;
+
+    public float Health {
+        get => health;
+    }
+    
+    public Dictionary<string, int> Cost {
+        get => cost;
+    }
+
+    public Sprite sprite {
+        get => GetComponent<SpriteRenderer>().sprite;
+    }
+
+    void Awake() {
+        health = MAX_HEALTH;
+    }
 
     // Start is called before the first frame update
     void Start()

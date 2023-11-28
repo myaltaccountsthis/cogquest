@@ -6,8 +6,12 @@ public class Mine : Building
 {
     // The rate of resource gain per resource tile per second
     [SerializeField]
-    private float BASE_SPEED { get; }
-    private float mineSpeed { get; set;}
+    private float baseSpeed;
+    private float mineSpeed;
+
+    public float MineSpeed {
+        get => mineSpeed;
+    }
 
     // Start is called before the first frame update
     void Start()

@@ -1,12 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class Fort : Building
 {
-    private int TIER { get; }
-    public bool occupied { get; private set; }
-    
+    [SerializeField]
+    private int TIER;
+    [SerializeField]
+    private Sprite[] sprites;
+    private bool occupied;
+    private float coalProduction;
+
+    void Awake() {
+        occupied = TIER == 0;
+        coalProduction = occupied ? GetCoalProduction() : 0;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +29,7 @@ public class Fort : Building
         
     }
 
-    public int GetCoalProduction()
+    public float GetCoalProduction()
     {
         return occupied ? Mathf.Max(TIER, 1) * 10 : 0;
     }
