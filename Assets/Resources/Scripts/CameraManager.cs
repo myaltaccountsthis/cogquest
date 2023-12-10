@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using UnityEditor.Build.Content;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 public class CameraManager : MonoBehaviour
 {
@@ -12,18 +10,15 @@ public class CameraManager : MonoBehaviour
     private const float minCameraSize = 2f;
     private const float maxCameraSize = 15f;
     private const float cameraZoomFactor = 1.05f;
-    private Vector3 cameraCenter;
     private Vector3 mouseStart;
 
-    public Vector2 cameraXrange;
-    public Vector2 cameraYrange;
+    public BoundsInt bounds;
     
     void Awake()
     {
         camera = GetComponent<Camera>();
         cameraSpeed = 20f;
         cameraSize = 5f;
-        cameraCenter = camera.transform.position;
         // used as a placeholder value for "null"
         mouseStart = Vector3.down;
     }
@@ -36,6 +31,8 @@ public class CameraManager : MonoBehaviour
     
     void Update()
     {
+        Vector3 cameraCenter = camera.transform.position;
+
         if (Input.GetMouseButton(0))
         {
             // On mouse down, if mouse was previously up
@@ -75,8 +72,8 @@ public class CameraManager : MonoBehaviour
         Vector3 worldPoint2 = camera.ScreenToWorldPoint(Input.mousePosition);
         cameraCenter += worldPoint1 - worldPoint2;
 
-        cameraCenter.x = Mathf.Clamp(cameraCenter.x, cameraXrange[0], cameraXrange[1]);
-        cameraCenter.y = Mathf.Clamp(cameraCenter.y, cameraYrange[0], cameraYrange[1]);
+        cameraCenter.x = Mathf.Clamp(cameraCenter.x, bounds.xMin + .5f, bounds.xMax - .5f);
+        cameraCenter.y = Mathf.Clamp(cameraCenter.y, bounds.yMin + .5f, bounds.yMax - .5f);
         camera.transform.position = cameraCenter;
     }
 }
