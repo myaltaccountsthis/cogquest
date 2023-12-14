@@ -12,16 +12,4 @@ public class Mine : Building
     public float MineSpeed {
         get => mineSpeed;
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        // Calculate real mineSpeed based on resource tiles
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

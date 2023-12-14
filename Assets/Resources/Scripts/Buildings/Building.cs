@@ -12,18 +12,4 @@ public abstract class Building : Entity
 	public int CoalUse {
 		get => coalUse;
 	}
-    
-    // Currently this only supports rectangular buildings
-	// public virtual Vector2Int size => Vector2Int.one;
-
-	void Start()
-	{
-		
-	}
-
-	void Update()
-	{
-		
-	}
-
 }

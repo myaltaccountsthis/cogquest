@@ -5,28 +5,31 @@ using UnityEngine;
 
 public class Fort : Building
 {
-    [SerializeField]
+	[SerializeField]
     private int TIER;
     [SerializeField]
     private Sprite[] sprites;
     private bool occupied;
     private float coalProduction;
 
-    void Awake() {
+    public override void Awake() {
+        base.Awake();
         occupied = TIER == 0;
         coalProduction = occupied ? GetCoalProduction() : 0;
     }
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        
+        base.Start();
+
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        
+        base.Update();
+
     }
 
     public float GetCoalProduction()
