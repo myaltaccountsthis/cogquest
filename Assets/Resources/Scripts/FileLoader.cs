@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Compression;
 using System.IO;
 using UnityEngine;
+using System.Linq;
 
 public static class FileLoader
 {
@@ -55,6 +56,15 @@ public static class FileLoader
 		using (StreamWriter streamWriter = new StreamWriter(File.Create(path)))
 		{
 			streamWriter.WriteLine(data);
+		}
+	}
+
+	public static string Decompress(string data)
+	{
+
+		using (StreamReader streamReader = new StreamReader(new GZipStream(new MemoryStream(data.ToCharArray().Select(c => (byte)c).ToArray()), CompressionMode.Decompress)))
+		{
+			return streamReader.ReadToEnd();
 		}
 	}
 }
