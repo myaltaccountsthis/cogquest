@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -7590024220223065655}
   - component: {fileID: 8230337888456806797}
   m_Layer: 0
-  m_Name: Mine0
+  m_Name: Chopper1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 8bca732df638be647bb37d4708b1c697, type: 3}
+  m_Sprite: {fileID: -1609584549, guid: 8bca732df638be647bb37d4708b1c697, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -97,9 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b987a84ba2dc9a14c9d9dd8e0291bc57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MAX_HEALTH: 200
-  coalUse: 2
-  baseSpeed: 0.25
+  MAX_HEALTH: 100
+  coalUse: 5
+  baseSpeed: 3
   mineableTiles:
-  - {fileID: 11400000, guid: 393c1cb780225784c831902ea78c7308, type: 2}
-  - {fileID: 11400000, guid: 05449259cef0d914c8846df18ae037b4, type: 2}
+  - {fileID: 11400000, guid: 211a4f2fe8eae834eabf6c54de0ed5de, type: 2}
