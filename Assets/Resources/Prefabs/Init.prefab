@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2862251433589268713}
   - component: {fileID: 2744638039543691420}
+  - component: {fileID: 8388914248765545122}
   m_Layer: 0
   m_Name: Init
   m_TagString: Untagged
@@ -44,3 +45,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e868bac9428857499ae4b33b8a8126b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8388914248765545122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7956602674067217316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08cefd2741a38bb4caebdae5cb9f4209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entities: []
+  TileNames: 67007700
+  Tiles:
+  - {fileID: 11400000, guid: 311193f70f3aa2f40a87c9dc739aa49c, type: 2}
+  - {fileID: 11400000, guid: ec837c2c7e046ee42a76e520cb8a14e5, type: 2}
+  mapFile: {fileID: 4900000, guid: 07d8d11dfbd839c41a74fe5e38f2072f, type: 3}

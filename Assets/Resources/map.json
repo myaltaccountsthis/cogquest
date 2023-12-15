@@ -1,0 +1,49 @@
+{
+  "zones": [
+    {
+      "level": 0,
+      "posX": 0,
+      "posY": 0,
+      "sizeX": 30,
+      "sizeY": 30,
+      "tiles": [
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wggggggggggggggggggggggggggggw",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "keys": ["posX", "posY", "rotation", "class"],
+      "values": ["15", "15", "0", "Fort"]
+    }
+  ]
+}
