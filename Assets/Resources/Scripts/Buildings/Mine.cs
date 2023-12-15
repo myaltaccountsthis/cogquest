@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Mine : Building
 {
@@ -8,6 +9,8 @@ public class Mine : Building
     [SerializeField]
     private float baseSpeed;
     private float mineSpeed;
+    [SerializeField]
+    private Tile[] mineableTiles;
 
     public float MineSpeed {
         get => mineSpeed;
