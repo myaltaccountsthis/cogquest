@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1812937915
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 0e0a6428041cb9d49a79260ebb036ea1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -98,7 +98,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 670fc4b6bd1444e4182c98345b8691fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ENTITY_NAME: Fort0
   MAX_HEALTH: 1000
+  cost:
+    keys: []
+    values: 
+  category: 0
   coalUse: 0
   TIER: 0
   sprites:

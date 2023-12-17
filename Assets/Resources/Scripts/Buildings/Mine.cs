@@ -15,4 +15,9 @@ public class Mine : Building
     public float MineSpeed {
         get => mineSpeed;
     }
+
+	public override bool IsValidLocation(Tilemap tilemap)
+	{
+        return base.IsValidLocation(tilemap);
+	}
 }

@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 8864416935122540001}
   - component: {fileID: -7590024220223065655}
   - component: {fileID: 8230337888456806797}
-  m_Layer: 0
+  - component: {fileID: 2083943186559643505}
+  m_Layer: 3
   m_Name: Chopper0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1812937915
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: -251235718, guid: 8bca732df638be647bb37d4708b1c697, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -97,8 +98,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b987a84ba2dc9a14c9d9dd8e0291bc57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ENTITY_NAME: Chopper0
   MAX_HEALTH: 100
-  coalUse: 2
+  cost:
+    keys: []
+    values: 
+  category: 1
+  deletable: 1
   baseSpeed: 1
   mineableTiles:
   - {fileID: 11400000, guid: 211a4f2fe8eae834eabf6c54de0ed5de, type: 2}
+--- !u!61 &2083943186559643505
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775382530071122899}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 2, y: 2}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0

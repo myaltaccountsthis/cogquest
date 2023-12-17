@@ -21,6 +21,7 @@ public class DataManager : MonoBehaviour
 		{
 			{ "Coal", 0 }
 		};
+		Debug.Log("Resources: " + string.Join(", ", resources.Keys));
 		gameData = new GameData();
 		LoadData();
 	}
@@ -40,13 +41,17 @@ public class DataManager : MonoBehaviour
 			if (File.Exists(FILE_PATH))
 			{
 				FileLoader.ReadOverwriteJson(FILE_PATH, gameData);
-				
+
 				// TODO remove
 				gameData.map = LoadMapUncompressed();
 				Debug.Log("OVERRIDE MAP");
 
 				// Update dictionaries
-				resources = gameData.resources.ToDictionary();
+				foreach (KeyValuePair<string, int> resource in gameData.resources.ToDictionary())
+				{
+					// This overrides resource keys that exist in data, allowing us to add more keys to resources retroactively
+					resources[resource.Key] = resource.Value;
+				}
 
 				Debug.Log("Loaded data");
 				//Debug.Log(JsonUtility.ToJson(gameData));

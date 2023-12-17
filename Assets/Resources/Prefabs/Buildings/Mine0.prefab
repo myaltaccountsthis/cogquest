@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1812937915
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 8bca732df638be647bb37d4708b1c697, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -98,8 +98,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b987a84ba2dc9a14c9d9dd8e0291bc57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ENTITY_NAME: Mine0
   MAX_HEALTH: 200
-  coalUse: 2
+  cost:
+    keys: []
+    values: 
+  category: 1
+  deletable: 1
   baseSpeed: 0.25
   mineableTiles:
   - {fileID: 11400000, guid: 393c1cb780225784c831902ea78c7308, type: 2}
