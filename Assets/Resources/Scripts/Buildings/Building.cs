@@ -6,10 +6,45 @@ using UnityEngine.Tilemaps;
 
 public abstract class Building : Entity
 {
-	[SerializeField]
-	protected int coalUse;
+	public BuildingCategory category = BuildingCategory.None;
 
-	public int CoalUse {
-		get => coalUse;
+	public int coalUse { get; protected set; }
+
+	// Buildings can only be box colliders
+	private new BoxCollider2D collider;
+
+	public override void Awake()
+	{
+		base.Awake();
+
+		collider = GetComponent<BoxCollider2D>();
 	}
+
+	public virtual bool IsValidLocation(Tilemap tilemap)
+	{
+		if (Physics2D.BoxCastAll(transform.position, GetCollisionSize(), 0f, Vector2.zero, 0f, GameController.buildingLayerMask).Length > 0)
+			return false;
+		foreach (TileBase tile in tilemap.GetTilesBlock(collider.bounds.ToBoundsInt()))
+		{
+			if (tile.name == "Rock")
+				return false;
+		}
+		return true;
+	}
+
+	/// <summary>
+	/// Get the size used for building overlap check (slightly smaller than actual size)
+	/// </summary>
+	public Vector2 GetCollisionSize()
+	{
+		return new Vector2(collider.size.x - .1f, collider.size.y - .1f);
+	}
+}
+
+public enum BuildingCategory
+{
+	None,
+	Harvesters,
+	Walls,
+	Attack
 }

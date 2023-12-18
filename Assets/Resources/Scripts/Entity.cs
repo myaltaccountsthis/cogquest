@@ -4,22 +4,19 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
-    public virtual string ENTITY_NAME => GetType().Name;
+    public string ENTITY_NAME;
 
     [SerializeField]
     protected float MAX_HEALTH;
-    protected float health;
+    public float health { get; protected set; }
     [SerializeField]
-    protected Dictionary<string, int> cost;
+    protected DataDictionary<string, int> cost;
+	public bool deletable;
 
-    public float Health {
-        get => health;
-    }
-
-    public float HealthFraction => Health / MAX_HEALTH;
+	public float HealthFraction => health / MAX_HEALTH;
     
     public Dictionary<string, int> Cost {
-        get => cost;
+        get => cost.ToDictionary();
     }
 
     public Sprite sprite {
@@ -28,7 +25,9 @@ public abstract class Entity : MonoBehaviour
 
     public virtual void Awake() {
         health = MAX_HEALTH;
-    }
+
+		Debug.Assert(GetComponent<SpriteRenderer>().sortingLayerName != "Default");
+	}
 
     // Start is called before the first frame update
     public virtual void Start()
