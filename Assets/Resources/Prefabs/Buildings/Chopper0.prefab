@@ -103,9 +103,10 @@ MonoBehaviour:
   cost:
     keys: []
     values: 
-  category: 1
   deletable: 1
-  baseSpeed: 1
+  category: 1
+  coalUse: 1
+  mineSpeed: 2
   mineableTiles:
   - {fileID: 11400000, guid: 211a4f2fe8eae834eabf6c54de0ed5de, type: 2}
 --- !u!61 &2083943186559643505

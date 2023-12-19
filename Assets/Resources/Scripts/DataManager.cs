@@ -19,7 +19,11 @@ public class DataManager : MonoBehaviour
         FILE_PATH = Application.persistentDataPath + "/gamedata.dat";
 		resources = new Dictionary<string, int>()
 		{
-			{ "Coal", 0 }
+			{ "Coal", 0 },
+			{ "Wood", 0 },
+			{ "Stone", 0 },
+			{ "Copper", 0 },
+			{ "Iron", 0 }
 		};
 		Debug.Log("Resources: " + string.Join(", ", resources.Keys));
 		gameData = new GameData();
@@ -54,7 +58,7 @@ public class DataManager : MonoBehaviour
 				}
 
 				Debug.Log("Loaded data");
-				//Debug.Log(JsonUtility.ToJson(gameData));
+				// Debug.Log(JsonUtility.ToJson(gameData));
 			}
 			else
 			{
