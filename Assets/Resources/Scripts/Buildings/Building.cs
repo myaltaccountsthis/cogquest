@@ -7,11 +7,17 @@ using UnityEngine.Tilemaps;
 public abstract class Building : Entity
 {
 	public BuildingCategory category = BuildingCategory.None;
+	[SerializeField]
+	private int coalUse;
 
-	public int coalUse { get; protected set; }
+	public int CoalUse
+	{
+		get => coalUse;
+	}
 
 	// Buildings can only be box colliders
-	private new BoxCollider2D collider;
+	protected new BoxCollider2D collider;
+	
 
 	public override void Awake()
 	{
@@ -20,13 +26,18 @@ public abstract class Building : Entity
 		collider = GetComponent<BoxCollider2D>();
 	}
 
+	public TileBase[] GetOverlappingTiles(Tilemap tilemap)
+	{
+		return tilemap.GetTilesBlock(collider.ColliderToBoundsInt());
+	}
+
 	public virtual bool IsValidLocation(Tilemap tilemap)
 	{
 		if (Physics2D.BoxCastAll(transform.position, GetCollisionSize(), 0f, Vector2.zero, 0f, GameController.buildingLayerMask).Length > 0)
 			return false;
-		foreach (TileBase tile in tilemap.GetTilesBlock(collider.bounds.ToBoundsInt()))
+		foreach (TileBase tile in GetOverlappingTiles(tilemap))
 		{
-			if (tile.name == "Rock")
+			if (tile != null && tile.name == "Rock")
 				return false;
 		}
 		return true;
@@ -39,6 +50,7 @@ public abstract class Building : Entity
 	{
 		return new Vector2(collider.size.x - .1f, collider.size.y - .1f);
 	}
+
 }
 
 public enum BuildingCategory

@@ -47,6 +47,7 @@ public class GameController : MonoBehaviour
 
 	public static int entityLayerMask { get; private set; }
 	public static int buildingLayerMask { get; private set; }
+	public static int buildingLayerID { get; private set; }
 
 	// Build Menu stuff
 	/// <summary>
@@ -61,6 +62,9 @@ public class GameController : MonoBehaviour
 	private Color selectedBuildingInvalidColor = new Color(1f, 0f, 0f, .5f);
 	public BuildAction currentBuildAction { get; private set; }
 	private Entity hoveredEntity;
+	
+	// Time
+	private float time = 0;
 
 	void Awake()
 	{
@@ -112,6 +116,7 @@ public class GameController : MonoBehaviour
 
 		entityLayerMask = LayerMask.GetMask("Buildings", "Units");
 		buildingLayerMask = LayerMask.GetMask("Buildings");
+		buildingLayerID = LayerMask.NameToLayer("Buildings");
 
 		selectionBox = GameObject.FindWithTag("SelectionBox").GetComponent<SpriteRenderer>();
 		hoveredEntity = null;
@@ -241,6 +246,39 @@ public class GameController : MonoBehaviour
 			}
 		}
 
+		// Resource gain and coal use each second
+		if ((int)(time + Time.deltaTime) > (int)time)
+        {
+			// Get value change for all resources each second
+			Dictionary<string, int> resources = new Dictionary<string, int>();
+			foreach (string resource in dataManager.resources.Keys)
+				resources.Add(resource, 0);
+
+			// Get all buildings and subtract coal use
+			foreach (Entity entity in entities)
+            {
+				if (entity.gameObject.layer == buildingLayerID)
+                {
+					Building building = (Building)entity;
+					resources["Coal"] -= building.CoalUse;
+
+					// Add mined resources if the building is a mine
+					if (entity is Mine mine)
+					{
+						foreach (string resource in mine.resources.Keys)
+						{
+							resources[resource] += mine.resources[resource] * mine.MineSpeed;
+						}
+					}
+                }
+            }
+			foreach (string resource in resources.Keys)
+				dataManager.resources[resource] += resources[resource];
+			// remove when UI added
+			Debug.Log(string.Join(", ", resources.Keys) + ": " + string.Join(", ", resources.Values));
+			UpdateResourcesUI();
+        }
+
 		// zoom, shift to keep cursor at same world point
 		Vector3 worldPoint1 = camera.ScreenToWorldPoint(Input.mousePosition);
 		cameraSize = Mathf.Clamp(cameraSize * Mathf.Pow(cameraZoomFactor, -Input.mouseScrollDelta.y), minCameraSize, maxCameraSize);
@@ -252,6 +290,7 @@ public class GameController : MonoBehaviour
 		cameraCenter.x = Mathf.Clamp(cameraCenter.x, bounds.xMin + .5f, bounds.xMax - .5f);
 		cameraCenter.y = Mathf.Clamp(cameraCenter.y, bounds.yMin + .5f, bounds.yMax - .5f);
 		camera.transform.position = cameraCenter;
+		time += Time.deltaTime;
 	}
 
 	void OnApplicationQuit()
@@ -349,7 +388,11 @@ public class GameController : MonoBehaviour
 			dataManager.resources[resourceCost.Key] -= resourceCost.Value;
         }
 
-		AddEntity(selectedBuilding.GetEntitySaveData());
+		Entity entity = AddEntity(selectedBuilding.GetEntitySaveData());
+		if (entity is Mine mine)
+        {
+			mine.UpdateResources(tilemap);
+        }
 
 		return true;
 	}
@@ -434,11 +477,12 @@ public class GameController : MonoBehaviour
 
 public static class Extensions
 {
-	public static BoundsInt ToBoundsInt(this Bounds bounds)
+	public static BoundsInt ColliderToBoundsInt(this Collider2D collider)
 	{
-		Vector3 min = bounds.min, max = bounds.max;
+		Vector3 size = collider.bounds.extents * 2;
+		Vector3 min = collider.transform.position - size / 2;
 		return new BoundsInt(Mathf.RoundToInt(min.x), Mathf.RoundToInt(min.y), Mathf.RoundToInt(min.z),
-			Mathf.RoundToInt(max.x), Mathf.RoundToInt(max.y), Mathf.RoundToInt(max.z));
+			Mathf.RoundToInt(size.x), Mathf.RoundToInt(size.y), Mathf.Max(1, Mathf.RoundToInt(size.z)));
 	}
 
 	public static void SetSpriteColor(this Building building, Color color)

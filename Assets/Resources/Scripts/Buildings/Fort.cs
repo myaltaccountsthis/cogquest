@@ -10,12 +10,10 @@ public class Fort : Building
     [SerializeField]
     private Sprite[] sprites;
     private bool occupied;
-    private float coalProduction;
 
     public override void Awake() {
         base.Awake();
         occupied = TIER == 0;
-        coalProduction = occupied ? GetCoalProduction() : 0;
     }
 
     // Start is called before the first frame update
@@ -30,11 +28,6 @@ public class Fort : Building
     {
         base.Update();
 
-    }
-
-    public float GetCoalProduction()
-    {
-        return occupied ? Mathf.Max(TIER, 1) * 10 : 0;
     }
 
     public void OnDestroyed()
