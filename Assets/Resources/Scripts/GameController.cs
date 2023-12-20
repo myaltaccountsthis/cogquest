@@ -275,7 +275,7 @@ public class GameController : MonoBehaviour
 			foreach (string resource in resources.Keys)
 				dataManager.resources[resource] += resources[resource];
 			// remove when UI added
-			Debug.Log(string.Join(", ", resources.Keys) + ": " + string.Join(", ", resources.Values));
+			Debug.Log(string.Join(", ", dataManager.resources.Keys) + ": " + string.Join(", ", dataManager.resources.Values));
 			UpdateResourcesUI();
         }
 
