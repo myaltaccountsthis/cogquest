@@ -101,8 +101,11 @@ MonoBehaviour:
   ENTITY_NAME: Chopper1
   MAX_HEALTH: 100
   cost:
-    keys: []
-    values: 
+    keys:
+    - Wood
+    - Stone
+    - Copper
+    values: 500000003c00000014000000
   deletable: 1
   category: 1
   coalUse: 2

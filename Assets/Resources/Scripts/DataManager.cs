@@ -20,7 +20,7 @@ public class DataManager : MonoBehaviour
 		resources = new Dictionary<string, int>()
 		{
 			{ "Coal", 0 },
-			{ "Wood", 0 },
+			{ "Wood", 20 },
 			{ "Stone", 0 },
 			{ "Copper", 0 },
 			{ "Iron", 0 }

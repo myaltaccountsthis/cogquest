@@ -101,8 +101,10 @@ MonoBehaviour:
   ENTITY_NAME: Mine2
   MAX_HEALTH: 300
   cost:
-    keys: []
-    values: 
+    keys:
+    - Iron
+    - Copper
+    values: c8000000f4010000
   deletable: 1
   category: 1
   coalUse: 8

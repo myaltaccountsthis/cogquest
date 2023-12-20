@@ -49,7 +49,6 @@ public class Mine : Building
     public void UpdateResources(Tilemap tilemap)
     {
         resources.Clear();
-        Debug.Log(GetOverlappingTiles(tilemap).Length);
         foreach (TileBase tile in GetOverlappingTiles(tilemap))
         {
             Debug.Log(tile.name);
