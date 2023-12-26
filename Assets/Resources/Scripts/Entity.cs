@@ -4,7 +4,8 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
-    public string ENTITY_NAME;
+    public string entityName;
+    public string displayName;
 
     [SerializeField]
     protected float MAX_HEALTH;
@@ -68,7 +69,7 @@ public abstract class Entity : MonoBehaviour
             { "posY", transform.position.y.ToString() },
             { "rotation", transform.rotation.eulerAngles.z.ToString() },
             { "health", health.ToString() },
-            { "class", ENTITY_NAME }
+            { "class", entityName }
         };
     }
 }
