@@ -98,7 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b987a84ba2dc9a14c9d9dd8e0291bc57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ENTITY_NAME: Mine2
+  entityName: Mine2
+  displayName: Industrial Mine
   MAX_HEALTH: 300
   cost:
     keys:

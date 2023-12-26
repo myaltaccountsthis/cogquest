@@ -98,7 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 670fc4b6bd1444e4182c98345b8691fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ENTITY_NAME: Fort0
+  entityName: Fort0
+  displayName: Fort
   MAX_HEALTH: 1000
   cost:
     keys: []

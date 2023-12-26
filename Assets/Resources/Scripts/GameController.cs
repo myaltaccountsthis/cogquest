@@ -20,7 +20,7 @@ public class GameController : MonoBehaviour
 
 	// Entity loading
 	[HideInInspector] public List<Entity> entities;
-	private Dictionary<string, Entity> entityPrefabs;
+	public Dictionary<string, Entity> entityPrefabs { get; private set; }
 	private Transform entityFolder;
 
 	// UI
@@ -30,7 +30,7 @@ public class GameController : MonoBehaviour
 	private Transform healthBarInner;
 	private Timer timer;
 	private Dictionary<string, Resource> resourcesUI;
-	public Dictionary<BuildingCategory, List<Building>> categoryPrefabs { get; private set; }
+	public Dictionary<BuildingCategory, List<string>> categoryPrefabs { get; private set; }
 
 	// Camera controls
 	private new Camera camera;
@@ -58,6 +58,10 @@ public class GameController : MonoBehaviour
 	/// Translucent building that follows the mouse indicating where a building should be placed
 	/// </summary>
 	private Building selectedBuilding;
+	/// <summary>
+	/// Whether or not a building is selected and ready to build on click
+	/// </summary>
+	public bool IsHoveringBuilding => selectedBuilding != null;
 	private Color selectedBuildingDefaultColor = new Color(1f, 1f, 1f, .5f);
 	private Color selectedBuildingInvalidColor = new Color(1f, 0f, 0f, .5f);
 	public BuildAction currentBuildAction { get; private set; }
@@ -83,7 +87,7 @@ public class GameController : MonoBehaviour
 		entityPrefabs = new Dictionary<string, Entity>();
 		foreach (Entity entity in Resources.LoadAll<Entity>("Prefabs/Buildings"))
 		{
-			entityPrefabs[entity.ENTITY_NAME] = entity;
+			entityPrefabs[entity.entityName] = entity;
 		}
 
 		// Load UI
@@ -99,12 +103,12 @@ public class GameController : MonoBehaviour
 				.Select(resource => new KeyValuePair<string, Resource>(resource.name, resource))
 		);
 		// Load building categories
-		categoryPrefabs = new Dictionary<BuildingCategory, List<Building>>();
+		categoryPrefabs = new Dictionary<BuildingCategory, List<string>>();
 		foreach (BuildingCategory category in Enum.GetValues(typeof(BuildingCategory)))
-			categoryPrefabs.Add(category, new List<Building>());
+			categoryPrefabs.Add(category, new List<string>());
 		foreach (Building building in Resources.LoadAll<Building>("Prefabs/Buildings"))
 		{
-			categoryPrefabs[building.category].Add(building);
+			categoryPrefabs[building.category].Add(building.entityName);
 		}
 
 		// Load camera
@@ -275,7 +279,7 @@ public class GameController : MonoBehaviour
 			foreach (string resource in resources.Keys)
 				dataManager.resources[resource] += resources[resource];
 			// remove when UI added
-			Debug.Log(string.Join(", ", dataManager.resources.Keys) + ": " + string.Join(", ", dataManager.resources.Values));
+			//Debug.Log(string.Join(", ", dataManager.resources.Keys) + ": " + string.Join(", ", dataManager.resources.Values));
 			UpdateResourcesUI();
         }
 
@@ -393,6 +397,7 @@ public class GameController : MonoBehaviour
         {
 			mine.UpdateResources(tilemap);
         }
+		UpdateResourcesUI();
 
 		return true;
 	}
@@ -415,6 +420,8 @@ public class GameController : MonoBehaviour
 		}
 
 		OnBuildingDestroyed(building);
+
+		UpdateResourcesUI();
 	}
 
 	public void OnBuildingDestroyed(Building building)
@@ -434,7 +441,7 @@ public class GameController : MonoBehaviour
 
 		if (selectedBuilding != null)
 		{
-			if (selectedBuilding.ENTITY_NAME == building.ENTITY_NAME)
+			if (selectedBuilding.entityName == building.entityName)
 				return;
 			Destroy(selectedBuilding.gameObject);
 		}
