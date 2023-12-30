@@ -14,6 +14,9 @@ public class BuildMenu : MonoBehaviour
 	private Transform costMenu;
 	private Transform costContainer;
 	private TextMeshProUGUI optionName;
+	private Toggle infoToggle;
+	private Transform infoFrame;
+	private TextMeshProUGUI infoText;
 	private Transform entityFolder;
 	private GameController gameController;
 
@@ -42,6 +45,9 @@ public class BuildMenu : MonoBehaviour
 		costMenu = transform.Find("Cost");
 		costContainer = costMenu.Find("CostContainer");
 		optionName = costMenu.Find("OptionName").GetComponent<TextMeshProUGUI>();
+		infoToggle = transform.Find("InfoToggle").GetComponent<Toggle>();
+		infoFrame = transform.Find("Info");
+		infoText = infoFrame.Find("TextLabel").GetComponent<TextMeshProUGUI>();
 		entityFolder = GameObject.Find("Entities").transform;
 		gameController = GameObject.Find("Canvas").GetComponent<GameController>();
 
@@ -57,7 +63,9 @@ public class BuildMenu : MonoBehaviour
 
 	void Start()
 	{
-		UpdateResourceCost();
+		SetInfoVisibility(infoToggle.isOn);
+		infoToggle.onValueChanged.AddListener(SetInfoVisibility);
+		UpdateInfo();
 		// Update category UI
 		LoadCategory(BuildingCategory.Harvesters);
 		SelectBuildAction(BuildAction.Pan);
@@ -74,7 +82,7 @@ public class BuildMenu : MonoBehaviour
 		else
 		{
 			selectedOption = null;
-			UpdateResourceCost();
+			UpdateInfo();
 		}
 	}
 
@@ -83,7 +91,10 @@ public class BuildMenu : MonoBehaviour
 		SelectBuildAction((BuildAction)Enum.Parse(typeof(BuildAction), action));
 	}
 
-	private void UpdateResourceCost()
+	/// <summary>
+	/// Updates Info and Resource Costs
+	/// </summary>
+	private void UpdateInfo()
 	{
 		string buildingName = null;
 		if (hoveredOption != null)
@@ -94,6 +105,7 @@ public class BuildMenu : MonoBehaviour
 		if (buildingName == null)
 		{
 			costMenu.gameObject.SetActive(false);
+			infoText.text = "";
 		}
 		else
 		{
@@ -138,6 +150,8 @@ public class BuildMenu : MonoBehaviour
 				resourceCost.rectTransform.anchoredPosition = new Vector2(x, 0);
 				x += resourceCost.GetMinimumWidth();
 			}
+
+			infoText.text = building.GetEntityInfo();
 		}
 	}
 
@@ -147,14 +161,14 @@ public class BuildMenu : MonoBehaviour
 			return;
 
 		selectedOption = building.entityName;
-		UpdateResourceCost();
+		UpdateInfo();
 		gameController.SelectBuilding(building);
 	}
 
 	private void SelectHoverBuilding(string buildingName)
 	{
 		hoveredOption = buildingName;
-		UpdateResourceCost();
+		UpdateInfo();
 	}
 
 	private void StopHoverBuilding(string buildingName)
@@ -162,7 +176,7 @@ public class BuildMenu : MonoBehaviour
 		if (hoveredOption == buildingName)
 		{
 			hoveredOption = null;
-			UpdateResourceCost();
+			UpdateInfo();
 		}
 	}
 
@@ -193,6 +207,11 @@ public class BuildMenu : MonoBehaviour
 	public void LoadCategory(string category)
 	{
 		LoadCategory((BuildingCategory)Enum.Parse(typeof(BuildingCategory), category));
+	}
+
+	public void SetInfoVisibility(bool enable)
+	{
+		infoFrame.gameObject.SetActive(enable);
 	}
 }
 

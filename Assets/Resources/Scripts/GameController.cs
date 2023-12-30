@@ -191,16 +191,19 @@ public class GameController : MonoBehaviour
 			hoveredEntity = null;
 		}
 
+		PointerEventData ped = new PointerEventData(null);
+		ped.position = Input.mousePosition;
+		List<RaycastResult> uiElements = new List<RaycastResult>();
+		graphicRaycaster.Raycast(ped, uiElements);
+		bool mouseOnUI = uiElements.Count != 0;
+
 		// Left drag or build
 		if (Input.GetMouseButton(0))
 		{
 			bool mouseWasPressed = Input.GetMouseButtonDown(0);
 			// On mouse down, if mouse was previously up
-			PointerEventData ped = new PointerEventData(null);
-			ped.position = Input.mousePosition;
-			List<RaycastResult> uiElements = new List<RaycastResult>();
-			graphicRaycaster.Raycast(ped, uiElements);
-			if (mouseWasPressed && uiElements.Count == 0)
+			
+			if (mouseWasPressed && !mouseOnUI)
 			{
 				// MOUSE DOWN EVENT
 				if (currentBuildAction == BuildAction.Build && selectedBuilding != null)
@@ -283,13 +286,17 @@ public class GameController : MonoBehaviour
 			UpdateResourcesUI();
         }
 
-		// zoom, shift to keep cursor at same world point
-		Vector3 worldPoint1 = camera.ScreenToWorldPoint(Input.mousePosition);
-		cameraSize = Mathf.Clamp(cameraSize * Mathf.Pow(cameraZoomFactor, -Input.mouseScrollDelta.y), minCameraSize, maxCameraSize);
-		camera.orthographicSize = cameraSize;
+		if (!mouseOnUI)
+		{
+			// zoom, shift to keep cursor at same world point
+			Vector3 worldPoint1 = camera.ScreenToWorldPoint(Input.mousePosition);
+			cameraSize = Mathf.Clamp(cameraSize * Mathf.Pow(cameraZoomFactor, -Input.mouseScrollDelta.y), minCameraSize, maxCameraSize);
+			camera.orthographicSize = cameraSize;
 
-		Vector3 worldPoint2 = camera.ScreenToWorldPoint(Input.mousePosition);
-		cameraCenter += worldPoint1 - worldPoint2;
+			Vector3 worldPoint2 = camera.ScreenToWorldPoint(Input.mousePosition);
+			cameraCenter += worldPoint1 - worldPoint2;
+		}
+
 
 		cameraCenter.x = Mathf.Clamp(cameraCenter.x, bounds.xMin + .5f, bounds.xMax - .5f);
 		cameraCenter.y = Mathf.Clamp(cameraCenter.y, bounds.yMin + .5f, bounds.yMax - .5f);
