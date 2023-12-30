@@ -12,10 +12,10 @@ public abstract class Entity : MonoBehaviour
     public float health { get; protected set; }
     [SerializeField]
     protected DataDictionary<string, int> cost;
-	public bool deletable;
+    public bool deletable;
 
-	public float HealthFraction => health / MAX_HEALTH;
-    
+    public float HealthFraction => health / MAX_HEALTH;
+
     public Dictionary<string, int> Cost {
         get => cost.ToDictionary();
     }
@@ -27,8 +27,8 @@ public abstract class Entity : MonoBehaviour
     public virtual void Awake() {
         health = MAX_HEALTH;
 
-		Debug.Assert(GetComponent<SpriteRenderer>().sortingLayerName != "Default");
-	}
+        Debug.Assert(GetComponent<SpriteRenderer>().sortingLayerName != "Default");
+    }
 
     // Start is called before the first frame update
     public virtual void Start()
@@ -39,7 +39,7 @@ public abstract class Entity : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-        
+
     }
 
     public Vector3Int GetIntPosition()
@@ -71,5 +71,10 @@ public abstract class Entity : MonoBehaviour
             { "health", health.ToString() },
             { "class", entityName }
         };
+    }
+
+    public virtual string GetEntityInfo()
+    {
+        return "test info";
     }
 }
