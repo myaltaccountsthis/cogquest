@@ -352,6 +352,10 @@ public class GameController : MonoBehaviour
 	{
 		Entity entity = Instantiate(entityPrefabs[entityData["class"]], entityFolder);
 		entity.LoadEntitySaveData(entityData);
+		if (entity is Mine mine)
+		{
+			mine.UpdateResources(tilemap);
+		}
 		entities.Add(entity);
 		return entity;
 	}
@@ -400,10 +404,6 @@ public class GameController : MonoBehaviour
         }
 
 		Entity entity = AddEntity(selectedBuilding.GetEntitySaveData());
-		if (entity is Mine mine)
-        {
-			mine.UpdateResources(tilemap);
-        }
 		UpdateResourcesUI();
 
 		return true;
@@ -455,10 +455,10 @@ public class GameController : MonoBehaviour
 
 		selectedBuilding = Instantiate(building);
 		SpriteRenderer spriteRenderer = selectedBuilding.GetComponent<SpriteRenderer>();
-		spriteRenderer.color = selectedBuildingDefaultColor;
 		spriteRenderer.sortingLayerName = "Buildings";
 		spriteRenderer.sortingOrder = 10;
 		spriteRenderer.gameObject.layer = LayerMask.NameToLayer("Default");
+		selectedBuilding.SetSpriteColor(selectedBuildingDefaultColor);
 	}
 
 	public void SelectBuildAction(BuildAction buildAction)
@@ -497,10 +497,5 @@ public static class Extensions
 		Vector3 min = collider.transform.position - size / 2;
 		return new BoundsInt(Mathf.RoundToInt(min.x), Mathf.RoundToInt(min.y), Mathf.RoundToInt(min.z),
 			Mathf.RoundToInt(size.x), Mathf.RoundToInt(size.y), Mathf.Max(1, Mathf.RoundToInt(size.z)));
-	}
-
-	public static void SetSpriteColor(this Building building, Color color)
-	{
-		building.GetComponent<SpriteRenderer>().color = color;
 	}
 }

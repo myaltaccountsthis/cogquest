@@ -24,20 +24,26 @@ public abstract class Entity : MonoBehaviour
         get => GetComponent<SpriteRenderer>().sprite;
     }
 
-    public virtual void Awake() {
+    protected virtual float rotation
+    {
+        get => transform.eulerAngles.z;
+        set => transform.eulerAngles = new Vector3(0, 0, value);
+	}
+
+	protected virtual void Awake() {
         health = MAX_HEALTH;
 
         Debug.Assert(GetComponent<SpriteRenderer>().sortingLayerName != "Default");
     }
 
     // Start is called before the first frame update
-    public virtual void Start()
+    protected virtual void Start()
     {
 
     }
 
-    // Update is called once per frame
-    public virtual void Update()
+	// Update is called once per frame
+	protected virtual void Update()
     {
 
     }
@@ -51,7 +57,7 @@ public abstract class Entity : MonoBehaviour
     {
         // TODO update position, orientation, etc.
         if (saveData.TryGetValue("rotation", out string rotationStr))
-            transform.eulerAngles = new Vector3(0, 0, float.Parse(rotationStr));
+            rotation = float.Parse(rotationStr);
         if (saveData.TryGetValue("posX", out string posXStr) && saveData.TryGetValue("posY", out string posYStr))
             transform.position = new Vector3(float.Parse(posXStr), float.Parse(posYStr));
         if (saveData.TryGetValue("health", out string healthStr))
@@ -67,7 +73,7 @@ public abstract class Entity : MonoBehaviour
         {
             { "posX", transform.position.x.ToString() },
             { "posY", transform.position.y.ToString() },
-            { "rotation", transform.rotation.eulerAngles.z.ToString() },
+            { "rotation", rotation.ToString() },
             { "health", health.ToString() },
             { "class", entityName }
         };

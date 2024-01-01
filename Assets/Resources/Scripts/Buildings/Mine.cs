@@ -16,13 +16,13 @@ public class Mine : Building
         get => mineSpeed;
     }
 
-    public override void Awake()
+	protected override void Awake()
     {
         base.Awake();
         resources = new Dictionary<string, int>();
     }
 
-    public override bool IsValidLocation(Tilemap tilemap)
+	public override bool IsValidLocation(Tilemap tilemap)
 	{
         if (!base.IsValidLocation(tilemap))
             return false;
