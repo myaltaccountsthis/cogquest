@@ -36,7 +36,7 @@ public class GameController : MonoBehaviour
 	private new Camera camera;
 	private float cameraSpeed;
 	private float cameraSize;
-	private const float minCameraSize = 2f;
+	private const float minCameraSize = 4f;
 	private const float maxCameraSize = 15f;
 	private const float cameraZoomFactor = 1.05f;
 	private Vector3 mouseStart;
