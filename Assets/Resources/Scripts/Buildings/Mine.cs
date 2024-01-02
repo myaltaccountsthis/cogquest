@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -51,7 +52,7 @@ public class Mine : Building
         resources.Clear();
         foreach (TileBase tile in GetOverlappingTiles(tilemap))
         {
-            Debug.Log(tile.name);
+            //Debug.Log(tile.name);
             foreach (Tile mineableTile in mineableTiles)
             {
                 if (tile != null && tile.name == mineableTile.name)
@@ -60,12 +61,24 @@ public class Mine : Building
                     if (name == "Tree")
                         name = "Wood";
 
-                    if (!resources.ContainsKey(name))
-                        resources.Add(name, 0);
+                    resources.TryAdd(name, 0);
                     resources[name]++;
                 }
             }
         }
     }
 
+    protected override List<string> GetEntityInfoList()
+    {
+        string resourceGen = string.Join('\n', resources == null
+            ? mineableTiles.Select(tile => tile.name + ": " + MineSpeed)
+            : resources.Select(pair => pair.Key + ": " + pair.Value * MineSpeed));
+
+        List<string> list = base.GetEntityInfoList();
+        list.Add(
+            "GENERATION\n" +
+            resourceGen
+        );
+        return list;
+	}
 }

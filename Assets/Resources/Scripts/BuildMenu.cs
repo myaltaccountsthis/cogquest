@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class BuildMenu : MonoBehaviour
 {
@@ -25,10 +26,7 @@ public class BuildMenu : MonoBehaviour
 	private RectTransform buildActionOutline;
 	private RectTransform categoryOutline;
 
-	/// <summary>
-	/// Option currently shown in the cost menu
-	/// </summary>
-	private string currentOption;
+	public Entity mouseHoveredEntity;
 	private string hoveredOption;
 	private string selectedOption;
 
@@ -65,7 +63,7 @@ public class BuildMenu : MonoBehaviour
 	{
 		SetInfoVisibility(infoToggle.isOn);
 		infoToggle.onValueChanged.AddListener(SetInfoVisibility);
-		UpdateInfo();
+		UpdateInfo(null);
 		// Update category UI
 		LoadCategory(BuildingCategory.Harvesters);
 		SelectBuildAction(BuildAction.Pan);
@@ -92,32 +90,39 @@ public class BuildMenu : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Updates Info and Resource Costs
+	/// Only updates info text for the given entity
 	/// </summary>
-	private void UpdateInfo()
+	private void UpdateInfo(Entity entity)
 	{
-		string buildingName = null;
-		if (hoveredOption != null)
-			buildingName = hoveredOption;
-		else if (selectedOption != null)
-			buildingName = selectedOption;
+		if (entity == null)
+		{
+			infoText.text = "";
+		}
+		else
+		{
+			infoText.text = entity.GetEntityInfo();
+		}
+	}
 
-		if (buildingName == null)
+	/// <summary>
+	/// Updates the resource cost, only for building entities
+	/// </summary>
+	private void UpdateResourceCost(Entity entity)
+	{
+		if (entity == null)
 		{
 			costMenu.gameObject.SetActive(false);
-			infoText.text = "";
 		}
 		else
 		{
 			foreach (Transform child in costContainer)
 				Destroy(child.gameObject);
 
-			Entity building = gameController.entityPrefabs[buildingName];
-			optionName.text = building.displayName;
+			optionName.text = entity.displayName;
 			costMenu.gameObject.SetActive(true);
 			List<ResourceCost> resourceCosts = new List<ResourceCost>();
 			float totalWidth = 0f;
-			foreach (KeyValuePair<string, int> pair in building.Cost)
+			foreach (KeyValuePair<string, int> pair in entity.Cost)
 			{
 				ResourceCost resourceCost = Instantiate(resourceCostPrefab, costContainer);
 				resourceCost.SetText(pair.Value);
@@ -125,7 +130,7 @@ public class BuildMenu : MonoBehaviour
 				totalWidth += resourceCost.GetMinimumWidth();
 				resourceCosts.Add(resourceCost);
 			}
-			totalWidth += resourceCostMargin * (building.Cost.Count - 1);
+			totalWidth += resourceCostMargin * (entity.Cost.Count - 1);
 			float x = -totalWidth / 2f;
 			foreach (ResourceCost resourceCost in resourceCosts)
 			{
@@ -150,9 +155,29 @@ public class BuildMenu : MonoBehaviour
 				resourceCost.rectTransform.anchoredPosition = new Vector2(x, 0);
 				x += resourceCost.GetMinimumWidth();
 			}
-
-			infoText.text = building.GetEntityInfo();
 		}
+	}
+
+	/// <summary>
+	/// Updates Info and Resource Costs for selected building
+	/// </summary>
+	public void UpdateInfo(bool updateResourceCost = true)
+	{
+		string buildingName = "";
+		Entity entity = null;
+		if (hoveredOption != null)
+			buildingName = hoveredOption;
+		else if (selectedOption != null)
+			buildingName = selectedOption;
+		else if (mouseHoveredEntity != null)
+			entity = mouseHoveredEntity;
+
+		if (entity == null)
+			entity = gameController.entityPrefabs.GetValueOrDefault(buildingName, null);
+
+		UpdateInfo(entity);
+		if (updateResourceCost)
+			UpdateResourceCost(entity);
 	}
 
 	private void SelectBuilding(Building building)

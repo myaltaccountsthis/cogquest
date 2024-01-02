@@ -79,8 +79,13 @@ public abstract class Entity : MonoBehaviour
         };
     }
 
-    public virtual string GetEntityInfo()
+    protected virtual List<string> GetEntityInfoList()
     {
-        return "test info";
+        return new List<string> { "Name: " + displayName };
+    }
+
+    public string GetEntityInfo()
+    {
+        return string.Join("\n\n", GetEntityInfoList());
     }
 }

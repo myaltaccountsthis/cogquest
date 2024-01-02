@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
 {
 	// Managers
 	private DataManager dataManager;
+	private BuildMenu buildMenu;
 
 	// Tile loading
 	public char[] TileNames;
@@ -26,7 +27,7 @@ public class GameController : MonoBehaviour
 	// UI
 	private GraphicRaycaster graphicRaycaster;
 	private Transform topbar;
-	private Transform healthBar;
+	private RectTransform healthBar;
 	private Transform healthBarInner;
 	private Timer timer;
 	private Dictionary<string, Resource> resourcesUI;
@@ -53,7 +54,10 @@ public class GameController : MonoBehaviour
 	/// <summary>
 	/// Selection box for delete building indicator when hovering over building
 	/// </summary>
-	private SpriteRenderer selectionBox;
+	private RectTransform selectionBox;
+	private Image selectionBoxImage;
+	private Color selectionBoxDeleteColor = Color.red;
+	private Color selectionBoxHoverColor = Color.white;
 	/// <summary>
 	/// Translucent building that follows the mouse indicating where a building should be placed
 	/// </summary>
@@ -73,6 +77,7 @@ public class GameController : MonoBehaviour
 	void Awake()
 	{
         dataManager = GameObject.Find("Init").GetComponent<DataManager>();
+		buildMenu = GameObject.Find("BuildMenu").GetComponent<BuildMenu>();
         tilemap = GameObject.FindWithTag("Tilemap").GetComponent<Tilemap>();
 
 		// Load tiles
@@ -93,7 +98,7 @@ public class GameController : MonoBehaviour
 		// Load UI
 		graphicRaycaster = GetComponent<GraphicRaycaster>();
 		topbar = transform.Find("Topbar");
-		healthBar = GameObject.Find("HealthBar").GetComponent<Transform>();
+		healthBar = GameObject.Find("HealthBar").GetComponent<RectTransform>();
 		healthBarInner = GameObject.Find("HealthBarInner").transform;
 		healthBar.gameObject.SetActive(false);
 		timer = topbar.Find("Timer").GetComponent<Timer>();
@@ -122,7 +127,8 @@ public class GameController : MonoBehaviour
 		buildingLayerMask = LayerMask.GetMask("Buildings");
 		buildingLayerID = LayerMask.NameToLayer("Buildings");
 
-		selectionBox = GameObject.FindWithTag("SelectionBox").GetComponent<SpriteRenderer>();
+		selectionBox = GameObject.FindWithTag("SelectionBox").GetComponent<RectTransform>();
+		selectionBoxImage = selectionBox.Find("Image").GetComponent<Image>();
 		hoveredEntity = null;
 	}
 
@@ -163,39 +169,56 @@ public class GameController : MonoBehaviour
 			dataManager.gameData.timer += 120f;
 		timer.SetTime(dataManager.gameData.timer);
 
-		// Detect hovered entity
-		Vector3 cameraCenter = camera.transform.position;
-		RaycastHit2D result = Physics2D.Raycast(camera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 0, entityLayerMask);
-		if (result.collider != null && currentBuildAction != BuildAction.Build)
-		{
-			// Update health bar position and indicator
-			Entity entity = result.collider.GetComponent<Entity>();
-			float healthFraction = entity.HealthFraction;
-			healthBar.position = result.transform.position + Vector3.up * (result.collider.bounds.extents.y + .8f * healthBar.localScale.x);
-			healthBarInner.localScale = new Vector3(entity.HealthFraction, 1, 1);
-			healthBarInner.localPosition = Vector3.right * (healthFraction / 2 - .5f);
-			healthBar.gameObject.SetActive(true);
-			hoveredEntity = entity;
-			
-			if (currentBuildAction == BuildAction.Delete && entity.deletable)
-			{
-				selectionBox.transform.position = result.transform.position;
-				selectionBox.transform.localScale = (Vector3)result.collider.GetComponent<BoxCollider2D>().size + new Vector3(.1f, .1f, 1);
-				selectionBox.enabled = true;
-			}
-		}
-		else
-		{
-			healthBar.gameObject.SetActive(false);
-			selectionBox.enabled = false;
-			hoveredEntity = null;
-		}
-
 		PointerEventData ped = new PointerEventData(null);
 		ped.position = Input.mousePosition;
 		List<RaycastResult> uiElements = new List<RaycastResult>();
 		graphicRaycaster.Raycast(ped, uiElements);
 		bool mouseOnUI = uiElements.Count != 0;
+
+		// Detect hovered entity
+		Vector3 cameraCenter = camera.transform.position;
+		RaycastHit2D result = Physics2D.Raycast(camera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 0, entityLayerMask);
+		// check if hovering entity and not in build mode
+		if (result.collider != null && currentBuildAction != BuildAction.Build)
+		{
+			// Update health bar position and indicator
+			Entity entity = result.collider.GetComponent<Entity>();
+			float healthFraction = entity.HealthFraction;
+			healthBar.anchoredPosition = result.transform.position + Vector3.up * result.collider.bounds.extents.y;
+			//healthBar.position = result.transform.position + Vector3.up * (result.collider.bounds.extents.y + .8f * healthBar.localScale.x);
+			healthBarInner.localScale = new Vector3(healthFraction, 1, 1);
+			//healthBarInner.localPosition = Vector3.right * (healthFraction / 2 - .5f);
+			healthBar.gameObject.SetActive(true);
+			hoveredEntity = entity;
+			
+			if (entity is Building)
+			{
+				selectionBox.anchoredPosition = result.transform.position;
+				selectionBox.sizeDelta = result.collider.GetComponent<BoxCollider2D>().size;
+				//selectionBox.transform.localScale = (Vector3)result.collider.GetComponent<BoxCollider2D>().size + new Vector3(.1f, .1f, 1);
+				selectionBox.gameObject.SetActive(true);
+
+				selectionBoxImage.color = currentBuildAction == BuildAction.Delete && entity.deletable ? selectionBoxDeleteColor : selectionBoxHoverColor;
+			}
+
+			// Update info text
+			buildMenu.mouseHoveredEntity = entity;
+			buildMenu.UpdateInfo(false);
+		}
+		// if not hovering building
+		else
+		{
+
+			if (currentBuildAction != BuildAction.Build && hoveredEntity != null)
+			{
+				buildMenu.mouseHoveredEntity = null;
+				buildMenu.UpdateInfo();
+			}
+
+			healthBar.gameObject.SetActive(false);
+			selectionBox.gameObject.SetActive(false);
+			hoveredEntity = null;
+		}
 
 		// Left drag or build
 		if (Input.GetMouseButton(0))
