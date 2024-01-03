@@ -269,6 +269,12 @@ public class GameController : MonoBehaviour
 					Building building = (Building)entity;
 					resources["Coal"] -= building.CoalUse;
 
+					if (entity is Fort fort)
+					{
+						if (!fort.occupied)
+							resources["Coal"] += fort.CoalUse;
+					}
+
 					// Add mined resources if the building is a mine
 					if (entity is Mine mine)
 					{

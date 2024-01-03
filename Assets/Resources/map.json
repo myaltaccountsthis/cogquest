@@ -36,7 +36,7 @@
         "wddddgggtgggggddddddddddddddddddddddddddddsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssw",
         "wwwwwwwwwwwwwwwwwwwwwddddddddddddddddddddddsdssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssw",
         "____________________wdddddddddddddddddddsdsdssssssssssssiiissssssssssssssssssssssssssssssssssssssssssssssw",
-        "____________________wwwwwwwwwwwwwwwwwwwwwwwwwssssssssssiiiiissssssssssssssssssssssssssssssssssssssssssssssw",
+        "____________________wwwwwwwwwwwwwwwwwwwwwwwwwssssssssssiiiiisssssssssssssssssssssssssssssssssssssssssssssw",
         "____________________________________________wssssssssiiiiiiiissssssssssssssssssssssssssssssssssssssssssssw",
         "____________________________________________wwwwwwwwwwwwwwwwwwwwwwwwwwwwwssssssssssssssssssssssssssssssssw",
         "________________________________________________________________________wssssssssssssssssssssssssssssssssw",
@@ -48,6 +48,18 @@
     {
       "keys": ["class", "posX", "posY", "rotation"],
       "values": ["Fort0", "11", "17", "0"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation"],
+      "values": ["Fort1", "33", "17", "0"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation"],
+      "values": ["Fort2", "59", "17", "0"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation"],
+      "values": ["Fort3", "89", "17", "0"]
     }
   ]
 }

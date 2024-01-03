@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5360827720420758560}
   - component: {fileID: 6042548921157261332}
   m_Layer: 3
-  m_Name: Fort0
+  m_Name: Fort3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 670fc4b6bd1444e4182c98345b8691fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityName: Fort0
+  entityName: Fort3
   displayName: Fort
   MAX_HEALTH: 1000
   cost:
@@ -106,12 +106,11 @@ MonoBehaviour:
     values: 
   deletable: 0
   category: 0
-  coalUse: -10
-  TIER: 0
+  coalUse: -30
+  TIER: 3
   sprites:
   - {fileID: 7482667652216324306, guid: 0e0a6428041cb9d49a79260ebb036ea1, type: 3}
   - {fileID: -286402524, guid: 0e0a6428041cb9d49a79260ebb036ea1, type: 3}
-  occupied: 1
 --- !u!61 &6042548921157261332
 BoxCollider2D:
   m_ObjectHideFlags: 0
