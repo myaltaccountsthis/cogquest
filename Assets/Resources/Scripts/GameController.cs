@@ -147,13 +147,13 @@ public class GameController : MonoBehaviour
 		Camera.main.transform.position = dataManager.gameData.cameraPosition;
 
 		// TEMP TESTING STUFF
-		AddEntity(new Dictionary<string, string>()
-		{
-			{ "posX", "2" },
-			{ "posY", "2" },
-			{ "team", "1" },
-			{ "class", "TestUnit" }
-		});
+		//AddEntity(new Dictionary<string, string>()
+		//{
+		//	{ "posX", "2" },
+		//	{ "posY", "2" },
+		//	{ "team", "1" },
+		//	{ "class", "TestUnit" }
+		//});
     }
 
     // Update is called once per frame
