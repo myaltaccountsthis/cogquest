@@ -14,7 +14,7 @@ TagManager:
   - Water
   - UI
   - Units
-  - 
+  - Projectiles
   - 
   - 
   - 
@@ -48,6 +48,9 @@ TagManager:
     locked: 0
   - name: Units
     uniqueID: 3570788377
+    locked: 0
+  - name: Projectiles
+    uniqueID: 1618425947
     locked: 0
   - name: UI
     uniqueID: 4274635909

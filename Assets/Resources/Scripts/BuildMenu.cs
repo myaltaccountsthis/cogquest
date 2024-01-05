@@ -4,10 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
-using static UnityEngine.EventSystems.EventTrigger;
+using UnityEngine.InputSystem;
 
 public class BuildMenu : MonoBehaviour
 {
+	public InputAction selectBuild;
+	public InputAction selectDelete;
+	public InputAction selectPan;
+	public InputAction selectOption;
+
 	private TextMeshProUGUI categoryName;
 	private Transform categories;
 	private Transform options;
@@ -26,7 +31,7 @@ public class BuildMenu : MonoBehaviour
 	private RectTransform buildActionOutline;
 	private RectTransform categoryOutline;
 
-	public Entity mouseHoveredEntity;
+	[HideInInspector] public Entity mouseHoveredEntity;
 	private string hoveredOption;
 	private string selectedOption;
 
@@ -57,6 +62,15 @@ public class BuildMenu : MonoBehaviour
 		resourceIcons = new Dictionary<string, Sprite>();
 		foreach (Sprite sprite in Resources.LoadAll<Sprite>("Sprite Sheets/ResourceIcons"))
 			resourceIcons.Add(sprite.name, sprite);
+
+		selectBuild.performed += ctx => SelectBuildAction(BuildAction.Build);
+		selectDelete.performed += ctx => SelectBuildAction(BuildAction.Delete);
+		selectPan.performed += ctx => SelectBuildAction(BuildAction.Pan);
+		selectOption.performed += ctx => {
+			int i = int.Parse(ctx.control.name) - 1;
+			if (i < options.childCount)
+				options.GetChild(i).GetComponent<Button>().onClick.Invoke();
+		};
 	}
 
 	void Start()
@@ -67,6 +81,11 @@ public class BuildMenu : MonoBehaviour
 		// Update category UI
 		LoadCategory(BuildingCategory.Harvesters);
 		SelectBuildAction(BuildAction.Pan);
+
+		selectBuild.Enable();
+		selectDelete.Enable();
+		selectPan.Enable();
+		selectOption.Enable();
 	}
 
 	private void SelectBuildAction(BuildAction buildAction)

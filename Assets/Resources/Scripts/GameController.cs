@@ -90,9 +90,11 @@ public class GameController : MonoBehaviour
 		entities = new List<Entity>();
 		entityFolder = GameObject.Find("Entities").transform;
 		entityPrefabs = new Dictionary<string, Entity>();
-		foreach (Entity entity in Resources.LoadAll<Entity>("Prefabs/Buildings"))
+		foreach (Entity entity in Resources.LoadAll<Entity>("Prefabs/Buildings")
+			.Concat(Resources.LoadAll<Entity>("Prefabs/Units"))
+			.Concat(new List<Entity> { Resources.Load<Entity>("Prefabs/Bullet") }))
 		{
-			entityPrefabs[entity.entityName] = entity;
+			entityPrefabs.Add(entity.entityName, entity);
 		}
 
 		// Load UI
@@ -129,6 +131,7 @@ public class GameController : MonoBehaviour
 
 		selectionBox = GameObject.FindWithTag("SelectionBox").GetComponent<RectTransform>();
 		selectionBoxImage = selectionBox.Find("Image").GetComponent<Image>();
+		selectionBox.gameObject.SetActive(false);
 		hoveredEntity = null;
 	}
 
@@ -142,11 +145,22 @@ public class GameController : MonoBehaviour
 		bounds = new BoundsInt(zones.Min(zone => zone.posX), zones.Min(zone => zone.posY), 0,
 			zones.Max(zone => zone.posX + zone.sizeX), zones.Max(zone => zone.posY + zone.sizeY), 0);
 		Camera.main.transform.position = dataManager.gameData.cameraPosition;
+
+		// TEMP TESTING STUFF
+		AddEntity(new Dictionary<string, string>()
+		{
+			{ "posX", "2" },
+			{ "posY", "2" },
+			{ "team", "1" },
+			{ "class", "TestUnit" }
+		});
     }
 
     // Update is called once per frame
     void Update()
-    {
+	{
+		entities.RemoveAll(entity => entity == null || !entity.isActiveAndEnabled);
+		
 		// Update selected building position
 		if (currentBuildAction == BuildAction.Build && selectedBuilding != null)
 		{
@@ -287,8 +301,9 @@ public class GameController : MonoBehaviour
 			// Get all buildings and subtract coal use
 			foreach (Entity entity in entities)
             {
-				if (entity.gameObject.layer == buildingLayerID)
-                {
+				// Entity active check just in case (if in the future an entity exists but is not active)
+				if (entity.active && entity.gameObject.layer == buildingLayerID)
+				{
 					Building building = (Building)entity;
 					resources["Coal"] -= building.CoalUse;
 
@@ -300,7 +315,7 @@ public class GameController : MonoBehaviour
 							resources[resource] += mine.resources[resource] * mine.MineSpeed;
 						}
 					}
-                }
+				}
             }
 			foreach (string resource in resources.Keys)
 				dataManager.resources[resource] += resources[resource];
@@ -319,8 +334,7 @@ public class GameController : MonoBehaviour
 			Vector3 worldPoint2 = camera.ScreenToWorldPoint(Input.mousePosition);
 			cameraCenter += worldPoint1 - worldPoint2;
 		}
-
-
+		
 		cameraCenter.x = Mathf.Clamp(cameraCenter.x, bounds.xMin + .5f, bounds.xMax - .5f);
 		cameraCenter.y = Mathf.Clamp(cameraCenter.y, bounds.yMin + .5f, bounds.yMax - .5f);
 		camera.transform.position = cameraCenter;
@@ -371,7 +385,7 @@ public class GameController : MonoBehaviour
 		}
 	}
 
-	private Entity AddEntity(Dictionary<string, string> entityData)
+	public Entity AddEntity(Dictionary<string, string> entityData)
 	{
 		Entity entity = Instantiate(entityPrefabs[entityData["class"]], entityFolder);
 		entity.LoadEntitySaveData(entityData);
@@ -380,6 +394,7 @@ public class GameController : MonoBehaviour
 			mine.UpdateResources(tilemap);
 		}
 		entities.Add(entity);
+		entity.active = true;
 		return entity;
 	}
 
@@ -520,5 +535,21 @@ public static class Extensions
 		Vector3 min = collider.transform.position - size / 2;
 		return new BoundsInt(Mathf.RoundToInt(min.x), Mathf.RoundToInt(min.y), Mathf.RoundToInt(min.z),
 			Mathf.RoundToInt(size.x), Mathf.RoundToInt(size.y), Mathf.Max(1, Mathf.RoundToInt(size.z)));
+	}
+
+	public static Vector3 DirectionToEulerAngles(this Vector3 direction)
+	{
+		return new Vector3(0, 0, direction.DirectionToAngle());
+	}
+
+	public static float DirectionToAngle(this Vector3 direction)
+	{
+		return Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
+	}
+
+	public static Dictionary<TKey, TValue> ChainAdd<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
+	{
+		dict.Add(key, value);
+		return dict;
 	}
 }
