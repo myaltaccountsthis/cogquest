@@ -19,31 +19,10 @@ public class Fort : Building
         get => TIER;
     }
 
-    public override void Awake() {
+	  protected override void Awake() {
         base.Awake();
         occupied = TIER == 0;
-    }
-
-    // Start is called before the first frame update
-    public override void Start()
-    {
-        base.Start();
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (occupied)
-        {
-            spriteRenderer.color = OCCUPIED_COLOR;
-        }
-        else
-        {
-            spriteRenderer.color = UNOCCUPIED_COLOR;
-        }
-    }
-
-    // Update is called once per frame
-    public override void Update()
-    {
-        base.Update();
-
+        SetSpriteColor(occupied ? OCCUPIED_COLOR : UNOCCUPIED_COLOR);
     }
 
     public void OnDestroyed()

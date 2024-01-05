@@ -48,7 +48,6 @@
     {
       "keys": ["class", "posX", "posY", "rotation"],
       "values": ["Fort0", "11", "17", "0"]
-    },
     {
       "keys": ["class", "posX", "posY", "rotation"],
       "values": ["Fort1", "33", "17", "0"]

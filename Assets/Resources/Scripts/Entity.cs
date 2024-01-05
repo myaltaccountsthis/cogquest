@@ -13,6 +13,9 @@ public abstract class Entity : MonoBehaviour
     [SerializeField]
     protected DataDictionary<string, int> cost;
     public bool deletable;
+    public int team;
+
+    public bool active;
 
     public float HealthFraction => health / MAX_HEALTH;
 
@@ -24,22 +27,30 @@ public abstract class Entity : MonoBehaviour
         get => GetComponent<SpriteRenderer>().sprite;
     }
 
-    public virtual void Awake() {
-        health = MAX_HEALTH;
+    protected virtual float rotation
+    {
+        get => transform.eulerAngles.z;
+        set => transform.eulerAngles = new Vector3(0, 0, value);
+	}
 
-        Debug.Assert(GetComponent<SpriteRenderer>().sortingLayerName != "Default");
+	protected virtual void Awake() {
+        health = MAX_HEALTH;
+        active = false;
+
+        Debug.Assert(GetComponent<SpriteRenderer>().sortingLayerName != "Default", "Entity sorting layer should not be default");
     }
 
     // Start is called before the first frame update
-    public virtual void Start()
+    protected virtual void Start()
     {
 
     }
 
-    // Update is called once per frame
-    public virtual void Update()
+	// Update is called once per frame
+	protected virtual void Update()
     {
-
+        if (!active)
+            return;
     }
 
     public Vector3Int GetIntPosition()
@@ -47,15 +58,17 @@ public abstract class Entity : MonoBehaviour
         return new Vector3Int((int)transform.position.x, (int)transform.position.y, 0);
     }
 
-    public void LoadEntitySaveData(Dictionary<string, string> saveData)
+    public virtual void LoadEntitySaveData(Dictionary<string, string> saveData)
     {
         // TODO update position, orientation, etc.
         if (saveData.TryGetValue("rotation", out string rotationStr))
-            transform.eulerAngles = new Vector3(0, 0, float.Parse(rotationStr));
+            rotation = float.Parse(rotationStr);
         if (saveData.TryGetValue("posX", out string posXStr) && saveData.TryGetValue("posY", out string posYStr))
             transform.position = new Vector3(float.Parse(posXStr), float.Parse(posYStr));
         if (saveData.TryGetValue("health", out string healthStr))
             health = float.Parse(healthStr);
+        if (saveData.TryGetValue("team", out string teamStr))
+            team = int.Parse(teamStr);
     }
 
     /// <summary>
@@ -67,14 +80,20 @@ public abstract class Entity : MonoBehaviour
         {
             { "posX", transform.position.x.ToString() },
             { "posY", transform.position.y.ToString() },
-            { "rotation", transform.rotation.eulerAngles.z.ToString() },
+            { "rotation", rotation.ToString() },
             { "health", health.ToString() },
+            { "team", team.ToString() },
             { "class", entityName }
         };
     }
 
-    public virtual string GetEntityInfo()
+    protected virtual List<string> GetEntityInfoList()
     {
-        return "test info";
+        return new List<string> { "Name: " + displayName };
+    }
+
+    public string GetEntityInfo()
+    {
+        return string.Join("\n\n", GetEntityInfoList());
     }
 }

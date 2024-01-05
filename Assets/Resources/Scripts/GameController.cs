@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
 {
 	// Managers
 	private DataManager dataManager;
+	private BuildMenu buildMenu;
 
 	// Tile loading
 	public char[] TileNames;
@@ -26,7 +27,7 @@ public class GameController : MonoBehaviour
 	// UI
 	private GraphicRaycaster graphicRaycaster;
 	private Transform topbar;
-	private Transform healthBar;
+	private RectTransform healthBar;
 	private Transform healthBarInner;
 	private Timer timer;
 	private Dictionary<string, Resource> resourcesUI;
@@ -53,7 +54,10 @@ public class GameController : MonoBehaviour
 	/// <summary>
 	/// Selection box for delete building indicator when hovering over building
 	/// </summary>
-	private SpriteRenderer selectionBox;
+	private RectTransform selectionBox;
+	private Image selectionBoxImage;
+	private Color selectionBoxDeleteColor = Color.red;
+	private Color selectionBoxHoverColor = Color.white;
 	/// <summary>
 	/// Translucent building that follows the mouse indicating where a building should be placed
 	/// </summary>
@@ -73,6 +77,7 @@ public class GameController : MonoBehaviour
 	void Awake()
 	{
         dataManager = GameObject.Find("Init").GetComponent<DataManager>();
+		buildMenu = GameObject.Find("BuildMenu").GetComponent<BuildMenu>();
         tilemap = GameObject.FindWithTag("Tilemap").GetComponent<Tilemap>();
 
 		// Load tiles
@@ -85,15 +90,17 @@ public class GameController : MonoBehaviour
 		entities = new List<Entity>();
 		entityFolder = GameObject.Find("Entities").transform;
 		entityPrefabs = new Dictionary<string, Entity>();
-		foreach (Entity entity in Resources.LoadAll<Entity>("Prefabs/Buildings"))
+		foreach (Entity entity in Resources.LoadAll<Entity>("Prefabs/Buildings")
+			.Concat(Resources.LoadAll<Entity>("Prefabs/Units"))
+			.Concat(new List<Entity> { Resources.Load<Entity>("Prefabs/Bullet") }))
 		{
-			entityPrefabs[entity.entityName] = entity;
+			entityPrefabs.Add(entity.entityName, entity);
 		}
 
 		// Load UI
 		graphicRaycaster = GetComponent<GraphicRaycaster>();
 		topbar = transform.Find("Topbar");
-		healthBar = GameObject.Find("HealthBar").GetComponent<Transform>();
+		healthBar = GameObject.Find("HealthBar").GetComponent<RectTransform>();
 		healthBarInner = GameObject.Find("HealthBarInner").transform;
 		healthBar.gameObject.SetActive(false);
 		timer = topbar.Find("Timer").GetComponent<Timer>();
@@ -122,7 +129,9 @@ public class GameController : MonoBehaviour
 		buildingLayerMask = LayerMask.GetMask("Buildings");
 		buildingLayerID = LayerMask.NameToLayer("Buildings");
 
-		selectionBox = GameObject.FindWithTag("SelectionBox").GetComponent<SpriteRenderer>();
+		selectionBox = GameObject.FindWithTag("SelectionBox").GetComponent<RectTransform>();
+		selectionBoxImage = selectionBox.Find("Image").GetComponent<Image>();
+		selectionBox.gameObject.SetActive(false);
 		hoveredEntity = null;
 	}
 
@@ -136,11 +145,22 @@ public class GameController : MonoBehaviour
 		bounds = new BoundsInt(zones.Min(zone => zone.posX), zones.Min(zone => zone.posY), 0,
 			zones.Max(zone => zone.posX + zone.sizeX), zones.Max(zone => zone.posY + zone.sizeY), 0);
 		Camera.main.transform.position = dataManager.gameData.cameraPosition;
+
+		// TEMP TESTING STUFF
+		AddEntity(new Dictionary<string, string>()
+		{
+			{ "posX", "2" },
+			{ "posY", "2" },
+			{ "team", "1" },
+			{ "class", "TestUnit" }
+		});
     }
 
     // Update is called once per frame
     void Update()
-    {
+	{
+		entities.RemoveAll(entity => entity == null || !entity.isActiveAndEnabled);
+		
 		// Update selected building position
 		if (currentBuildAction == BuildAction.Build && selectedBuilding != null)
 		{
@@ -163,39 +183,56 @@ public class GameController : MonoBehaviour
 			dataManager.gameData.timer += 120f;
 		timer.SetTime(dataManager.gameData.timer);
 
-		// Detect hovered entity
-		Vector3 cameraCenter = camera.transform.position;
-		RaycastHit2D result = Physics2D.Raycast(camera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 0, entityLayerMask);
-		if (result.collider != null && currentBuildAction != BuildAction.Build)
-		{
-			// Update health bar position and indicator
-			Entity entity = result.collider.GetComponent<Entity>();
-			float healthFraction = entity.HealthFraction;
-			healthBar.position = result.transform.position + Vector3.up * (result.collider.bounds.extents.y + .8f * healthBar.localScale.x);
-			healthBarInner.localScale = new Vector3(entity.HealthFraction, 1, 1);
-			healthBarInner.localPosition = Vector3.right * (healthFraction / 2 - .5f);
-			healthBar.gameObject.SetActive(true);
-			hoveredEntity = entity;
-			
-			if (currentBuildAction == BuildAction.Delete && entity.deletable)
-			{
-				selectionBox.transform.position = result.transform.position;
-				selectionBox.transform.localScale = (Vector3)result.collider.GetComponent<BoxCollider2D>().size + new Vector3(.1f, .1f, 1);
-				selectionBox.enabled = true;
-			}
-		}
-		else
-		{
-			healthBar.gameObject.SetActive(false);
-			selectionBox.enabled = false;
-			hoveredEntity = null;
-		}
-
 		PointerEventData ped = new PointerEventData(null);
 		ped.position = Input.mousePosition;
 		List<RaycastResult> uiElements = new List<RaycastResult>();
 		graphicRaycaster.Raycast(ped, uiElements);
 		bool mouseOnUI = uiElements.Count != 0;
+
+		// Detect hovered entity
+		Vector3 cameraCenter = camera.transform.position;
+		RaycastHit2D result = Physics2D.Raycast(camera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 0, entityLayerMask);
+		// check if hovering entity and not in build mode
+		if (result.collider != null && currentBuildAction != BuildAction.Build)
+		{
+			// Update health bar position and indicator
+			Entity entity = result.collider.GetComponent<Entity>();
+			float healthFraction = entity.HealthFraction;
+			healthBar.anchoredPosition = result.transform.position + Vector3.up * result.collider.bounds.extents.y;
+			//healthBar.position = result.transform.position + Vector3.up * (result.collider.bounds.extents.y + .8f * healthBar.localScale.x);
+			healthBarInner.localScale = new Vector3(healthFraction, 1, 1);
+			//healthBarInner.localPosition = Vector3.right * (healthFraction / 2 - .5f);
+			healthBar.gameObject.SetActive(true);
+			hoveredEntity = entity;
+			
+			if (entity is Building)
+			{
+				selectionBox.anchoredPosition = result.transform.position;
+				selectionBox.sizeDelta = result.collider.GetComponent<BoxCollider2D>().size;
+				//selectionBox.transform.localScale = (Vector3)result.collider.GetComponent<BoxCollider2D>().size + new Vector3(.1f, .1f, 1);
+				selectionBox.gameObject.SetActive(true);
+
+				selectionBoxImage.color = currentBuildAction == BuildAction.Delete && entity.deletable ? selectionBoxDeleteColor : selectionBoxHoverColor;
+			}
+
+			// Update info text
+			buildMenu.mouseHoveredEntity = entity;
+			buildMenu.UpdateInfo(false);
+		}
+		// if not hovering building
+		else
+		{
+
+			if (currentBuildAction != BuildAction.Build && hoveredEntity != null)
+			{
+				buildMenu.mouseHoveredEntity = null;
+				buildMenu.UpdateInfo();
+			}
+
+			healthBar.gameObject.SetActive(false);
+			selectionBox.gameObject.SetActive(false);
+			hoveredEntity = null;
+		}
 
 		// Left drag or build
 		if (Input.GetMouseButton(0))
@@ -264,8 +301,9 @@ public class GameController : MonoBehaviour
 			// Get all buildings and subtract coal use
 			foreach (Entity entity in entities)
             {
-				if (entity.gameObject.layer == buildingLayerID)
-                {
+				// Entity active check just in case (if in the future an entity exists but is not active)
+				if (entity.active && entity.gameObject.layer == buildingLayerID)
+				{
 					Building building = (Building)entity;
 					resources["Coal"] -= building.CoalUse;
 
@@ -283,7 +321,7 @@ public class GameController : MonoBehaviour
 							resources[resource] += mine.resources[resource] * mine.MineSpeed;
 						}
 					}
-                }
+				}
             }
 			foreach (string resource in resources.Keys)
 				dataManager.resources[resource] += resources[resource];
@@ -302,8 +340,7 @@ public class GameController : MonoBehaviour
 			Vector3 worldPoint2 = camera.ScreenToWorldPoint(Input.mousePosition);
 			cameraCenter += worldPoint1 - worldPoint2;
 		}
-
-
+		
 		cameraCenter.x = Mathf.Clamp(cameraCenter.x, bounds.xMin + .5f, bounds.xMax - .5f);
 		cameraCenter.y = Mathf.Clamp(cameraCenter.y, bounds.yMin + .5f, bounds.yMax - .5f);
 		camera.transform.position = cameraCenter;
@@ -354,11 +391,16 @@ public class GameController : MonoBehaviour
 		}
 	}
 
-	private Entity AddEntity(Dictionary<string, string> entityData)
+	public Entity AddEntity(Dictionary<string, string> entityData)
 	{
 		Entity entity = Instantiate(entityPrefabs[entityData["class"]], entityFolder);
 		entity.LoadEntitySaveData(entityData);
+		if (entity is Mine mine)
+		{
+			mine.UpdateResources(tilemap);
+		}
 		entities.Add(entity);
+		entity.active = true;
 		return entity;
 	}
 
@@ -406,10 +448,6 @@ public class GameController : MonoBehaviour
         }
 
 		Entity entity = AddEntity(selectedBuilding.GetEntitySaveData());
-		if (entity is Mine mine)
-        {
-			mine.UpdateResources(tilemap);
-        }
 		UpdateResourcesUI();
 
 		return true;
@@ -461,10 +499,10 @@ public class GameController : MonoBehaviour
 
 		selectedBuilding = Instantiate(building);
 		SpriteRenderer spriteRenderer = selectedBuilding.GetComponent<SpriteRenderer>();
-		spriteRenderer.color = selectedBuildingDefaultColor;
 		spriteRenderer.sortingLayerName = "Buildings";
 		spriteRenderer.sortingOrder = 10;
 		spriteRenderer.gameObject.layer = LayerMask.NameToLayer("Default");
+		selectedBuilding.SetSpriteColor(selectedBuildingDefaultColor);
 	}
 
 	public void SelectBuildAction(BuildAction buildAction)
@@ -505,8 +543,19 @@ public static class Extensions
 			Mathf.RoundToInt(size.x), Mathf.RoundToInt(size.y), Mathf.Max(1, Mathf.RoundToInt(size.z)));
 	}
 
-	public static void SetSpriteColor(this Building building, Color color)
+	public static Vector3 DirectionToEulerAngles(this Vector3 direction)
 	{
-		building.GetComponent<SpriteRenderer>().color = color;
+		return new Vector3(0, 0, direction.DirectionToAngle());
+	}
+
+	public static float DirectionToAngle(this Vector3 direction)
+	{
+		return Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
+	}
+
+	public static Dictionary<TKey, TValue> ChainAdd<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
+	{
+		dict.Add(key, value);
+		return dict;
 	}
 }
