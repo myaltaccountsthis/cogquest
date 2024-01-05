@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEditor.Rendering;
 using UnityEngine;
 
@@ -9,11 +10,19 @@ public class Fort : Building
     private int TIER;
     [SerializeField]
     private Sprite[] sprites;
-    private bool occupied;
+    public bool occupied;
+    private readonly Color UNOCCUPIED_COLOR = Color.red;
+    private readonly Color OCCUPIED_COLOR = Color.white;
 
-	protected override void Awake() {
+    public int Tier
+    {
+        get => TIER;
+    }
+
+	  protected override void Awake() {
         base.Awake();
         occupied = TIER == 0;
+        SetSpriteColor(occupied ? OCCUPIED_COLOR : UNOCCUPIED_COLOR);
     }
 
     public void OnDestroyed()

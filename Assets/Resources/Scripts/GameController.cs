@@ -37,7 +37,7 @@ public class GameController : MonoBehaviour
 	private new Camera camera;
 	private float cameraSpeed;
 	private float cameraSize;
-	private const float minCameraSize = 2f;
+	private const float minCameraSize = 4f;
 	private const float maxCameraSize = 15f;
 	private const float cameraZoomFactor = 1.05f;
 	private Vector3 mouseStart;
@@ -306,6 +306,12 @@ public class GameController : MonoBehaviour
 				{
 					Building building = (Building)entity;
 					resources["Coal"] -= building.CoalUse;
+
+					if (entity is Fort fort)
+					{
+						if (!fort.occupied)
+							resources["Coal"] += fort.CoalUse;
+					}
 
 					// Add mined resources if the building is a mine
 					if (entity is Mine mine)
