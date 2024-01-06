@@ -8,8 +8,6 @@ public class Fort : Building
 {
 	[SerializeField]
     private int TIER;
-    [SerializeField]
-    private Sprite[] sprites;
     public bool occupied;
     private readonly Color UNOCCUPIED_COLOR = Color.red;
     private readonly Color OCCUPIED_COLOR = Color.white;

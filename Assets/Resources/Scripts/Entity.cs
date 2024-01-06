@@ -23,9 +23,10 @@ public abstract class Entity : MonoBehaviour
         get => cost.ToDictionary();
     }
 
-    public Sprite sprite {
-        get => GetComponent<SpriteRenderer>().sprite;
-    }
+    /// <summary>
+    /// In order from bottom to top
+    /// </summary>
+    public Sprite[] previewSprites;
 
     protected virtual float rotation
     {

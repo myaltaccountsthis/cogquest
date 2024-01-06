@@ -23,7 +23,6 @@ public class BuildMenu : MonoBehaviour
 	private Toggle infoToggle;
 	private Transform infoFrame;
 	private TextMeshProUGUI infoText;
-	private Transform entityFolder;
 	private GameController gameController;
 
 	private RectTransform buildingOptionPrefab;
@@ -51,7 +50,6 @@ public class BuildMenu : MonoBehaviour
 		infoToggle = transform.Find("InfoToggle").GetComponent<Toggle>();
 		infoFrame = transform.Find("Info");
 		infoText = infoFrame.Find("TextLabel").GetComponent<TextMeshProUGUI>();
-		entityFolder = GameObject.Find("Entities").transform;
 		gameController = GameObject.Find("Canvas").GetComponent<GameController>();
 
 		buildingOptionPrefab = Resources.Load<RectTransform>("Prefabs/BuildingOption");
@@ -235,17 +233,18 @@ public class BuildMenu : MonoBehaviour
 		foreach (string buildingName in gameController.categoryPrefabs[category])
 		{
 			Building building = (Building)gameController.entityPrefabs[buildingName];
-			RectTransform option = Instantiate(buildingOptionPrefab, options).GetComponent<RectTransform>();
+			RectTransform option = Instantiate(buildingOptionPrefab, options);
 			option.anchoredPosition = new Vector2(i % 3 * 45, i / 3 * -45);
 			BuildOption buildOption = option.GetComponent<BuildOption>();
 			buildOption.onPointerEnter = () => SelectHoverBuilding(buildingName);
 			buildOption.onPointerExit = () => StopHoverBuilding(buildingName);
+			buildOption.SetSprites(building.previewSprites);
 			option.GetComponent<Button>().onClick.AddListener(() => SelectBuilding(building));
-			option.GetComponent<Image>().sprite = building.GetComponent<SpriteRenderer>().sprite;
 			i++;
 		}
 
 		categoryOutline.anchoredPosition = new Vector2(0, ((int)category - 1) * -45 - 20);
+		categoryName.text = category.ToString();
 	}
 
 	public void LoadCategory(string category)

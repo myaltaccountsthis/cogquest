@@ -107,6 +107,10 @@ MonoBehaviour:
     - Copper
     values: c8000000f4010000
   deletable: 1
+  team: 0
+  active: 0
+  previewSprites:
+  - {fileID: 2147482065, guid: 8bca732df638be647bb37d4708b1c697, type: 3}
   category: 1
   coalUse: 8
   mineSpeed: 3

@@ -105,12 +105,14 @@ MonoBehaviour:
     keys: []
     values: 
   deletable: 0
+  team: 0
+  active: 0
+  previewSprites:
+  - {fileID: 7482667652216324306, guid: 0e0a6428041cb9d49a79260ebb036ea1, type: 3}
   category: 0
   coalUse: -20
   TIER: 2
-  sprites:
-  - {fileID: 7482667652216324306, guid: 0e0a6428041cb9d49a79260ebb036ea1, type: 3}
-  - {fileID: -286402524, guid: 0e0a6428041cb9d49a79260ebb036ea1, type: 3}
+  occupied: 0
 --- !u!61 &6042548921157261332
 BoxCollider2D:
   m_ObjectHideFlags: 0

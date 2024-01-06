@@ -243,6 +243,10 @@ MonoBehaviour:
     values: 64000000
   deletable: 1
   team: 0
+  active: 0
+  previewSprites:
+  - {fileID: -2083562587, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
+  - {fileID: 1216957005, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
   category: 3
   coalUse: 0
   fireRate: 2

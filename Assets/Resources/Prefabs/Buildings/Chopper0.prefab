@@ -106,6 +106,10 @@ MonoBehaviour:
     - Wood
     values: 14000000
   deletable: 1
+  team: 0
+  active: 0
+  previewSprites:
+  - {fileID: -251235718, guid: 8bca732df638be647bb37d4708b1c697, type: 3}
   category: 1
   coalUse: 1
   mineSpeed: 2
