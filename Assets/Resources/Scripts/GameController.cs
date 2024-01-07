@@ -346,7 +346,7 @@ public class GameController : MonoBehaviour
 			Vector3 worldPoint2 = camera.ScreenToWorldPoint(Input.mousePosition);
 			cameraCenter += worldPoint1 - worldPoint2;
 		}
-		
+
 		cameraCenter.x = Mathf.Clamp(cameraCenter.x, bounds.xMin + .5f, bounds.xMax - .5f);
 		cameraCenter.y = Mathf.Clamp(cameraCenter.y, bounds.yMin + .5f, bounds.yMax - .5f);
 		camera.transform.position = cameraCenter;
@@ -538,7 +538,7 @@ public class GameController : MonoBehaviour
 		}
 	}
 
-	public void UpdateShadow()
+	public void UpdateShadows()
 	{
 		int zoneIndex = dataManager.gameData.map.furthestZone;
 		for (int i = 0; i < dataManager.gameData.map.zones.Length; i++)
@@ -547,8 +547,13 @@ public class GameController : MonoBehaviour
 			{
 				Zone zone = dataManager.gameData.map.zones[i];
 				shadows.Add(Instantiate(shadow, shadowFolder));
+				RectTransform rectTransform = shadows[i].GetComponent<RectTransform>();
+				rectTransform.sizeDelta = new Vector2(zone.sizeX, zone.sizeY);
+				rectTransform.position = new Vector3(zone.posX - zone.sizeX / 2, zone.posY - zone.sizeY / 2, 0);
 			}
-
+			float alpha = (i - zoneIndex <= 1) ? 0 :
+				1 - .1f / (i - zoneIndex - 1);
+			shadows[i].color = new Color(0, 0, 0, alpha);
 		}
         
 	}
