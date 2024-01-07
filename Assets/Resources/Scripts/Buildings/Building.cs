@@ -60,6 +60,15 @@ public abstract class Building : Entity
 	{
 		spriteRenderer.color = color;
 	}
+
+    protected override List<string> GetEntityInfoList()
+    {
+        List<string> list = base.GetEntityInfoList();
+		list.Add(
+			"Coal use: " + coalUse
+		);
+		return list;
+    }
 }
 
 public enum BuildingCategory

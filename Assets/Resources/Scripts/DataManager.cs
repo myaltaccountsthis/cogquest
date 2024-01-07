@@ -163,6 +163,7 @@ public class DataDictionary<TKey, TValue>
 public class Map
 {
 	public Zone[] zones = new Zone[0];
+	public int furthestZone = 0;
 	/// <summary>
 	/// Entities to save/load (DataManager uses its own variable b/c dynamic list)
 	/// </summary>

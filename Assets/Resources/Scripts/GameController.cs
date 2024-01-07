@@ -70,6 +70,10 @@ public class GameController : MonoBehaviour
 	private Color selectedBuildingInvalidColor = new Color(1f, 0f, 0f, .5f);
 	public BuildAction currentBuildAction { get; private set; }
 	private Entity hoveredEntity;
+
+	private List<Image> shadows;
+	private Transform shadowFolder;
+	private Image shadow;
 	
 	// Time
 	private float time = 0;
@@ -79,6 +83,8 @@ public class GameController : MonoBehaviour
         dataManager = GameObject.Find("Init").GetComponent<DataManager>();
 		buildMenu = GameObject.Find("BuildMenu").GetComponent<BuildMenu>();
         tilemap = GameObject.FindWithTag("Tilemap").GetComponent<Tilemap>();
+		shadow = Resources.Load<GameObject>("Prefabs/Shadow").GetComponent<Image>();
+		shadowFolder = GameObject.Find("Shadows").GetComponent<Transform>();
 
 		// Load tiles
 		tilemap = GameObject.FindWithTag("Tilemap").GetComponent<Tilemap>();
@@ -518,7 +524,7 @@ public class GameController : MonoBehaviour
 				case BuildAction.Delete:
 					break;
 				case BuildAction.Pan:
-					break;
+					break;  
 			}
 
 			if (currentBuildAction != BuildAction.Build)
@@ -530,6 +536,21 @@ public class GameController : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	public void UpdateShadow()
+	{
+		int zoneIndex = dataManager.gameData.map.furthestZone;
+		for (int i = 0; i < dataManager.gameData.map.zones.Length; i++)
+		{
+			if (shadows.Count <= i)
+			{
+				Zone zone = dataManager.gameData.map.zones[i];
+				shadows.Add(Instantiate(shadow, shadowFolder));
+			}
+
+		}
+        
 	}
 }
 
