@@ -108,7 +108,8 @@ MonoBehaviour:
   deletable: 1
   team: 0
   active: 0
-  previewSprites: []
+  previewSprites:
+  - {fileID: 1699750716, guid: 4be285d0d3d647a4483e63783a693d91, type: 3}
   category: 2
   coalUse: 0
 --- !u!61 &-604198625429001121
