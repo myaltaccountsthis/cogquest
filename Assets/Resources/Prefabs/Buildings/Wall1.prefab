@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5766675736375485546}
   - component: {fileID: -5416428810235456533}
   - component: {fileID: -604198625429001121}
-  m_Layer: 0
-  m_Name: IronWallLarge
+  m_Layer: 3
+  m_Name: Wall1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 1812937915
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -543227139, guid: 4be285d0d3d647a4483e63783a693d91, type: 3}
+  m_Sprite: {fileID: -130887225, guid: 4be285d0d3d647a4483e63783a693d91, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -98,14 +98,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1256040c097cab94fa3cf728fc49b265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityName: IronWallLarge
-  displayName: Large Iron Wall
-  MAX_HEALTH: 2000
+  entityName: Wall1
+  displayName: Stone Wall
+  MAX_HEALTH: 250
   cost:
     keys:
-    - Iron
-    values: 64000000
+    - Stone
+    values: 0f000000
   deletable: 1
+  team: 0
+  active: 0
+  previewSprites: []
   category: 2
   coalUse: 0
 --- !u!61 &-604198625429001121
@@ -144,12 +147,12 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2, y: 2}
+    oldSize: {x: 1, y: 1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2, y: 2}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0

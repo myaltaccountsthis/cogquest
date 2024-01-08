@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5766675736375485546}
   - component: {fileID: -5416428810235456533}
   - component: {fileID: -604198625429001121}
-  m_Layer: 0
-  m_Name: StoneWall
+  m_Layer: 3
+  m_Name: Wall0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 1812937915
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -130887225, guid: 4be285d0d3d647a4483e63783a693d91, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: 4be285d0d3d647a4483e63783a693d91, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -98,14 +98,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1256040c097cab94fa3cf728fc49b265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityName: StoneWall
-  displayName: Stone Wall
-  MAX_HEALTH: 250
+  entityName: Wall0
+  displayName: Wooden Wall
+  MAX_HEALTH: 150
   cost:
     keys:
-    - Stone
-    values: 0f000000
+    - Wood
+    values: 0a000000
   deletable: 1
+  team: 0
+  active: 0
+  previewSprites: []
   category: 2
   coalUse: 0
 --- !u!61 &-604198625429001121

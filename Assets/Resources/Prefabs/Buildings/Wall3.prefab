@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5766675736375485546}
   - component: {fileID: -5416428810235456533}
   - component: {fileID: -604198625429001121}
-  m_Layer: 0
-  m_Name: IronWall
+  m_Layer: 3
+  m_Name: Wall3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1256040c097cab94fa3cf728fc49b265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityName: IronWall
+  entityName: Wall3
   displayName: Iron Wall
   MAX_HEALTH: 500
   cost:
@@ -106,6 +106,9 @@ MonoBehaviour:
     - Iron
     values: 19000000
   deletable: 1
+  team: 0
+  active: 0
+  previewSprites: []
   category: 2
   coalUse: 0
 --- !u!61 &-604198625429001121
