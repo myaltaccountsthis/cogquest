@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class BuildOption : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class UIOption : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 	public UnityAction onPointerEnter;
 	public UnityAction onPointerExit;

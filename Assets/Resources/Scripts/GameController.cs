@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
 	// Managers
 	private DataManager dataManager;
 	private BuildMenu buildMenu;
+	private SpawnMenu spawnMenu;
 
 	// Tile loading
 	public char[] TileNames;
@@ -22,16 +23,18 @@ public class GameController : MonoBehaviour
 	// Entity loading
 	[HideInInspector] public List<Entity> entities;
 	public Dictionary<string, Entity> entityPrefabs { get; private set; }
+	private List<Unit> unitPrefabs;
 	private Transform entityFolder;
 
 	// UI
-	private GraphicRaycaster graphicRaycaster;
+	private GraphicRaycaster[] graphicRaycasters;
 	private Transform topbar;
 	private RectTransform healthBar;
 	private Transform healthBarInner;
 	private Timer timer;
 	private Dictionary<string, Resource> resourcesUI;
 	public Dictionary<BuildingCategory, List<string>> categoryPrefabs { get; private set; }
+	private float fps;
 
 	// Camera controls
 	private new Camera camera;
@@ -70,6 +73,7 @@ public class GameController : MonoBehaviour
 	private Color selectedBuildingInvalidColor = new Color(1f, 0f, 0f, .5f);
 	public BuildAction currentBuildAction { get; private set; }
 	private Entity hoveredEntity;
+	private Entity prevClickedEntity;
 	
 	// Time
 	private float time = 0;
@@ -78,6 +82,7 @@ public class GameController : MonoBehaviour
 	{
         dataManager = GameObject.Find("Init").GetComponent<DataManager>();
 		buildMenu = GameObject.Find("BuildMenu").GetComponent<BuildMenu>();
+		spawnMenu = GameObject.Find("SpawnMenu").GetComponent<SpawnMenu>();
         tilemap = GameObject.FindWithTag("Tilemap").GetComponent<Tilemap>();
 
 		// Load tiles
@@ -96,9 +101,10 @@ public class GameController : MonoBehaviour
 		{
 			entityPrefabs.Add(entity.entityName, entity);
 		}
+		unitPrefabs = entityPrefabs.Values.Where(entity => entity is Unit).Select(entity => (Unit)entity).ToList();
 
 		// Load UI
-		graphicRaycaster = GetComponent<GraphicRaycaster>();
+		graphicRaycasters = new GraphicRaycaster[] { GetComponent<GraphicRaycaster>(), GameObject.Find("WorldCanvas").GetComponent<GraphicRaycaster>() };
 		topbar = transform.Find("Topbar");
 		healthBar = GameObject.Find("HealthBar").GetComponent<RectTransform>();
 		healthBarInner = GameObject.Find("HealthBarInner").transform;
@@ -133,6 +139,7 @@ public class GameController : MonoBehaviour
 		selectionBoxImage = selectionBox.Find("Image").GetComponent<Image>();
 		selectionBox.gameObject.SetActive(false);
 		hoveredEntity = null;
+		prevClickedEntity = null;
 	}
 
 	// Start is called before the first frame update
@@ -186,7 +193,8 @@ public class GameController : MonoBehaviour
 		PointerEventData ped = new PointerEventData(null);
 		ped.position = Input.mousePosition;
 		List<RaycastResult> uiElements = new List<RaycastResult>();
-		graphicRaycaster.Raycast(ped, uiElements);
+		foreach (GraphicRaycaster graphicRaycaster in graphicRaycasters)
+			graphicRaycaster.Raycast(ped, uiElements);
 		bool mouseOnUI = uiElements.Count != 0;
 
 		// Detect hovered entity
@@ -216,8 +224,7 @@ public class GameController : MonoBehaviour
 			}
 
 			// Update info text
-			buildMenu.mouseHoveredEntity = entity;
-			buildMenu.UpdateInfo(false);
+			buildMenu.SetHoveredResourceCost(entity, false);
 		}
 		// if not hovering building
 		else
@@ -239,7 +246,7 @@ public class GameController : MonoBehaviour
 		{
 			bool mouseWasPressed = Input.GetMouseButtonDown(0);
 			// On mouse down, if mouse was previously up
-			
+
 			if (mouseWasPressed && !mouseOnUI)
 			{
 				// MOUSE DOWN EVENT
@@ -255,6 +262,16 @@ public class GameController : MonoBehaviour
 				{
 					DeleteSelectedBuilding();
 				}
+				else if (hoveredEntity != null)
+				{
+					hoveredEntity.DoMouseDown();
+					prevClickedEntity = hoveredEntity;
+				}
+				else if (prevClickedEntity != null)
+				{
+					prevClickedEntity.DoMouseCancel();
+					prevClickedEntity = null;
+				}
 				else
 				{
 					// set start position for camera pan
@@ -262,7 +279,7 @@ public class GameController : MonoBehaviour
 				}
 				// MOUSE DOWN EVENT END
 			}
-			
+
 			// If camera pan active (but not first frame)
 			if (!mouseWasPressed && mouseStart != mouseStartInactive)
 			{
@@ -276,7 +293,7 @@ public class GameController : MonoBehaviour
 		{
 			// Stop camera pan
 			mouseStart = mouseStartInactive;
-			
+
 		}
 		if (mouseStart == mouseStartInactive)
 		{
@@ -350,6 +367,13 @@ public class GameController : MonoBehaviour
 	void OnApplicationQuit()
 	{
 		SaveData();
+	}
+
+	void OnGUI()
+	{
+		float newFPS = 1.0f / Time.deltaTime;
+		fps = Mathf.Lerp(fps, newFPS, 0.03f);
+        GUI.Label(new Rect(2, Screen.height - 22, 15, 20), ((int) fps).ToString());
 	}
 
 	public void OnPointerDown()
@@ -530,6 +554,54 @@ public class GameController : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// Sets the resource cost shown in the build menu to this resource cost. Used for hovering in game.
+	/// </summary>
+	public void SetHoveredResourceCost(Entity entity)
+	{
+		buildMenu.SetHoveredResourceCost(entity);
+	}
+
+	public bool SpawnUnit(Fort fort, Unit unit)
+	{
+		if (!unit.Cost.All(pair => dataManager.resources[pair.Key] >= pair.Value))
+			return false;
+
+		foreach (KeyValuePair<string, int> resourceCost in unit.Cost)
+		{
+			dataManager.resources[resourceCost.Key] -= resourceCost.Value;
+		}
+
+		Dictionary<string, string> saveData = new Dictionary<string, string>()
+		{
+			{ "posX", fort.transform.position.x.ToString() },
+			{ "posY", fort.transform.position.y.ToString() },
+			{ "team", fort.team.ToString() },
+			{ "class", unit.entityName },
+			{ "patrolWaypoints", Unit.PatrolWaypointsToString(new Vector2[]
+				{
+					Vector2.up, Vector2.right, Vector2.down, Vector2.left
+				}.Select(vec => vec + (Vector2)fort.transform.position).ToArray())
+			},
+			{ "patrolMode", "Point" }
+		};
+
+		AddEntity(saveData);
+		UpdateResourcesUI();
+		return true;
+	}
+
+	public void OpenSpawnMenu(Fort fort)
+	{
+		// TODO change 0 to latest zone unlocked
+		spawnMenu.OpenMenu(fort, unitPrefabs.Where(unit => 0 >= unit.zoneToUnlock));
+	}
+
+	public void CloseSpawnMenu()
+	{
+		spawnMenu.CloseMenu();
 	}
 }
 

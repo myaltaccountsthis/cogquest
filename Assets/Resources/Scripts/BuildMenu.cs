@@ -235,7 +235,7 @@ public class BuildMenu : MonoBehaviour
 			Building building = (Building)gameController.entityPrefabs[buildingName];
 			RectTransform option = Instantiate(buildingOptionPrefab, options);
 			option.anchoredPosition = new Vector2(i % 3 * 45, i / 3 * -45);
-			BuildOption buildOption = option.GetComponent<BuildOption>();
+			UIOption buildOption = option.GetComponent<UIOption>();
 			buildOption.onPointerEnter = () => SelectHoverBuilding(buildingName);
 			buildOption.onPointerExit = () => StopHoverBuilding(buildingName);
 			buildOption.SetSprites(building.previewSprites);
@@ -255,6 +255,15 @@ public class BuildMenu : MonoBehaviour
 	public void SetInfoVisibility(bool enable)
 	{
 		infoFrame.gameObject.SetActive(enable);
+	}
+	
+	/// <summary>
+	/// Used by GameController
+	/// </summary>
+	public void SetHoveredResourceCost(Entity entity, bool updateResourceCost = true)
+	{
+		mouseHoveredEntity = entity;
+		UpdateInfo(updateResourceCost);
 	}
 }
 

@@ -38,7 +38,8 @@ public class Projectile : Entity
 		Entity entity = collision.gameObject.GetComponent<Entity>();
 		if (entity != null && entity.team != team)
 		{
-			// TODO deal damage
+			// Use max health as damage
+			entity.TakeDamage(MAX_HEALTH);
 		}
 
 		Destroy(gameObject);

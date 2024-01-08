@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Fort : Building
 {
+    private GameController gameController;
+
 	[SerializeField]
     private int TIER;
     public bool occupied;
@@ -17,13 +19,26 @@ public class Fort : Building
         get => TIER;
     }
 
-	  protected override void Awake() {
+	protected override void Awake() {
         base.Awake();
+
+        gameController = GameObject.Find("Canvas").GetComponent<GameController>();
         occupied = TIER == 0;
         SetSpriteColor(occupied ? OCCUPIED_COLOR : UNOCCUPIED_COLOR);
     }
 
-    public void OnDestroyed()
+    
+	public override void DoMouseDown()
+	{
+        gameController.OpenSpawnMenu(this);
+	}
+
+	public override void DoMouseCancel()
+	{
+        gameController.CloseSpawnMenu();
+	}
+
+	public void OnDestroyed()
     {
         occupied = !occupied;
         if (!occupied)
@@ -31,5 +46,4 @@ public class Fort : Building
             health = MAX_HEALTH;
         }
     }
-
 }

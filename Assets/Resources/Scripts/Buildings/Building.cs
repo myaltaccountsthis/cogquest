@@ -16,7 +16,7 @@ public abstract class Building : Entity
 	}
 
 	// Buildings can only be box colliders
-	protected new BoxCollider2D collider;
+	public new BoxCollider2D collider { get; private set; }
 	protected SpriteRenderer spriteRenderer;
 
 
