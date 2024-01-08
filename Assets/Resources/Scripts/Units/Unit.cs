@@ -15,8 +15,11 @@ public class Unit : Entity
 	private float patrolInterval;
 
 	public Range range;
+	public int zoneToUnlock;
 
 	public UnitBehavior behavior { get; private set; }
+	public PatrolMode patrolMode;
+	private Vector2 currentPatrolWaypoint;
 
 	private Entity currentTarget;
 	private int currentPatrolIndex;
@@ -29,6 +32,7 @@ public class Unit : Entity
 
 		range.onEnemyDetected += OnEnemyDetected;
 		behavior = UnitBehavior.None;
+		patrolMode = PatrolMode.Waypoints;
 		currentTarget = null;
 		currentPatrolIndex = -1;
 		patrolWaiting = false;
@@ -57,15 +61,14 @@ public class Unit : Entity
 		switch (behavior)
 		{
 			case UnitBehavior.Patrolling:
-				// TODO Walk towards current patrol index
-				if (currentPatrolIndex >= patrolWaypoints.Length || patrolWaiting)
+				if (patrolWaiting || currentPatrolIndex >= patrolWaypoints.Length)
 					break;
 
-				Vector3 waypoint = patrolWaypoints[currentPatrolIndex];
-				if (MoveToPoint(waypoint))
+				if (MoveToPoint(currentPatrolWaypoint))
 				{
 					patrolWaiting = true;
 					currentPatrolIndex = (currentPatrolIndex + 1) % patrolWaypoints.Length;
+					SetNextPatrolPoint();
 					Invoke(nameof(EnablePatrol), patrolInterval);
 				}
 
@@ -156,7 +159,22 @@ public class Unit : Entity
 		{
 			behavior = UnitBehavior.Patrolling;
 			currentPatrolIndex = 0;
+			SetNextPatrolPoint();
 			range.shouldRetarget = true;
+		}
+	}
+
+	private void SetNextPatrolPoint()
+	{
+		if (patrolMode == PatrolMode.Point)
+		{
+			float angle = Random.value * Mathf.PI * 2;
+			// No need to worry about adjusting angle from unit circle to heading
+			currentPatrolWaypoint = patrolWaypoints[currentPatrolIndex] + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 2f;
+		}
+		else
+		{
+			currentPatrolWaypoint = patrolWaypoints[currentPatrolIndex];
 		}
 	}
 
@@ -211,12 +229,19 @@ public class Unit : Entity
 				float[] arr = str.Split(",").Select(float.Parse).ToArray();
 				return new Vector2(arr[0], arr[1]);
 			}).ToArray();
+		if (saveData.TryGetValue("patrolMode", out string patrolModeStr))
+			patrolMode = (PatrolMode)System.Enum.Parse(typeof(PatrolMode), patrolModeStr);
 	}
 
 	public override Dictionary<string, string> GetEntitySaveData()
 	{
-		string str = string.Join(";", patrolWaypoints.Select(vec2 => string.Format("{0},{1}", vec2.x, vec2.y)));
-		return base.GetEntitySaveData().ChainAdd("patrolWaypoints", str);
+		return base.GetEntitySaveData().ChainAdd("patrolWaypoints", PatrolWaypointsToString(patrolWaypoints))
+			.ChainAdd("patrolMode", patrolMode.ToString());
+	}
+
+	public static string PatrolWaypointsToString(Vector2[] patrolWaypoints)
+	{
+		return string.Join(";", patrolWaypoints.Select(vec2 => string.Format("{0},{1}", vec2.x, vec2.y)));
 	}
 }
 
@@ -226,4 +251,10 @@ public enum UnitBehavior
 	Patrolling,
 	Following,
 	Attacking
+}
+
+public enum PatrolMode
+{
+	Point,
+	Waypoints
 }

@@ -52,9 +52,31 @@ public abstract class Entity : MonoBehaviour
     {
         if (!active)
             return;
+	}
+
+	public virtual void DoMouseDown()
+	{
+
+	}
+
+    public virtual void DoMouseCancel()
+    {
+
     }
 
-    public Vector3Int GetIntPosition()
+    public void TakeDamage(float damage)
+    {
+        if (!active)
+            return;
+
+        health -= damage;
+        if (health <= 0f)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+	public Vector3Int GetIntPosition()
     {
         return new Vector3Int((int)transform.position.x, (int)transform.position.y, 0);
     }

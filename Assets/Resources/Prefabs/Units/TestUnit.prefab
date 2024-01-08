@@ -185,7 +185,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -248,11 +248,14 @@ MonoBehaviour:
   displayName: TestUnit
   MAX_HEALTH: 10
   cost:
-    keys: []
-    values: 
+    keys:
+    - Wood
+    values: 0a000000
   deletable: 0
   team: 1
   active: 1
+  previewSprites:
+  - {fileID: 1216957005, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
   speed: 1
   attackRange: 0.5
   patrolWaypoints:
@@ -260,5 +263,7 @@ MonoBehaviour:
   - {x: 2, y: 7}
   - {x: 7, y: 7}
   - {x: 7, y: 2}
-  patrolInterval: 0
+  patrolInterval: 2
   range: {fileID: 2580395351750146306}
+  zoneToUnlock: 0
+  patrolMode: 0
