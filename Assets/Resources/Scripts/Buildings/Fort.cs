@@ -6,10 +6,10 @@ using UnityEngine;
 
 public class Fort : Building
 {
+    private GameController gameController;
+
 	[SerializeField]
     private int TIER;
-    [SerializeField]
-    private Sprite[] sprites;
     public bool occupied;
     private readonly Color UNOCCUPIED_COLOR = Color.red;
     private readonly Color OCCUPIED_COLOR = Color.white;
@@ -19,34 +19,26 @@ public class Fort : Building
         get => TIER;
     }
 
-    public override void Awake() {
+	protected override void Awake() {
         base.Awake();
+
+        gameController = GameObject.Find("Canvas").GetComponent<GameController>();
         occupied = TIER == 0;
+        SetSpriteColor(occupied ? OCCUPIED_COLOR : UNOCCUPIED_COLOR);
     }
 
-    // Start is called before the first frame update
-    public override void Start()
-    {
-        base.Start();
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (occupied)
-        {
-            spriteRenderer.color = OCCUPIED_COLOR;
-        }
-        else
-        {
-            spriteRenderer.color = UNOCCUPIED_COLOR;
-        }
-    }
+    
+	public override void DoMouseDown()
+	{
+        gameController.OpenSpawnMenu(this);
+	}
 
-    // Update is called once per frame
-    public override void Update()
-    {
-        base.Update();
+	public override void DoMouseCancel()
+	{
+        gameController.CloseSpawnMenu();
+	}
 
-    }
-
-    public void OnDestroyed()
+	public void OnDestroyed()
     {
         occupied = !occupied;
         if (!occupied)
@@ -54,5 +46,4 @@ public class Fort : Building
             health = MAX_HEALTH;
         }
     }
-
 }

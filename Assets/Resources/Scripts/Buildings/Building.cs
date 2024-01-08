@@ -16,14 +16,16 @@ public abstract class Building : Entity
 	}
 
 	// Buildings can only be box colliders
-	protected new BoxCollider2D collider;
-	
+	public new BoxCollider2D collider { get; private set; }
+	protected SpriteRenderer spriteRenderer;
 
-	public override void Awake()
+
+	protected override void Awake()
 	{
 		base.Awake();
 
 		collider = GetComponent<BoxCollider2D>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 
 	public TileBase[] GetOverlappingTiles(Tilemap tilemap)
@@ -51,6 +53,13 @@ public abstract class Building : Entity
 		return new Vector2(collider.size.x - .1f, collider.size.y - .1f);
 	}
 
+	/// <summary>
+	/// Change all sprite renderers in this building to a certain color (used for turrets)
+	/// </summary>
+	public virtual void SetSpriteColor(Color color)
+	{
+		spriteRenderer.color = color;
+	}
 }
 
 public enum BuildingCategory

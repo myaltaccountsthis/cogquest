@@ -47,8 +47,8 @@ public class DataManager : MonoBehaviour
 				FileLoader.ReadOverwriteJson(FILE_PATH, gameData);
 
 				// TODO remove
-				gameData.map = LoadMapUncompressed();
-				Debug.Log("OVERRIDE MAP");
+				//gameData.map = LoadMapUncompressed();
+				//Debug.Log("OVERRIDE MAP");
 
 				// Update dictionaries
 				foreach (KeyValuePair<string, int> resource in gameData.resources.ToDictionary())

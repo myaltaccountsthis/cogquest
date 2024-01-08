@@ -4,9 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using UnityEngine.InputSystem;
 
 public class BuildMenu : MonoBehaviour
 {
+	public InputAction selectBuild;
+	public InputAction selectDelete;
+	public InputAction selectPan;
+	public InputAction selectOption;
+
 	private TextMeshProUGUI categoryName;
 	private Transform categories;
 	private Transform options;
@@ -17,7 +23,6 @@ public class BuildMenu : MonoBehaviour
 	private Toggle infoToggle;
 	private Transform infoFrame;
 	private TextMeshProUGUI infoText;
-	private Transform entityFolder;
 	private GameController gameController;
 
 	private RectTransform buildingOptionPrefab;
@@ -25,10 +30,7 @@ public class BuildMenu : MonoBehaviour
 	private RectTransform buildActionOutline;
 	private RectTransform categoryOutline;
 
-	/// <summary>
-	/// Option currently shown in the cost menu
-	/// </summary>
-	private string currentOption;
+	[HideInInspector] public Entity mouseHoveredEntity;
 	private string hoveredOption;
 	private string selectedOption;
 
@@ -48,7 +50,6 @@ public class BuildMenu : MonoBehaviour
 		infoToggle = transform.Find("InfoToggle").GetComponent<Toggle>();
 		infoFrame = transform.Find("Info");
 		infoText = infoFrame.Find("TextLabel").GetComponent<TextMeshProUGUI>();
-		entityFolder = GameObject.Find("Entities").transform;
 		gameController = GameObject.Find("Canvas").GetComponent<GameController>();
 
 		buildingOptionPrefab = Resources.Load<RectTransform>("Prefabs/BuildingOption");
@@ -59,16 +60,30 @@ public class BuildMenu : MonoBehaviour
 		resourceIcons = new Dictionary<string, Sprite>();
 		foreach (Sprite sprite in Resources.LoadAll<Sprite>("Sprite Sheets/ResourceIcons"))
 			resourceIcons.Add(sprite.name, sprite);
+
+		selectBuild.performed += ctx => SelectBuildAction(BuildAction.Build);
+		selectDelete.performed += ctx => SelectBuildAction(BuildAction.Delete);
+		selectPan.performed += ctx => SelectBuildAction(BuildAction.Pan);
+		selectOption.performed += ctx => {
+			int i = int.Parse(ctx.control.name) - 1;
+			if (i < options.childCount)
+				options.GetChild(i).GetComponent<Button>().onClick.Invoke();
+		};
 	}
 
 	void Start()
 	{
 		SetInfoVisibility(infoToggle.isOn);
 		infoToggle.onValueChanged.AddListener(SetInfoVisibility);
-		UpdateInfo();
+		UpdateInfo(null);
 		// Update category UI
 		LoadCategory(BuildingCategory.Harvesters);
 		SelectBuildAction(BuildAction.Pan);
+
+		selectBuild.Enable();
+		selectDelete.Enable();
+		selectPan.Enable();
+		selectOption.Enable();
 	}
 
 	private void SelectBuildAction(BuildAction buildAction)
@@ -92,32 +107,39 @@ public class BuildMenu : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Updates Info and Resource Costs
+	/// Only updates info text for the given entity
 	/// </summary>
-	private void UpdateInfo()
+	private void UpdateInfo(Entity entity)
 	{
-		string buildingName = null;
-		if (hoveredOption != null)
-			buildingName = hoveredOption;
-		else if (selectedOption != null)
-			buildingName = selectedOption;
+		if (entity == null)
+		{
+			infoText.text = "";
+		}
+		else
+		{
+			infoText.text = entity.GetEntityInfo();
+		}
+	}
 
-		if (buildingName == null)
+	/// <summary>
+	/// Updates the resource cost, only for building entities
+	/// </summary>
+	private void UpdateResourceCost(Entity entity)
+	{
+		if (entity == null)
 		{
 			costMenu.gameObject.SetActive(false);
-			infoText.text = "";
 		}
 		else
 		{
 			foreach (Transform child in costContainer)
 				Destroy(child.gameObject);
 
-			Entity building = gameController.entityPrefabs[buildingName];
-			optionName.text = building.displayName;
+			optionName.text = entity.displayName;
 			costMenu.gameObject.SetActive(true);
 			List<ResourceCost> resourceCosts = new List<ResourceCost>();
 			float totalWidth = 0f;
-			foreach (KeyValuePair<string, int> pair in building.Cost)
+			foreach (KeyValuePair<string, int> pair in entity.Cost)
 			{
 				ResourceCost resourceCost = Instantiate(resourceCostPrefab, costContainer);
 				resourceCost.SetText(pair.Value);
@@ -125,7 +147,7 @@ public class BuildMenu : MonoBehaviour
 				totalWidth += resourceCost.GetMinimumWidth();
 				resourceCosts.Add(resourceCost);
 			}
-			totalWidth += resourceCostMargin * (building.Cost.Count - 1);
+			totalWidth += resourceCostMargin * (entity.Cost.Count - 1);
 			float x = -totalWidth / 2f;
 			foreach (ResourceCost resourceCost in resourceCosts)
 			{
@@ -150,9 +172,29 @@ public class BuildMenu : MonoBehaviour
 				resourceCost.rectTransform.anchoredPosition = new Vector2(x, 0);
 				x += resourceCost.GetMinimumWidth();
 			}
-
-			infoText.text = building.GetEntityInfo();
 		}
+	}
+
+	/// <summary>
+	/// Updates Info and Resource Costs for selected building
+	/// </summary>
+	public void UpdateInfo(bool updateResourceCost = true)
+	{
+		string buildingName = "";
+		Entity entity = null;
+		if (hoveredOption != null)
+			buildingName = hoveredOption;
+		else if (selectedOption != null)
+			buildingName = selectedOption;
+		else if (mouseHoveredEntity != null)
+			entity = mouseHoveredEntity;
+
+		if (entity == null)
+			entity = gameController.entityPrefabs.GetValueOrDefault(buildingName, null);
+
+		UpdateInfo(entity);
+		if (updateResourceCost)
+			UpdateResourceCost(entity);
 	}
 
 	private void SelectBuilding(Building building)
@@ -191,17 +233,18 @@ public class BuildMenu : MonoBehaviour
 		foreach (string buildingName in gameController.categoryPrefabs[category])
 		{
 			Building building = (Building)gameController.entityPrefabs[buildingName];
-			RectTransform option = Instantiate(buildingOptionPrefab, options).GetComponent<RectTransform>();
+			RectTransform option = Instantiate(buildingOptionPrefab, options);
 			option.anchoredPosition = new Vector2(i % 3 * 45, i / 3 * -45);
-			BuildOption buildOption = option.GetComponent<BuildOption>();
+			UIOption buildOption = option.GetComponent<UIOption>();
 			buildOption.onPointerEnter = () => SelectHoverBuilding(buildingName);
 			buildOption.onPointerExit = () => StopHoverBuilding(buildingName);
+			buildOption.SetSprites(building.previewSprites);
 			option.GetComponent<Button>().onClick.AddListener(() => SelectBuilding(building));
-			option.GetComponent<Image>().sprite = building.GetComponent<SpriteRenderer>().sprite;
 			i++;
 		}
 
 		categoryOutline.anchoredPosition = new Vector2(0, ((int)category - 1) * -45 - 20);
+		categoryName.text = category.ToString();
 	}
 
 	public void LoadCategory(string category)
@@ -212,6 +255,15 @@ public class BuildMenu : MonoBehaviour
 	public void SetInfoVisibility(bool enable)
 	{
 		infoFrame.gameObject.SetActive(enable);
+	}
+	
+	/// <summary>
+	/// Used by GameController
+	/// </summary>
+	public void SetHoveredResourceCost(Entity entity, bool updateResourceCost = true)
+	{
+		mouseHoveredEntity = entity;
+		UpdateInfo(updateResourceCost);
 	}
 }
 
