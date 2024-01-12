@@ -29,6 +29,7 @@ public class GameController : MonoBehaviour
 	// UI
 	private GraphicRaycaster[] graphicRaycasters;
 	private Transform topbar;
+	private Transform middleUI;
 	private RectTransform healthBar;
 	private Transform healthBarInner;
 	private Timer timer;
@@ -106,10 +107,11 @@ public class GameController : MonoBehaviour
 		// Load UI
 		graphicRaycasters = new GraphicRaycaster[] { GetComponent<GraphicRaycaster>(), GameObject.Find("WorldCanvas").GetComponent<GraphicRaycaster>() };
 		topbar = transform.Find("Topbar");
+		middleUI = topbar.Find("Middle");
 		healthBar = GameObject.Find("HealthBar").GetComponent<RectTransform>();
 		healthBarInner = GameObject.Find("HealthBarInner").transform;
 		healthBar.gameObject.SetActive(false);
-		timer = topbar.Find("Timer").GetComponent<Timer>();
+		timer = middleUI.Find("Timer").GetComponent<Timer>();
 		// Loads all resource components into dictionary
 		resourcesUI = new Dictionary<string, Resource>(
 			topbar.Find("Resources").GetComponentsInChildren<Resource>()
