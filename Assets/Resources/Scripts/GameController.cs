@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
@@ -73,6 +74,13 @@ public class GameController : MonoBehaviour
 	
 	// Time
 	private float time = 0;
+	
+	// Build and Delete Building Audio
+	public AudioSource buildAudio;
+	public Vector2 buildAudioRange = new(-1, -1);
+
+	public AudioSource destroyAudio;
+	public Vector2 destroyAudioRange = new(-1, -1);
 
 	void Awake()
 	{
@@ -154,6 +162,11 @@ public class GameController : MonoBehaviour
 		//	{ "team", "1" },
 		//	{ "class", "TestUnit" }
 		//});
+		
+		// audio start and end pos
+		buildAudio.time = (buildAudioRange.x < 0 || buildAudioRange.x > buildAudio.clip.length) ? 0 : buildAudioRange.x;
+		destroyAudio.time = (destroyAudioRange.x < 0 || destroyAudioRange.x > destroyAudio.clip.length) ? 0 : destroyAudioRange.x;
+		
     }
 
     // Update is called once per frame
@@ -450,6 +463,10 @@ public class GameController : MonoBehaviour
 		Entity entity = AddEntity(selectedBuilding.GetEntitySaveData());
 		UpdateResourcesUI();
 
+		buildAudio.Play();
+		if (buildAudioRange.y > 0)
+			StartCoroutine(StopAudioAfterOffset(buildAudio, buildAudioRange.y - Math.Max(0, buildAudioRange.x)));
+		
 		return true;
 	}
 
@@ -473,6 +490,17 @@ public class GameController : MonoBehaviour
 		OnBuildingDestroyed(building);
 
 		UpdateResourcesUI();
+
+		destroyAudio.Play();
+		if (destroyAudioRange.y > 0)
+			StartCoroutine(StopAudioAfterOffset(destroyAudio, destroyAudioRange.y - Math.Max(0, destroyAudioRange.x)));
+	}
+
+	IEnumerator StopAudioAfterOffset(AudioSource audio, float offset)
+	{
+		yield return new WaitForSeconds(offset);
+		audio.Stop();
+		Debug.Log(audio.time);
 	}
 
 	public void OnBuildingDestroyed(Building building)
