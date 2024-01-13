@@ -7,7 +7,8 @@ using UnityEngine.Tilemaps;
 public abstract class Building : Entity
 {
 	public BuildingCategory category = BuildingCategory.None;
-	[SerializeField] private int coalUse;
+	[SerializeField]
+	private int coalUse;
 
 	public int CoalUse
 	{
