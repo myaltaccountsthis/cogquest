@@ -113,6 +113,9 @@ public class Range : MonoBehaviour
 
 	void Update()
 	{
+		if (GameController.isPaused)
+			return;
+		
 		if (enemiesInRange.Count > 0)
 		{
 			t += Time.deltaTime;
