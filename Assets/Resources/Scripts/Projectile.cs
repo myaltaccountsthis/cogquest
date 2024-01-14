@@ -20,6 +20,9 @@ public class Projectile : Entity
 
 	protected override void Update()
 	{
+		if (GameController.isPaused)
+			return;
+		
 		if (!active)
 			return;
 

@@ -56,6 +56,9 @@ public abstract class Entity : MonoBehaviour
 	// Update is called once per frame
 	protected virtual void Update()
     {
+        if (GameController.isPaused)
+            return;
+        
         if (!active)
             return;
 	}
