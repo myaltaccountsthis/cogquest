@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 1812937915
   m_SortingLayer: 1
   m_SortingOrder: 1
-  m_Sprite: {fileID: 1216957005, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
+  m_Sprite: {fileID: -1327927042, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 646482880742270180}
   - component: {fileID: 1995028805216522328}
   m_Layer: 3
-  m_Name: Turret0
+  m_Name: Turret1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -211,7 +211,7 @@ SpriteRenderer:
   m_SortingLayerID: 1812937915
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2083562587, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
+  m_Sprite: {fileID: 30516125, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -234,26 +234,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d34f722e1e5bd4543a1a47a5346c6436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityName: Turret0
-  displayName: Basic Turret
+  entityName: Turret1
+  displayName: Turret Mk.2
   MAX_HEALTH: 500
   cost:
     keys:
     - Wood
-    values: 64000000
+    - Stone
+    values: 3200000096000000
   deletable: 1
   team: 0
   active: 0
   previewSprites:
-  - {fileID: -2083562587, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
-  - {fileID: 1216957005, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
+  - {fileID: 30516125, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
+  - {fileID: -1327927042, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
   category: 3
   coalUse: 0
   fireRate: 2
   turnRate: 100
   range: {fileID: 7099760777781226518}
   gun: {fileID: 6441474037993256294}
-  bulletPrefab: {fileID: 7792734265649637247, guid: fb6150e0f7f46a145aef5dd088b08454, type: 3}
+  bulletPrefab: {fileID: 7792734265649637247, guid: f9cad3da888f0874ebcab6a6281fd319, type: 3}
 --- !u!61 &1995028805216522328
 BoxCollider2D:
   m_ObjectHideFlags: 0

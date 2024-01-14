@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: Wall2
   displayName: Copper Wall
-  MAX_HEALTH: 350
+  MAX_HEALTH: 700
   cost:
     keys:
     - Copper

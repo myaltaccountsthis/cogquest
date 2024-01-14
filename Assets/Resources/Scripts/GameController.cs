@@ -104,9 +104,12 @@ public class GameController : MonoBehaviour
 		entities = new List<Entity>();
 		entityFolder = GameObject.Find("Entities").transform;
 		entityPrefabs = new Dictionary<string, Entity>();
-		foreach (Entity entity in Resources.LoadAll<Entity>("Prefabs/Buildings")
-			.Concat(Resources.LoadAll<Entity>("Prefabs/Units"))
-			.Concat(new List<Entity> { Resources.Load<Entity>("Prefabs/Bullet") }))
+
+		List<Entity> entitiesToLoad = new List<Entity>();
+		entitiesToLoad.AddRange(Resources.LoadAll<Entity>("Prefabs/Buildings"));
+		entitiesToLoad.AddRange(Resources.LoadAll<Entity>("Prefabs/Units"));
+		entitiesToLoad.AddRange(Resources.LoadAll<Entity>("Prefabs/Bullets"));
+		foreach (Entity entity in entitiesToLoad)
 		{
 			entityPrefabs.Add(entity.entityName, entity);
 		}
@@ -120,11 +123,13 @@ public class GameController : MonoBehaviour
 		healthBarInner = GameObject.Find("HealthBarInner").transform;
 		healthBar.gameObject.SetActive(false);
 		timer = middleUI.Find("Timer").GetComponent<Timer>();
+
 		// Loads all resource components into dictionary
 		resourcesUI = new Dictionary<string, Resource>(
 			topbar.Find("Resources").GetComponentsInChildren<Resource>()
 				.Select(resource => new KeyValuePair<string, Resource>(resource.name, resource))
 		);
+
 		// Load building categories
 		categoryPrefabs = new Dictionary<BuildingCategory, List<string>>();
 		foreach (BuildingCategory category in Enum.GetValues(typeof(BuildingCategory)))
