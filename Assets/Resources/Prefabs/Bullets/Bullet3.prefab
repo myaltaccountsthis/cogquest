@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1927039101497297234}
   - component: {fileID: 7792734265649637247}
   m_Layer: 7
-  m_Name: Bullet
+  m_Name: Bullet3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,14 +171,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba87298968d4fc348bcb097e007b0aa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityName: Bullet
+  entityName: Bullet3
   displayName: Bullet
-  MAX_HEALTH: 1
+  MAX_HEALTH: 5
   cost:
     keys: []
     values: 
   deletable: 0
   team: 0
   active: 0
+  previewSprites: []
   speed: 5
   lifetime: 5

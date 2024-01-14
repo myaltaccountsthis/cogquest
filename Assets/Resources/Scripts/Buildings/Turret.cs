@@ -16,6 +16,7 @@ public class Turret : Building
 	private GameController gameController;
 	
 	private SpriteRenderer gunSpriteRenderer;
+	[SerializeField]
 	private Projectile bulletPrefab;
 
 	private float timeBetweenAttacks;
