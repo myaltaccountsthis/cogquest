@@ -130,8 +130,8 @@ public class DataManager : MonoBehaviour
 public class GameData
 {
 	public int score = 0;
-	public float timer = 180f;
-	public int unlockedZones = 1;
+	public float timer = 60f;
+	//public int unlockedZones = 1;
 	// resources is not directly editable, need to instantiate a new one on save
 	public DataDictionary<string, int> resources = new();
 	public Map map;
@@ -173,10 +173,12 @@ public class DataDictionary<TKey, TValue>
 public class Map
 {
 	public Zone[] zones = new Zone[0];
+	public int furthestZone = 0;
 	/// <summary>
 	/// Entities to save/load (DataManager uses its own variable b/c dynamic list)
 	/// </summary>
 	public DataDictionary<string, string>[] entities = new DataDictionary<string, string>[0];
+	public float enemySpawnInterval = 15f;
 }
 
 [Serializable]

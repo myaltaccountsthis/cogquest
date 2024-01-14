@@ -13,32 +13,27 @@ public class Unit : Entity
 	private Vector2[] patrolWaypoints;
 	[SerializeField]
 	private float patrolInterval;
+	[SerializeField]
+	private float damage;
 
 	public Range range;
 	public int zoneToUnlock;
 
-	public UnitBehavior behavior { get; private set; }
-	public PatrolMode patrolMode;
+	private UnitBehavior behavior = UnitBehavior.None;
+	private PatrolMode patrolMode = PatrolMode.Waypoints;
 	private Vector2 currentPatrolWaypoint;
 
-	private Entity currentTarget;
+	private Entity currentTarget = null;
 	private int currentPatrolIndex;
-	private bool patrolWaiting;
-	private bool isAttacking;
+	private bool patrolWaiting = false;
+	private bool isAttacking = false;
+	private bool retargetCooldown = false;
 
 	protected override void Awake()
 	{
 		base.Awake();
 
 		range.onEnemyDetected += OnEnemyDetected;
-		behavior = UnitBehavior.None;
-		patrolMode = PatrolMode.Waypoints;
-		currentTarget = null;
-		currentPatrolIndex = -1;
-		patrolWaiting = false;
-		isAttacking = false;
-
-		range.team = team;
 
 		Debug.Assert(GetComponent<Rigidbody2D>().isKinematic, "Unit rigidbody type should be set to kinematic");
 	}
@@ -61,6 +56,10 @@ public class Unit : Entity
 		switch (behavior)
 		{
 			case UnitBehavior.Patrolling:
+				// In the case that player rallies
+				if (target != null && !retargetCooldown)
+					FollowTarget(target);
+				
 				if (patrolWaiting || currentPatrolIndex >= patrolWaypoints.Length)
 					break;
 
@@ -81,7 +80,9 @@ public class Unit : Entity
 				else
 				{
 					Vector3 targetPos = target.transform.position;
-					if (MoveToPoint(target.transform.position,  attackRange))
+					if (target is Building building)
+						targetPos = building.collider.ClosestPoint(transform.position);
+					if (MoveToPoint(targetPos, attackRange))
 					{
 						Attack();
 					}
@@ -141,7 +142,7 @@ public class Unit : Entity
 		transform.position += moveVector;
 		if (moveVector.magnitude > 0)
 			transform.eulerAngles = moveVector.DirectionToEulerAngles();
-		
+
 		return IsInRange(point, distance);
 	}
 
@@ -158,9 +159,33 @@ public class Unit : Entity
 		if (behavior != UnitBehavior.Patrolling)
 		{
 			behavior = UnitBehavior.Patrolling;
-			currentPatrolIndex = 0;
+			//currentPatrolIndex = 0;
 			SetNextPatrolPoint();
 			range.shouldRetarget = true;
+		}
+	}
+
+	public void Patrol(Vector2[] waypoints)
+	{
+		behavior = UnitBehavior.Patrolling;
+		range.shouldRetarget = true;
+		range.Rescan();
+		currentPatrolIndex = 0;
+		patrolWaypoints = waypoints;
+		SetNextPatrolPoint();
+		patrolWaiting = false;
+		retargetCooldown = true;
+		Invoke(nameof(AfterRetargetCooldown), 2f);
+		CancelInvoke(nameof(EnablePatrol));
+	}
+
+	private void AfterRetargetCooldown()
+	{
+		retargetCooldown = false;
+		Entity target = range.target;
+		if (target)
+		{
+			OnEnemyDetected(range.target);
 		}
 	}
 
@@ -180,7 +205,8 @@ public class Unit : Entity
 
 	private void OnEnemyDetected(Entity other)
 	{
-		FollowTarget(other);
+		if (behavior != UnitBehavior.Attacking && !retargetCooldown)
+			FollowTarget(other);
 	}
 
 	private void FollowTarget(Entity target)
@@ -209,11 +235,23 @@ public class Unit : Entity
 		
 		isAttacking = true;
 		behavior = UnitBehavior.Attacking;
-		Debug.Log("Attacked");
+		DoAttack();
 		Invoke(nameof(TestDoneAttacking), 1);
 
 		return true;
 	}
+
+	public virtual void DoAttack()
+	{
+        // TODO move this to MeleeUnit subclass
+        foreach (Collider2D collider in transform.Find("AttackHitbox").GetComponent<Collider2D>().GetCollisions(team))
+        {
+            if (collider != null && collider.TryGetComponent(out Entity entity) && entity.team != team)
+			{
+				entity.TakeDamage(damage);
+			}
+        }
+    }
 
 	private void TestDoneAttacking()
 	{
@@ -231,12 +269,18 @@ public class Unit : Entity
 			}).ToArray();
 		if (saveData.TryGetValue("patrolMode", out string patrolModeStr))
 			patrolMode = (PatrolMode)System.Enum.Parse(typeof(PatrolMode), patrolModeStr);
+		if (saveData.TryGetValue("patrolWaypointIndex", out string patrolWaypointIndexStr))
+			currentPatrolIndex = int.Parse(patrolWaypointIndexStr);
+		if (team == 0)
+			gameObject.layer = LayerMask.NameToLayer("PlayerUnits");
+		range.team = team;
+		range.Activate();
 	}
 
 	public override Dictionary<string, string> GetEntitySaveData()
 	{
 		return base.GetEntitySaveData().ChainAdd("patrolWaypoints", PatrolWaypointsToString(patrolWaypoints))
-			.ChainAdd("patrolMode", patrolMode.ToString());
+			.ChainAdd("patrolMode", patrolMode.ToString()).ChainAdd("patrolWaypointIndex", currentPatrolIndex.ToString());
 	}
 
 	public static string PatrolWaypointsToString(Vector2[] patrolWaypoints)

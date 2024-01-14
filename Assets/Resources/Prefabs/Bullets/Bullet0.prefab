@@ -102,7 +102,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -173,7 +173,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: Bullet0
   displayName: Bullet
-  MAX_HEALTH: 1
+  MAX_HEALTH: 10
   cost:
     keys: []
     values: 

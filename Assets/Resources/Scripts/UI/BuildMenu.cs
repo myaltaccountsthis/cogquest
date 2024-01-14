@@ -12,6 +12,7 @@ public class BuildMenu : MonoBehaviour
 	public InputAction selectDelete;
 	public InputAction selectPan;
 	public InputAction selectOption;
+	public InputAction cycleCategory;
 
 	private TextMeshProUGUI categoryName;
 	private Transform categories;
@@ -35,6 +36,8 @@ public class BuildMenu : MonoBehaviour
 	private string selectedOption;
 
 	private Dictionary<string, Sprite> resourceIcons;
+
+	private List<string> categoryOptions;
 
 	private const float resourceCostMargin = 4f;
 
@@ -61,13 +64,28 @@ public class BuildMenu : MonoBehaviour
 		foreach (Sprite sprite in Resources.LoadAll<Sprite>("Sprite Sheets/ResourceIcons"))
 			resourceIcons.Add(sprite.name, sprite);
 
+		Array values = Enum.GetValues(typeof(BuildingCategory));
+		categoryOptions = new List<string>();
+		for (int i = 0; i < values.Length; i++)
+		{
+			if ((BuildingCategory)values.GetValue(i) != BuildingCategory.None)
+				categoryOptions.Add(values.GetValue(i).ToString());
+		}
+
 		selectBuild.performed += ctx => SelectBuildAction(BuildAction.Build);
 		selectDelete.performed += ctx => SelectBuildAction(BuildAction.Delete);
 		selectPan.performed += ctx => SelectBuildAction(BuildAction.Pan);
 		selectOption.performed += ctx => {
 			int i = int.Parse(ctx.control.name) - 1;
 			if (i < options.childCount)
+			{
+				SelectBuildAction(BuildAction.Build);
 				options.GetChild(i).GetComponent<Button>().onClick.Invoke();
+			}
+		};
+		cycleCategory.performed += ctx =>
+		{
+			LoadCategory(categoryOptions[(categoryOptions.IndexOf(categoryName.text) + 1) % categoryOptions.Count]);
 		};
 	}
 
@@ -84,6 +102,7 @@ public class BuildMenu : MonoBehaviour
 		selectDelete.Enable();
 		selectPan.Enable();
 		selectOption.Enable();
+		cycleCategory.Enable();
 	}
 
 	private void SelectBuildAction(BuildAction buildAction)

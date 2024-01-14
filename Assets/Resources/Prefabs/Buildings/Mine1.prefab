@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: -7590024220223065655}
   - component: {fileID: 8230337888456806797}
   - component: {fileID: 1951345640037090277}
+  - component: {fileID: -3740619977083817490}
   m_Layer: 3
   m_Name: Mine1
   m_TagString: Untagged
@@ -106,7 +107,7 @@ MonoBehaviour:
     - Wood
     - Stone
     - Copper
-    values: 640000003200000014000000
+    values: 640000005000000014000000
   deletable: 1
   team: 0
   active: 0
@@ -164,3 +165,30 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2, y: 2}
   m_EdgeRadius: 0
+--- !u!50 &-3740619977083817490
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775382530071122899}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 648
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

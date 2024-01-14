@@ -8,7 +8,7 @@ public class Range : MonoBehaviour
 {
 	[HideInInspector]
 	public int team;
-	public UnityAction<Entity> onEnemyDetected;
+	public UnityAction<Entity> onEnemyDetected = (_) => {};
 
 	private LinkedList<Entity> enemiesInRange;
 	private float t;
@@ -18,18 +18,36 @@ public class Range : MonoBehaviour
 
 	public Entity target => enemiesInRange.FirstOrDefault();
 
+	public bool active;
+
 	void Awake()
 	{
-		onEnemyDetected = (_) => { };
 		enemiesInRange = new LinkedList<Entity>();
 		t = 0;
 		shouldRetarget = true;
+		active = false;
+	}
+
+	public void Activate()
+	{
+		active = true;
+		Rescan();
+	}
+
+	public void Rescan()
+	{
+		enemiesInRange.Clear();
+		Collider2D[] colliders = GetComponent<Collider2D>().GetCollisions(team);
+		foreach (Collider2D collider in colliders)
+		{
+			if (collider != null)
+				OnTriggerEnter2D(collider);
+		}
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		Entity entity = other.GetComponent<Entity>();
-		if (entity != null && entity.team != team)
+		if (active && other.TryGetComponent(out Entity entity) && entity.team != team)
 		{
 			enemiesInRange.AddLast(entity);
 			if (enemiesInRange.Count == 1)
@@ -41,8 +59,18 @@ public class Range : MonoBehaviour
 
 	void OnTriggerExit2D(Collider2D other)
 	{
-		Entity entity = other.GetComponent<Entity>();
-		if (entity != null)
+		if (active && other.TryGetComponent(out Entity entity))
+		{
+			enemiesInRange.Remove(entity);
+		}
+	}
+
+	/// <summary>
+	/// Removes any null or same-team entities
+	/// </summary>
+	private void CleanUp()
+	{
+		foreach (Entity entity in enemiesInRange.Where(entity => entity == null || entity.team == team).ToArray())
 		{
 			enemiesInRange.Remove(entity);
 		}
@@ -52,6 +80,7 @@ public class Range : MonoBehaviour
 	{
 		Entity closest = null;
 		float closestDistance = float.MaxValue;
+		CleanUp();
 		foreach (Entity entity in enemiesInRange)
 		{
 			float distance = (entity.transform.position - transform.position).magnitude;
@@ -73,7 +102,7 @@ public class Range : MonoBehaviour
 		{
 			Entity closest = GetClosestEnemy();
 			// Retarget if there is a closer enemy
-			if (closest != null && closest != enemiesInRange.First.Value)
+			if (closest != null && closest != enemiesInRange.First?.Value)
 			{
 				enemiesInRange.Remove(closest);
 				enemiesInRange.AddFirst(closest);
@@ -91,14 +120,14 @@ public class Range : MonoBehaviour
 		{
 			t += Time.deltaTime;
 			Entity entity;
-			// TODO make sure this check if entity is alive works
-			while ((entity = enemiesInRange.First.Value) == null || !entity.isActiveAndEnabled)
+			// Check if entity is non-null, active, and alive
+			while (enemiesInRange.First != null && ((entity = enemiesInRange.First.Value) == null || !entity.isActiveAndEnabled || entity.health <= 0))
 			{
 				enemiesInRange.RemoveFirst();
 				shouldRetarget = true;
-				if (enemiesInRange.Count > 0)
-					onEnemyDetected(enemiesInRange.First.Value);
 			}
+			if (enemiesInRange.Count > 0)
+				onEnemyDetected(enemiesInRange.First.Value);
 			if (t >= retargetInterval)
 			{
 				// Don't want this calling Retarget() every frame
