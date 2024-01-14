@@ -27,6 +27,9 @@ public class TilemapHandler : MonoBehaviour
 
 	void Update()
 	{
+		if (GameController.isPaused)
+			return;
+		
 		Vector3Int gridPos = GetMouseTilePosition();
 		
 		TileBase tile = tilemap.GetTile(gridPos);

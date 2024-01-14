@@ -45,6 +45,9 @@ public class Turret : Building
 
 	protected override void Update()
 	{
+		if (GameController.isPaused)
+			return;
+		
 		if (!active)
 			return;
 
