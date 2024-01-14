@@ -362,7 +362,7 @@ public class GameController : MonoBehaviour
 				}
             }
 
-            if (dataManager.resources["Coal"] + resources["Coal"] > 0)
+            if (dataManager.resources["Coal"] + resources["Coal"] >= 0)
             {
 	            foreach (string resource in resources.Keys)
 		            dataManager.resources[resource] += resources[resource];
