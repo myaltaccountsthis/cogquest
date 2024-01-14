@@ -18,20 +18,27 @@ public class DataManager : MonoBehaviour
 	{
         FILE_PATH = Application.persistentDataPath + "/gamedata.dat";
         resources = new Dictionary<string, int>();
-        resources = new Dictionary<string, int>
-        {
-	        { "Coal", 0 },
-	        { "Wood", 20 },
-	        { "Stone", 0 },
-	        { "Copper", 0 },
-	        { "Iron", 0 }
-        };
 		gameData = new GameData();
 		LoadData();
 	}
 
 	void OnApplicationQuit()
 	{
+	}
+
+	private void LoadDefaultData()
+	{
+		resources = new Dictionary<string, int>
+		{
+			{ "Coal", 0 },
+			{ "Wood", 40 },
+			{ "Stone", 0 },
+			{ "Copper", 0 },
+			{ "Iron", 0 }
+		};
+		// Center camera on first zone
+		Zone firstZone = gameData.map.zones[0];
+		gameData.cameraPosition = new Vector3(firstZone.posX + firstZone.sizeX / 2, firstZone.posY + firstZone.sizeY / 2, Camera.main.transform.position.z);
 	}
 
 	// Data Save/Load functions
@@ -61,6 +68,7 @@ public class DataManager : MonoBehaviour
 			}
 			else
 			{
+				LoadDefaultData();
 				Debug.Log("Created data");
 			}
 		}
@@ -68,10 +76,6 @@ public class DataManager : MonoBehaviour
 		{
 			Debug.LogWarning("Failed to load data, resorting to default values.\n" + e.ToString());
 		}
-		
-		// Center camera on first zone
-		Zone firstZone = gameData.map.zones[0];
-		gameData.cameraPosition = new Vector3(firstZone.posX + firstZone.sizeX / 2, firstZone.posY + firstZone.sizeY / 2, Camera.main.transform.position.z);
 	}
 
 	// Save the current data (only game controller should call this in game)
@@ -98,6 +102,7 @@ public class DataManager : MonoBehaviour
 		try {
 			if(File.Exists(FILE_PATH)) File.Delete(FILE_PATH);
 			LoadData();
+			SaveData();
 		}
 		catch (System.Exception e) {
 			Debug.LogWarning("Failed to reset data.\n" + e);

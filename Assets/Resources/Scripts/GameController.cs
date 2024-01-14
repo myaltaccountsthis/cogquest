@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
@@ -82,20 +83,8 @@ public class GameController : MonoBehaviour
 	private Image shadow;
 	private Entity prevClickedEntity;
 	
-	// Time & Pause System
+	// Time
 	private float time = 0;
-	public static bool isPaused { get; internal set; }
-	public GameObject pauseMenu;
-	public bool Paused
-	{
-		get => isPaused;
-		set
-		{
-			isPaused = value;
-			AudioListener.pause = isPaused;
-			pauseMenu.SetActive(isPaused);
-		}
-	}
 	
 	// Build and Delete Building Audio
 	public AudioSource buildAudio;
@@ -207,8 +196,7 @@ public class GameController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-	    if (isPaused) return;
+	{
 		entities.RemoveAll(entity => entity == null || !entity.isActiveAndEnabled);
 		
 		// Update selected building position
@@ -395,7 +383,6 @@ public class GameController : MonoBehaviour
 				}
             }
 
-			// No resource production if consumption exhausts coal
             if (dataManager.resources["Coal"] + resources["Coal"] >= 0)
             {
 	            foreach (string resource in resources.Keys)
@@ -427,8 +414,7 @@ public class GameController : MonoBehaviour
 			Vector3 worldPoint2 = camera.ScreenToWorldPoint(Input.mousePosition);
 			cameraCenter += worldPoint1 - worldPoint2;
 		}
-    
-		// clamp camera movement to edges of map
+
 		cameraCenter.x = Mathf.Clamp(cameraCenter.x, bounds.xMin + .5f, bounds.xMax - .5f);
 		cameraCenter.y = Mathf.Clamp(cameraCenter.y, bounds.yMin + .5f, bounds.yMax - .5f);
 		camera.transform.position = cameraCenter;

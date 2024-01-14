@@ -7,18 +7,15 @@ using UnityEngine.SceneManagement;
 public class Init : MonoBehaviour
 {
 	private DataManager dataManager;
-
 	void Awake()
 	{
 		Application.targetFrameRate = 60;
 		QualitySettings.vSyncCount = 1;
 		dataManager = GetComponent<DataManager>();
-		AudioListener.pause = false;
 	}
 	
 	public void ChangeScene(string scene)
 	{
-		GameController.isPaused = false;
 		SceneManager.LoadScene(scene);
 	}
 	
