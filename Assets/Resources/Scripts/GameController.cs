@@ -19,7 +19,7 @@ public class GameController : MonoBehaviour
 	public char[] TileNames;
 	public TileBase[] Tiles;
 	public Dictionary<char, TileBase> tiles;
-    private Tilemap tilemap;
+    public Tilemap tilemap { get; private set; }
 
 	// Entity loading
 	[HideInInspector] public List<Entity> entities;
@@ -34,6 +34,7 @@ public class GameController : MonoBehaviour
 	private RectTransform healthBar;
 	private Transform healthBarInner;
 	private Timer timer;
+	private State state;
 	private Dictionary<string, Resource> resourcesUI;
 	public Dictionary<BuildingCategory, List<string>> categoryPrefabs { get; private set; }
 	private float fps;
@@ -52,7 +53,8 @@ public class GameController : MonoBehaviour
 	private static readonly Vector3 mouseStartInactive = Vector3.back;
 
 	public static int entityLayerMask { get; private set; }
-	public static int buildingLayerMask { get; private set; }
+	public static int buildingShadowLayerMask { get; private set; }
+	public static int shadowLayerMask { get; private set; }
 	public static int buildingLayerID { get; private set; }
 
 	// Build Menu stuff
@@ -75,6 +77,10 @@ public class GameController : MonoBehaviour
 	private Color selectedBuildingInvalidColor = new Color(1f, 0f, 0f, .5f);
 	public BuildAction currentBuildAction { get; private set; }
 	private Entity hoveredEntity;
+
+	private List<Image> shadows;
+	private Transform shadowFolder;
+	private Image shadow;
 	private Entity prevClickedEntity;
 	
 	// Time
@@ -95,14 +101,16 @@ public class GameController : MonoBehaviour
 		buildMenu = GameObject.Find("BuildMenu").GetComponent<BuildMenu>();
 		spawnMenu = GameObject.Find("SpawnMenu").GetComponent<SpawnMenu>();
         tilemap = GameObject.FindWithTag("Tilemap").GetComponent<Tilemap>();
+		shadows = new List<Image>();
+		shadowFolder = GameObject.Find("Shadows").GetComponent<Transform>();
+		shadow = Resources.Load<GameObject>("Prefabs/Shadow").GetComponent<Image>();
 
 		// Load tiles
-		tilemap = GameObject.FindWithTag("Tilemap").GetComponent<Tilemap>();
 		tiles = new Dictionary<char, TileBase>();
 		for (int i = 0; i < TileNames.Length; i++)
 			tiles.Add(TileNames[i], Tiles[i]);
 
-		// Load entities - TODO load units
+		// Load entities
 		entities = new List<Entity>();
 		entityFolder = GameObject.Find("Entities").transform;
 		entityPrefabs = new Dictionary<string, Entity>();
@@ -125,6 +133,7 @@ public class GameController : MonoBehaviour
 		healthBarInner = GameObject.Find("HealthBarInner").transform;
 		healthBar.gameObject.SetActive(false);
 		timer = middleUI.Find("Timer").GetComponent<Timer>();
+		state = middleUI.Find("State").GetComponent<State>();
 
 		// Loads all resource components into dictionary
 		resourcesUI = new Dictionary<string, Resource>(
@@ -148,8 +157,8 @@ public class GameController : MonoBehaviour
 		// used as a placeholder value for "null"
 		mouseStart = mouseStartInactive;
 
-		entityLayerMask = LayerMask.GetMask("Buildings", "Units");
-		buildingLayerMask = LayerMask.GetMask("Buildings");
+		entityLayerMask = LayerMask.GetMask("Buildings", "Units", "PlayerUnits");
+		buildingShadowLayerMask = LayerMask.GetMask("Buildings", "Shadow");
 		buildingLayerID = LayerMask.NameToLayer("Buildings");
 
 		selectionBox = GameObject.FindWithTag("SelectionBox").GetComponent<RectTransform>();
@@ -165,6 +174,7 @@ public class GameController : MonoBehaviour
 		LoadMapTiles();
 		LoadEntitiesFromData();
 		UpdateResourcesUI();
+		UpdateShadows();
 		Zone[] zones = dataManager.gameData.map.zones;
 		bounds = new BoundsInt(zones.Min(zone => zone.posX), zones.Min(zone => zone.posY), 0,
 			zones.Max(zone => zone.posX + zone.sizeX), zones.Max(zone => zone.posY + zone.sizeY), 0);
@@ -205,11 +215,8 @@ public class GameController : MonoBehaviour
 			}
 		}
 
-		dataManager.gameData.timer -= Time.deltaTime;
-		// TEMPORARY TIMER RESET
-		if (dataManager.gameData.timer < 0)
-			dataManager.gameData.timer += 120f;
 		timer.SetTime(dataManager.gameData.timer);
+		state.UpdateState(dataManager.gameData.timer);
 
 		PointerEventData ped = new PointerEventData(null);
 		ped.position = Input.mousePosition;
@@ -283,7 +290,7 @@ public class GameController : MonoBehaviour
 				{
 					DeleteSelectedBuilding();
 				}
-				else if (hoveredEntity != null)
+				else if (hoveredEntity != null && hoveredEntity.team == 0)
 				{
 					hoveredEntity.DoMouseDown();
 					prevClickedEntity = hoveredEntity;
@@ -327,9 +334,23 @@ public class GameController : MonoBehaviour
 				cameraCenter += direction * (camera.orthographicSize * cameraSpeed * Time.deltaTime);
 			}
 		}
+		// Rally units
+		if (Input.GetMouseButtonDown(1) && !mouseOnUI)
+		{
+			bool rallyAll = Input.GetKey(KeyCode.LeftShift);
+			Vector2 min = GetMousePlanePosition(new Vector3(0, 0)), max = GetMousePlanePosition(new Vector3(Screen.width, Screen.height));
+			Rect cameraRect = Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+			Unit[] units = entities.Where(entity => entity is Unit unit && unit.active && unit.team == 0 &&
+				(rallyAll ? true : cameraRect.Contains(unit.transform.position)))
+				.Select(entity => (Unit)entity).ToArray();
+			foreach (Unit unit in units)
+			{
+				unit.Patrol(new Vector2[] { (Vector2)GetMousePlanePosition(Input.mousePosition) + UnityEngine.Random.insideUnitCircle * 2f });
+			}
+		}
 
 		// Resource gain and coal use each second
-		if ((int)(time + Time.deltaTime) > (int)time)
+		if (IntervalPassed(1))
         {
 			// Get value change for all resources each second
 			Dictionary<string, int> resources = new Dictionary<string, int>();
@@ -347,7 +368,7 @@ public class GameController : MonoBehaviour
 
 					if (entity is Fort fort)
 					{
-						if (!fort.occupied)
+						if (!fort.Occupied)
 							resources["Coal"] += fort.CoalUse;
 					}
 
@@ -373,6 +394,16 @@ public class GameController : MonoBehaviour
 			UpdateResourcesUI();
         }
 
+		// Random enemy spawning (only if timer is negative)
+		if (dataManager.gameData.timer - Time.deltaTime <= 0 && IntervalPassed(dataManager.gameData.map.enemySpawnInterval))
+		{
+			foreach (Fort fort in entities.Where(entity => entity is Fort fort && !fort.Occupied && fort.Tier <= dataManager.gameData.map.furthestZone + 1)
+				.Select(entity => (Fort)entity).ToArray())
+			{
+				SpawnRandomEnemyUnit(fort, 1 + fort.Tier);
+			}
+		}
+
 		if (!mouseOnUI)
 		{
 			// zoom, shift to keep cursor at same world point
@@ -383,11 +414,11 @@ public class GameController : MonoBehaviour
 			Vector3 worldPoint2 = camera.ScreenToWorldPoint(Input.mousePosition);
 			cameraCenter += worldPoint1 - worldPoint2;
 		}
-		
+
 		cameraCenter.x = Mathf.Clamp(cameraCenter.x, bounds.xMin + .5f, bounds.xMax - .5f);
 		cameraCenter.y = Mathf.Clamp(cameraCenter.y, bounds.yMin + .5f, bounds.yMax - .5f);
 		camera.transform.position = cameraCenter;
-		time += Time.deltaTime;
+		dataManager.gameData.timer -= Time.deltaTime;
 	}
 
 	void OnApplicationQuit()
@@ -399,16 +430,19 @@ public class GameController : MonoBehaviour
 	{
 		float newFPS = 1.0f / Time.deltaTime;
 		fps = Mathf.Lerp(fps, newFPS, 0.03f);
-        GUI.Label(new Rect(2, Screen.height - 22, 15, 20), ((int) fps).ToString());
+        GUI.Label(new Rect(2, Screen.height - 22, 15, 20), ((int)fps).ToString());
 	}
 
-	public void OnPointerDown()
+	/// <summary>
+	/// Call this every frame to check if an interval (e.g. every second) has been passed
+	/// </summary>
+	/// <param name="interval">Period of how often true should be returned</param>
+	/// <returns>True if the interval was passed</returns>
+	public bool IntervalPassed(float interval)
 	{
-	}
-
-	public void OnPointerUp()
-	{
-		
+		// Add constant so all numbers are positive
+		float t = -dataManager.gameData.timer + 300f;
+		return (t + Time.deltaTime) % interval < t % interval;
 	}
 
 	public void UpdateResourcesUI()
@@ -464,13 +498,15 @@ public class GameController : MonoBehaviour
 
 	private DataDictionary<string, string>[] SaveEntitiesToData()
 	{
-		return entities.Select(entity => new DataDictionary<string, string>(entity.GetEntitySaveData())).ToArray();
+		return entities.Where(entity => entity != null && entity.isActiveAndEnabled).Select(entity => new DataDictionary<string, string>(entity.GetEntitySaveData())).ToArray();
 	}
 
 	public Vector3 GetMousePlanePosition(Vector3 mousePosition)
 	{
-		Ray ray = camera.ScreenPointToRay(mousePosition);
-		return new Vector2(ray.origin.x, ray.origin.y);
+		//Ray ray = camera.ScreenPointToRay(mousePosition);
+		//return new Vector2(ray.origin.x, ray.origin.y);
+		Vector3 point = camera.ScreenToWorldPoint(mousePosition);
+		return new Vector2(point.x, point.y);
 	}
 
 	public Vector3 RoundToGrid(Vector3 pos, Vector2 size)
@@ -560,6 +596,15 @@ public class GameController : MonoBehaviour
 		entities.Remove(building);
 		Destroy(building.gameObject);
 	}
+
+	/// <summary>
+	/// If enemy fort was damaged, set timer to 0
+	/// </summary>
+	public void OnEnemyFortDamaged()
+	{
+		if (dataManager.gameData.timer > 0f)
+			dataManager.gameData.timer = .001f;
+	}
 	
 	/// <summary>
 	/// Called when the player selects one of the buildings from the build menu
@@ -598,7 +643,7 @@ public class GameController : MonoBehaviour
 				case BuildAction.Delete:
 					break;
 				case BuildAction.Pan:
-					break;
+					break;  
 			}
 
 			if (currentBuildAction != BuildAction.Build)
@@ -612,6 +657,30 @@ public class GameController : MonoBehaviour
 		}
 	}
 
+	public void UpdateShadows()
+	{
+		int furthestZoneIndex = dataManager.gameData.map.furthestZone;
+		bool[] unlockedForts = entities.Where(entity => entity is Fort fort).Select(entity => (Fort)entity)
+			.OrderBy(fort => fort.Tier).Select(fort => fort.Occupied).ToArray();
+		for (int i = 0; i < dataManager.gameData.map.zones.Length; i++)
+		{
+			if (shadows.Count <= i)
+			{
+				Zone zone = dataManager.gameData.map.zones[i];
+				shadows.Add(Instantiate(shadow, shadowFolder));
+				RectTransform rectTransform = shadows[i].GetComponent<RectTransform>();
+				rectTransform.sizeDelta = new Vector2(zone.sizeX, zone.sizeY);
+				rectTransform.position = new Vector3(zone.posX + zone.sizeX / 2f, zone.posY + zone.sizeY / 2f);
+				shadows[i].GetComponent<BoxCollider2D>().size = rectTransform.sizeDelta;
+			}
+			// Transparent if previous zone, otherwise negative rational function becoming more opaque
+			float alpha = (i <= furthestZoneIndex + 1) ? 0 :
+				1 - .1f / (i - furthestZoneIndex - 1);
+			shadows[i].color = new Color(0, 0, 0, alpha);
+			shadows[i].GetComponent<BoxCollider2D>().enabled = !unlockedForts[i];
+		}
+	}
+
 	/// <summary>
 	/// Sets the resource cost shown in the build menu to this resource cost. Used for hovering in game.
 	/// </summary>
@@ -620,7 +689,7 @@ public class GameController : MonoBehaviour
 		buildMenu.SetHoveredResourceCost(entity);
 	}
 
-	public bool SpawnUnit(Fort fort, Unit unit)
+	public bool SpawnPlayerUnit(Fort fort, Unit unit)
 	{
 		if (!unit.Cost.All(pair => dataManager.resources[pair.Key] >= pair.Value))
 			return false;
@@ -632,32 +701,109 @@ public class GameController : MonoBehaviour
 
 		Dictionary<string, string> saveData = new Dictionary<string, string>()
 		{
-			{ "posX", fort.transform.position.x.ToString() },
-			{ "posY", fort.transform.position.y.ToString() },
-			{ "team", fort.team.ToString() },
-			{ "class", unit.entityName },
-			{ "patrolWaypoints", Unit.PatrolWaypointsToString(new Vector2[]
-				{
-					Vector2.up, Vector2.right, Vector2.down, Vector2.left
-				}.Select(vec => vec + (Vector2)fort.transform.position).ToArray())
-			},
+			{ "patrolWaypoints", Unit.PatrolWaypointsToString(new Vector2[] { fort.transform.position }) },
 			{ "patrolMode", "Point" }
 		};
 
-		AddEntity(saveData);
+		SpawnUnit(fort, unit, saveData);
+
 		UpdateResourcesUI();
 		return true;
+	}
+
+	/// <summary>
+	/// Spawn a unit with supplied saveData (does not require team, class, posX, posY)
+	/// </summary>
+	/// <param name="fort">Fort to spawn at for team number</param>
+	/// <param name="unit">Unit prefab</param>
+	/// <param name="saveData">Additional save data (patrolWaypoints, patrolMode)</param>
+	public void SpawnUnit(Fort fort, Unit unit, Dictionary<string, string> saveData)
+	{
+		Vector2 randomSpawn = (Vector2)fort.transform.position + UnityEngine.Random.insideUnitCircle * 2f;
+
+		saveData["posX"] = randomSpawn.x.ToString();
+		saveData["posY"] = randomSpawn.y.ToString();
+		saveData["team"] = fort.team.ToString();
+		saveData["class"] = unit.entityName;
+		AddEntity(saveData);
+	}
+
+	public void SpawnAggroEnemyUnit(Fort fort, Unit unit)
+	{
+		// Select previous forts (Tier < fort.Tier) and arrange them in descending order (furthest from player fort first)
+		Vector2[] previousForts = entities.Where(entity => entity is Fort f && f.Tier < fort.Tier)
+			.OrderByDescending(entity => ((Fort)entity).Tier)
+			.Select(entity => (Vector2)entity.transform.position).ToArray();
+		Dictionary<string, string> saveData = new Dictionary<string, string>()
+		{
+			{ "patrolWaypoints", Unit.PatrolWaypointsToString(previousForts) },
+			{ "patrolMode", "Waypoints" }
+		};
+
+		SpawnUnit(fort, unit, saveData);
 	}
 
 	public void OpenSpawnMenu(Fort fort)
 	{
 		// TODO change 0 to latest zone unlocked
-		spawnMenu.OpenMenu(fort, unitPrefabs.Where(unit => 0 >= unit.zoneToUnlock));
+		spawnMenu.OpenMenu(fort, GetAvailableUnits());
+	}
+
+	/// <summary>
+	/// Returns an enumerable with available units to spawn
+	/// </summary>
+	/// <param name="fort">Enemy fort, or null if player</param>
+	public IEnumerable<Unit> GetAvailableUnits(Fort fort = null)
+	{
+		return unitPrefabs.Where(unit => (fort == null ? dataManager.gameData.map.furthestZone : fort.Tier) >= unit.zoneToUnlock);
 	}
 
 	public void CloseSpawnMenu()
 	{
 		spawnMenu.CloseMenu();
+	}
+
+	public void SpawnRandomEnemyUnit(Fort fort, int count = 1)
+	{
+		Unit[] units = GetAvailableUnits(fort).ToArray();
+		for (int i = 0; i < count; i++)
+		{
+			SpawnAggroEnemyUnit(fort, units[UnityEngine.Random.Range(0, units.Length - 1)]);
+		}
+	}
+
+	/// <summary>
+	/// Get the layer mask that encompasses the team
+	/// </summary>
+	/// <param name="team">0 or 1 (0 is player)</param>
+	public static LayerMask GetTeamMask(int team)
+	{
+		return team == 0 ? LayerMask.GetMask("PlayerUnits", "Buildings") : LayerMask.GetMask("Units", "Buildings");
+	}
+
+	public static LayerMask GetOtherTeamMask(int team)
+	{
+		return team == 0 ? LayerMask.GetMask("Units", "Buildings") : LayerMask.GetMask("PlayerUnits", "Buildings");
+	}
+
+	public void OnFortOccupied(Fort fort)
+	{
+		UnlockNewZone(fort.Tier);
+	}
+
+	private void UnlockNewZone(int zone)
+	{
+		if (zone > dataManager.gameData.map.furthestZone)
+		{
+			dataManager.gameData.map.furthestZone++;
+			dataManager.gameData.timer = zone * 30f + 60f;
+			UpdateShadows();
+			if (zone == dataManager.gameData.map.zones.Length - 1)
+			{
+				// On game win
+				Debug.Log("Won the game");
+			}
+		}
 	}
 }
 
@@ -685,5 +831,15 @@ public static class Extensions
 	{
 		dict.Add(key, value);
 		return dict;
+	}
+
+	public static Collider2D[] GetCollisions(this Collider2D collider, int team)
+	{
+		Collider2D[] colliders = new Collider2D[16];
+		ContactFilter2D contactFilter = new ContactFilter2D();
+		contactFilter.SetLayerMask(GameController.GetOtherTeamMask(team));
+		contactFilter.useTriggers = true;
+		Physics2D.OverlapCollider(collider, contactFilter, colliders);
+		return colliders;
 	}
 }

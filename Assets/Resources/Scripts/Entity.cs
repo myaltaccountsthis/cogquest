@@ -17,7 +17,12 @@ public abstract class Entity : MonoBehaviour
 
     public bool active;
 
-    public float HealthFraction => health / MAX_HEALTH;
+	protected SpriteRenderer spriteRenderer;
+	public bool Occupied => team == 0;
+	public static readonly Color UNOCCUPIED_COLOR = Color.red;
+	public static readonly Color OCCUPIED_COLOR = Color.white;
+
+	public float HealthFraction => health / MAX_HEALTH;
 
     public Dictionary<string, int> Cost {
         get => cost.ToDictionary();
@@ -37,8 +42,9 @@ public abstract class Entity : MonoBehaviour
 	protected virtual void Awake() {
         health = MAX_HEALTH;
         active = false;
+		spriteRenderer = GetComponent<SpriteRenderer>();
 
-        Debug.Assert(GetComponent<SpriteRenderer>().sortingLayerName != "Default", "Entity sorting layer should not be default");
+		Debug.Assert(GetComponent<SpriteRenderer>().sortingLayerName != "Default", "Entity sorting layer should not be default");
     }
 
     // Start is called before the first frame update
@@ -70,11 +76,22 @@ public abstract class Entity : MonoBehaviour
             return;
 
         health -= damage;
+        OnDamaged();
         if (health <= 0f)
         {
-            Destroy(gameObject);
+            OnDestroyed();
         }
     }
+
+    public virtual void OnDamaged()
+    {
+
+    }
+
+    public virtual void OnDestroyed()
+    {
+		Destroy(gameObject);
+	}
 
 	public Vector3Int GetIntPosition()
     {
@@ -83,7 +100,7 @@ public abstract class Entity : MonoBehaviour
 
     public virtual void LoadEntitySaveData(Dictionary<string, string> saveData)
     {
-        // TODO update position, orientation, etc.
+        // update position, orientation, etc.
         if (saveData.TryGetValue("rotation", out string rotationStr))
             rotation = float.Parse(rotationStr);
         if (saveData.TryGetValue("posX", out string posXStr) && saveData.TryGetValue("posY", out string posYStr))
@@ -92,7 +109,14 @@ public abstract class Entity : MonoBehaviour
             health = float.Parse(healthStr);
         if (saveData.TryGetValue("team", out string teamStr))
             team = int.Parse(teamStr);
-    }
+
+        UpdateSpriteColor();
+	}
+
+    public virtual void UpdateSpriteColor()
+	{
+		SetSpriteColor(Occupied ? OCCUPIED_COLOR : UNOCCUPIED_COLOR);
+	}
 
     /// <summary>
     /// Returns data for this entity to be saved
@@ -112,11 +136,19 @@ public abstract class Entity : MonoBehaviour
 
     protected virtual List<string> GetEntityInfoList()
     {
-        return new List<string> { "Name: " + displayName };
+        return new List<string> { "Name: " + displayName, string.Format("Health: {0}/{1}", health, MAX_HEALTH) };
     }
 
     public string GetEntityInfo()
     {
         return string.Join("\n\n", GetEntityInfoList());
-    }
+	}
+
+	/// <summary>
+	/// Change all sprite renderers in this building to a certain color (used for turrets)
+	/// </summary>
+	public virtual void SetSpriteColor(Color color)
+	{
+		spriteRenderer.color = color;
+	}
 }

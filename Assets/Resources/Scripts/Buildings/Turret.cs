@@ -57,7 +57,7 @@ public class Turret : Building
 			float targetAngle = direction.DirectionToAngle();
 			rotation = Mathf.MoveTowardsAngle(rotation, targetAngle, turnRate * Time.deltaTime);
 			// Make sure gun is angled accurately enough
-			if (Mathf.DeltaAngle(rotation, targetAngle) < .1f && canShoot)
+			if (Mathf.Abs(Mathf.DeltaAngle(rotation, targetAngle)) < 1f && canShoot)
 			{
 				Shoot();
 			}
@@ -86,8 +86,16 @@ public class Turret : Building
 
 	//private void OnEnemyDetected(Entity other)
 	//{
-		
+
 	//}
+
+	public override void LoadEntitySaveData(Dictionary<string, string> saveData)
+	{
+		base.LoadEntitySaveData(saveData);
+
+		range.team = team;
+		range.Activate();
+	}
 
 	public override void SetSpriteColor(Color color)
 	{

@@ -10,9 +10,6 @@ public class Fort : Building
 
 	[SerializeField]
     private int TIER;
-    public bool occupied;
-    private readonly Color UNOCCUPIED_COLOR = Color.red;
-    private readonly Color OCCUPIED_COLOR = Color.white;
 
     public int Tier
     {
@@ -23,8 +20,6 @@ public class Fort : Building
         base.Awake();
 
         gameController = GameObject.Find("Canvas").GetComponent<GameController>();
-        occupied = TIER == 0;
-        SetSpriteColor(occupied ? OCCUPIED_COLOR : UNOCCUPIED_COLOR);
     }
 
     
@@ -38,12 +33,26 @@ public class Fort : Building
         gameController.CloseSpawnMenu();
 	}
 
-	public void OnDestroyed()
-    {
-        occupied = !occupied;
-        if (!occupied)
-        {
-            health = MAX_HEALTH;
-        }
-    }
+	public override void LoadEntitySaveData(Dictionary<string, string> saveData)
+	{
+		base.LoadEntitySaveData(saveData);
+	}
+
+	public override void OnDestroyed()
+	{
+		team = team == 0 ? 1 : 0;
+		health = MAX_HEALTH;
+		UpdateSpriteColor();
+
+		if (Occupied)
+			gameController.OnFortOccupied(this);
+	}
+
+	public override void OnDamaged()
+	{
+		if (!Occupied)
+		{
+			gameController.OnEnemyFortDamaged();
+		}
+	}
 }
