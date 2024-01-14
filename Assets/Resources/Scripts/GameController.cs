@@ -361,9 +361,14 @@ public class GameController : MonoBehaviour
 					}
 				}
             }
-			foreach (string resource in resources.Keys)
-				dataManager.resources[resource] += resources[resource];
-			// remove when UI added
+
+            if (dataManager.resources["Coal"] + resources["Coal"] > 0)
+            {
+	            foreach (string resource in resources.Keys)
+		            dataManager.resources[resource] += resources[resource];
+            }
+            else dataManager.resources["Coal"] = 0;
+            // remove when UI added
 			//Debug.Log(string.Join(", ", dataManager.resources.Keys) + ": " + string.Join(", ", dataManager.resources.Values));
 			UpdateResourcesUI();
         }

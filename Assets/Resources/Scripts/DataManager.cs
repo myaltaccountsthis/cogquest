@@ -40,7 +40,7 @@ public class DataManager : MonoBehaviour
 		Zone firstZone = gameData.map.zones[0];
 		gameData.cameraPosition = new Vector3(firstZone.posX + firstZone.sizeX / 2, firstZone.posY + firstZone.sizeY / 2, Camera.main.transform.position.z);
 	}
-	
+
 	// Data Save/Load functions
 	private void LoadData()
 	{
@@ -100,7 +100,8 @@ public class DataManager : MonoBehaviour
 	public void ResetData() {
 		Debug.Log("Resetting Data...");
 		try {
-			LoadDefaultData();
+			if(File.Exists(FILE_PATH)) File.Delete(FILE_PATH);
+			LoadData();
 			SaveData();
 		}
 		catch (System.Exception e) {
