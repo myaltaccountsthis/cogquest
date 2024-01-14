@@ -17,15 +17,14 @@ public abstract class Building : Entity
 
 	// Buildings can only be box colliders
 	public new BoxCollider2D collider { get; private set; }
-	protected SpriteRenderer spriteRenderer;
 
+	private static readonly HashSet<string> blacklistedTiles = new HashSet<string>() { "Rock", "Wall" };
 
 	protected override void Awake()
 	{
 		base.Awake();
 
 		collider = GetComponent<BoxCollider2D>();
-		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 
 	public TileBase[] GetOverlappingTiles(Tilemap tilemap)
@@ -35,11 +34,11 @@ public abstract class Building : Entity
 
 	public virtual bool IsValidLocation(Tilemap tilemap)
 	{
-		if (Physics2D.BoxCastAll(transform.position, GetCollisionSize(), 0f, Vector2.zero, 0f, GameController.buildingLayerMask).Length > 0)
+		if (Physics2D.BoxCastAll(transform.position, GetCollisionSize(), 0f, Vector2.zero, 0f, GameController.buildingShadowLayerMask).Length > 0)
 			return false;
 		foreach (TileBase tile in GetOverlappingTiles(tilemap))
 		{
-			if (tile != null && tile.name == "Rock")
+			if (tile == null || blacklistedTiles.Contains(tile.name))
 				return false;
 		}
 		return true;
@@ -53,14 +52,6 @@ public abstract class Building : Entity
 		return new Vector2(collider.size.x - .1f, collider.size.y - .1f);
 	}
 
-	/// <summary>
-	/// Change all sprite renderers in this building to a certain color (used for turrets)
-	/// </summary>
-	public virtual void SetSpriteColor(Color color)
-	{
-		spriteRenderer.color = color;
-	}
-
     protected override List<string> GetEntityInfoList()
     {
         List<string> list = base.GetEntityInfoList();
@@ -69,6 +60,13 @@ public abstract class Building : Entity
 		);
 		return list;
     }
+
+	public override void LoadEntitySaveData(Dictionary<string, string> saveData)
+	{
+		base.LoadEntitySaveData(saveData);
+
+		Physics2D.SyncTransforms();
+	}
 }
 
 public enum BuildingCategory

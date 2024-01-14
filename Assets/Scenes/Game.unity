@@ -1112,7 +1112,7 @@ GameObject:
   - component: {fileID: 281345128}
   - component: {fileID: 281345127}
   - component: {fileID: 281345126}
-  m_Layer: 2
+  m_Layer: 5
   m_Name: SelectionBox
   m_TagString: SelectionBox
   m_Icon: {fileID: 0}
@@ -1225,7 +1225,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -4, y: 0}
-  m_SizeDelta: {x: 40, y: 36}
+  m_SizeDelta: {x: 20, y: 36}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &330565256
 MonoBehaviour:
@@ -1247,7 +1247,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 12
+  m_text: '
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff1f7957fb541094cbecac0ce55ae074, type: 2}
   m_sharedMaterial: {fileID: 7472545929817182632, guid: ff1f7957fb541094cbecac0ce55ae074, type: 2}
@@ -1549,6 +1551,23 @@ MonoBehaviour:
       m_Processors: 
       m_Groups: 
       m_Action: Select Option
+      m_Flags: 0
+    m_Flags: 0
+  cycleCategory:
+    m_Name: Cycle Category
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: ec8e9b2e-8f5d-4513-b6c0-251b9099e6b7
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: b88b6bc3-b8ef-40d9-b355-6f520d7c2f55
+      m_Path: <Keyboard>/tab
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Cycle Category
       m_Flags: 0
     m_Flags: 0
   mouseHoveredEntity: {fileID: 0}
@@ -1895,6 +1914,7 @@ GameObject:
   - component: {fileID: 465286320}
   - component: {fileID: 465286322}
   - component: {fileID: 465286321}
+  - component: {fileID: 465286323}
   m_Layer: 5
   m_Name: State
   m_TagString: Untagged
@@ -1951,7 +1971,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294949249
-  m_fontColor: {r: 0.504717, g: 0.7271022, b: 1, a: 1}
+  m_fontColor: {r: 0.5058824, g: 0.7254902, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1968,8 +1988,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2018,6 +2038,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 465286319}
   m_CullTransparentMesh: 1
+--- !u!114 &465286323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465286319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2508a9775457e7347bb19a60ab2b76cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &473769729
 GameObject:
   m_ObjectHideFlags: 0
@@ -2408,7 +2440,7 @@ GameObject:
   - component: {fileID: 587953932}
   - component: {fileID: 587953934}
   - component: {fileID: 587953933}
-  m_Layer: 2
+  m_Layer: 5
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3730,7 +3762,7 @@ GameObject:
   - component: {fileID: 1125183364}
   - component: {fileID: 1125183366}
   - component: {fileID: 1125183365}
-  m_Layer: 2
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11093,7 +11125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1690795520}
   - component: {fileID: 1690795519}
-  - component: {fileID: 1690795518}
+  - component: {fileID: 1690795521}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -11101,26 +11133,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1690795518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1690795517}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
 --- !u!114 &1690795519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11151,6 +11163,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1690795521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690795517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
 --- !u!1 &1696746888
 GameObject:
   m_ObjectHideFlags: 0
@@ -11429,7 +11471,7 @@ GameObject:
   - component: {fileID: 1833186466}
   - component: {fileID: 1833186465}
   - component: {fileID: 1833186464}
-  m_Layer: 2
+  m_Layer: 5
   m_Name: Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11773,7 +11815,7 @@ GameObject:
   - component: {fileID: 1975685200}
   - component: {fileID: 1975685202}
   - component: {fileID: 1975685201}
-  m_Layer: 2
+  m_Layer: 5
   m_Name: HealthBarInner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12086,7 +12128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2029808335}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Shadows
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12259,7 +12301,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '34
+  m_text: '
 
 '
   m_isRightToLeft: 0
@@ -12410,7 +12452,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ':'
+  m_text: 2:34
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff1f7957fb541094cbecac0ce55ae074, type: 2}
   m_sharedMaterial: {fileID: 7472545929817182632, guid: ff1f7957fb541094cbecac0ce55ae074, type: 2}
@@ -12447,13 +12489,13 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 3
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

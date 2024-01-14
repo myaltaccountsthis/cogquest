@@ -151,20 +151,20 @@
   ],
   "entities": [
     {
-      "keys": ["class", "posX", "posY", "rotation"],
-      "values": ["Fort0", "11", "17", "0"]
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Fort0", "11", "17", "0", "0"]
     },
     {
-      "keys": ["class", "posX", "posY", "rotation"],
-      "values": ["Fort1", "33", "17", "0"]
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Fort1", "33", "17", "0", "1"]
     },
     {
-      "keys": ["class", "posX", "posY", "rotation"],
-      "values": ["Fort2", "59", "17", "0"]
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Fort2", "59", "17", "0", "2"]
     },
     {
-      "keys": ["class", "posX", "posY", "rotation"],
-      "values": ["Fort3", "89", "17", "0"]
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Fort3", "89", "17", "0", "3"]
     }
   ]
 }

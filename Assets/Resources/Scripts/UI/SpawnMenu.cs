@@ -38,7 +38,7 @@ public class SpawnMenu : MonoBehaviour
 			buildOption.onPointerEnter = () => SelectHoverUnit(unit);
 			buildOption.onPointerExit = () => StopHoverUnit();
 			buildOption.SetSprites(unit.previewSprites);
-			option.GetComponent<Button>().onClick.AddListener(() => gameController.SpawnUnit(fort, unit));
+			option.GetComponent<Button>().onClick.AddListener(() => gameController.SpawnPlayerUnit(fort, unit));
 			i++;
 		}
 
