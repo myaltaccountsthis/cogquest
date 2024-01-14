@@ -83,9 +83,11 @@ public class GameController : MonoBehaviour
 	// Build and Delete Building Audio
 	public AudioSource buildAudio;
 	public Vector2 buildAudioRange = new(-1, -1);
+	private Coroutine buildAudioCoroutine;
 
 	public AudioSource destroyAudio;
 	public Vector2 destroyAudioRange = new(-1, -1);
+	private Coroutine destroyAudioCoroutine;
 
 	void Awake()
 	{
@@ -175,7 +177,6 @@ public class GameController : MonoBehaviour
 		// audio start and end pos
 		buildAudio.time = (buildAudioRange.x < 0 || buildAudioRange.x > buildAudio.clip.length) ? 0 : buildAudioRange.x;
 		destroyAudio.time = (destroyAudioRange.x < 0 || destroyAudioRange.x > destroyAudio.clip.length) ? 0 : destroyAudioRange.x;
-		
     }
 
     // Update is called once per frame
@@ -491,7 +492,14 @@ public class GameController : MonoBehaviour
 
 		buildAudio.Play();
 		if (buildAudioRange.y > 0)
-			StartCoroutine(StopAudioAfterOffset(buildAudio, buildAudioRange.y - Math.Max(0, buildAudioRange.x)));
+		{
+			if (buildAudioCoroutine != null)
+			{
+				StopCoroutine(buildAudioCoroutine);
+				buildAudioCoroutine = null;
+			}
+			buildAudioCoroutine = StartCoroutine(StopAudioAfterOffset(buildAudio, buildAudioRange.y - Math.Max(0, buildAudioRange.x)));
+		}
 		
 		return true;
 	}
@@ -519,14 +527,22 @@ public class GameController : MonoBehaviour
 
 		destroyAudio.Play();
 		if (destroyAudioRange.y > 0)
-			StartCoroutine(StopAudioAfterOffset(destroyAudio, destroyAudioRange.y - Math.Max(0, destroyAudioRange.x)));
+		{
+			if (destroyAudioCoroutine != null)
+			{
+				StopCoroutine(destroyAudioCoroutine);
+				destroyAudioCoroutine = null;
+			}
+			destroyAudioCoroutine = StartCoroutine(StopAudioAfterOffset(destroyAudio, destroyAudioRange.y - Math.Max(0, destroyAudioRange.x)));
+		}
 	}
 
 	IEnumerator StopAudioAfterOffset(AudioSource audio, float offset)
 	{
 		yield return new WaitForSeconds(offset);
 		audio.Stop();
-		Debug.Log(audio.time);
+		if (audio == buildAudio) buildAudioCoroutine = null;
+		if (audio == destroyAudio) destroyAudioCoroutine = null;
 	}
 
 	public void OnBuildingDestroyed(Building building)
