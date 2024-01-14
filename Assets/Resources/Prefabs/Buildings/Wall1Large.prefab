@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: Wall1Large
   displayName: Large Stone Wall
-  MAX_HEALTH: 1000
+  MAX_HEALTH: 2000
   cost:
     keys:
     - Stone

@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: Wall2Large
   displayName: Large Copper Wall
-  MAX_HEALTH: 1400
+  MAX_HEALTH: 2800
   cost:
     keys:
     - Copper
