@@ -90,6 +90,7 @@ public class DataManager : MonoBehaviour
 		{
 			Debug.LogWarning("Failed to save data.\n" + e.ToString());
 		}
+		SaveMapUncompressed();
 	}
 	
 	public void ResetData() {
@@ -121,7 +122,8 @@ public class DataManager : MonoBehaviour
 	// for testing
 	public void SaveMapUncompressed()
 	{
-		FileLoader.WriteFile(Application.persistentDataPath + "/testmap.txt", JsonUtility.ToJson(gameData.map));
+		//FileLoader.WriteFile(Application.persistentDataPath + "/testmap.txt", JsonUtility.ToJson(gameData.map));
+		FileLoader.WriteAndCompress(Application.persistentDataPath + "/compressedmap.txt", mapFile.text);
 	}
 }
 

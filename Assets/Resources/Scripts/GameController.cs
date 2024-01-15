@@ -244,9 +244,11 @@ public class GameController : MonoBehaviour
 			}
 		}
 
+		bool wonGame = dataManager.gameData.map.furthestZone >= dataManager.gameData.map.zones.Length - 1;
+
 		// Update Timer
-		timer.SetTime(dataManager.gameData.timer);
-		state.UpdateState(dataManager.gameData.timer);
+		timer.SetTime(wonGame ? dataManager.gameData.totalTime : dataManager.gameData.timer);
+		state.UpdateState(dataManager.gameData.timer, wonGame);
 
 		// Check if mouse is on UI
 		PointerEventData ped = new PointerEventData(null);
@@ -321,7 +323,7 @@ public class GameController : MonoBehaviour
 				}
 				else if (currentBuildAction == BuildAction.Delete && hoveredEntity != null)
 				{
-					DeleteSelectedBuilding();
+					DeleteSelectedEntity();
 				}
 				else if (hoveredEntity != null && hoveredEntity.team == 0)
 				{
@@ -482,7 +484,8 @@ public class GameController : MonoBehaviour
 		cameraCenter.x = Mathf.Clamp(cameraCenter.x, bounds.xMin + .5f, bounds.xMax - .5f);
 		cameraCenter.y = Mathf.Clamp(cameraCenter.y, bounds.yMin + .5f, bounds.yMax - .5f);
 		camera.transform.position = cameraCenter;
-		dataManager.gameData.timer -= Time.deltaTime;
+		if (!wonGame)
+			dataManager.gameData.timer -= Time.deltaTime;
 		dataManager.gameData.totalTime += Time.deltaTime;
 	}
 
@@ -493,7 +496,7 @@ public class GameController : MonoBehaviour
 	
 	void OnGUI()
 	{
-		if (GameController.isPaused)
+		if (isPaused || Time.deltaTime == 0f)
 			return;
 		float newFPS = 1.0f / Time.deltaTime;
 		fps = Mathf.Lerp(fps, newFPS, 0.03f);
@@ -540,7 +543,6 @@ public class GameController : MonoBehaviour
 	{
 		dataManager.gameData.map.entities = SaveEntitiesToData();
 		dataManager.SaveData();
-		dataManager.SaveMapUncompressed();
 	}
 
 	/// <summary>
@@ -667,7 +669,7 @@ public class GameController : MonoBehaviour
 	/// <summary>
 	/// Deletes a selected building and refunds at most half the materials used
 	/// </summary>
-	public void DeleteSelectedBuilding()
+	public void DeleteSelectedEntity()
 	{
 		if (hoveredEntity == null)
 			return;
@@ -675,16 +677,14 @@ public class GameController : MonoBehaviour
 		if (!hoveredEntity.CanDestroy)
 			return;
 
-		Building building = (Building)hoveredEntity;
-
 		// Refund player for half the building's resources, based on health
-		float refundPercent = building.HealthFraction / 2f;
-		foreach (KeyValuePair<string, int> resourceCost in building.Cost)
+		float refundPercent = hoveredEntity.HealthFraction / 2f;
+		foreach (KeyValuePair<string, int> resourceCost in hoveredEntity.Cost)
 		{
 			dataManager.resources[resourceCost.Key] += Mathf.FloorToInt(resourceCost.Value * refundPercent);
 		}
 
-		OnBuildingDestroyed(building);
+		OnEntityDestroyed(hoveredEntity);
 
 		UpdateResourcesUI();
 
@@ -708,10 +708,13 @@ public class GameController : MonoBehaviour
 		if (audio == destroyAudio) destroyAudioCoroutine = null;
 	}
 
-	public void OnBuildingDestroyed(Building building)
+	/// <summary>
+	/// Called when the player deletes an entity
+	/// </summary>
+	public void OnEntityDestroyed(Entity entity)
 	{
-		entities.Remove(building);
-		Destroy(building.gameObject);
+		entities.Remove(entity);
+		Destroy(entity.gameObject);
 	}
 
 	/// <summary>
