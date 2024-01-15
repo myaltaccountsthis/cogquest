@@ -110,6 +110,12 @@ public abstract class Entity : MonoBehaviour
 
         health -= damage;
         OnDamaged();
+
+        if (this is Building building)
+        {
+            building.PlayDamagedAudio();
+        }
+        
         if (health <= 0f)
         {
             OnDestroyed();
@@ -121,7 +127,7 @@ public abstract class Entity : MonoBehaviour
 		healthBar.SetPercentage(HealthFraction);
         healthBar.ResetFade();
         healthBar.SetActive(true);
-
+        
 		if (!Occupied)
 		{
 			gameController.OnEnemyFortDamaged();

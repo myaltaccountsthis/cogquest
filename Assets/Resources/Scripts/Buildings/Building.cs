@@ -8,6 +8,7 @@ public abstract class Building : Entity
 {
 	public BuildingCategory category = BuildingCategory.None;
 	[SerializeField] private int coalUse;
+	private AudioSource buildingDamageAudio;
 
 	public int CoalUse
 	{
@@ -22,7 +23,7 @@ public abstract class Building : Entity
 	protected override void Awake()
 	{
 		base.Awake();
-
+		buildingDamageAudio = GameObject.Find("Building Damage").GetComponent<AudioSource>();
 		collider = GetComponent<BoxCollider2D>();
 	}
 
@@ -65,6 +66,11 @@ public abstract class Building : Entity
 		base.LoadEntitySaveData(saveData);
 
 		Physics2D.SyncTransforms();
+	}
+
+	public void PlayDamagedAudio()
+	{
+		AudioSource.PlayClipAtPoint(buildingDamageAudio.clip, transform.position);
 	}
 }
 

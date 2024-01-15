@@ -32,6 +32,8 @@ public abstract class Unit : Entity
 	private bool isAttacking = false;
 	private bool retargetCooldown = false;
 
+	private AudioSource attackAudio;
+
 	protected override void Awake()
 	{
 		base.Awake();
@@ -39,6 +41,8 @@ public abstract class Unit : Entity
 		range.onEnemyDetected += OnEnemyDetected;
 
 		Debug.Assert(GetComponent<Rigidbody2D>().isKinematic, "Unit rigidbody type should be set to kinematic");
+
+		attackAudio = gameObject.GetComponent<AudioSource>();
 	}
 
 	protected override void Start()
@@ -257,6 +261,7 @@ public abstract class Unit : Entity
 		
 		isAttacking = true;
 		behavior = UnitBehavior.Attacking;
+		attackAudio.Play();
 		DoAttack();
 		Invoke(nameof(TestDoneAttacking), attackInterval);
 

@@ -102,6 +102,11 @@ public class GameController : MonoBehaviour
 	public AudioSource destroyAudio;
 	public Vector2 destroyAudioRange = new(-1, -1);
 	private Coroutine destroyAudioCoroutine;
+	
+	// Fort Capture and Win Audio
+	public AudioSource playerCaptureAudio;
+	public AudioSource enemyCaptureAudio;
+	public AudioSource winAudio;
 
 	void Awake()
 	{
@@ -177,6 +182,10 @@ public class GameController : MonoBehaviour
 		selectionBox.gameObject.SetActive(false);
 		hoveredEntity = null;
 		prevClickedEntity = null;
+		
+		// have win and loss audio bypass audiolistener pause
+		winAudio.ignoreListenerPause = true;
+		enemyCaptureAudio.ignoreListenerPause = true;
 	}
 
 	// Start is called before the first frame update
@@ -548,14 +557,21 @@ public class GameController : MonoBehaviour
 	public void WinSequence()
 	{
 		menuManager.SetWinScreenActive(true);
+		winAudio.Play();
 	}
 
 	public void DefeatSequence()
 	{
 		dataManager.ResetData();
 		menuManager.SetGameOverScreenActive(true);
+		enemyCaptureAudio.Play();
 	}
-	
+
+	public void PlayCaptureAudio(bool enemy)
+	{
+		if (enemy) enemyCaptureAudio.Play();
+		else playerCaptureAudio.Play();
+	}
 
 	/// <summary>
 	/// Place the selected building

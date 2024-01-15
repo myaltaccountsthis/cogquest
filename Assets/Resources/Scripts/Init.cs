@@ -13,6 +13,7 @@ public class Init : MonoBehaviour
 		Application.targetFrameRate = 60;
 		QualitySettings.vSyncCount = 1;
 		dataManager = GetComponent<DataManager>();
+		GameController.isPaused = false;
 		AudioListener.pause = false;
 	}
 	

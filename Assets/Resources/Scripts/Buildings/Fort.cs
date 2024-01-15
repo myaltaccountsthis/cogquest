@@ -44,6 +44,8 @@ public class Fort : Building
 			gameController.OnFortOccupied(this);
 			if(TIER == 3)
 				gameController.WinSequence();
+			else 
+				gameController.PlayCaptureAudio(false);
 		}
 		else
 		{
@@ -51,6 +53,8 @@ public class Fort : Building
 
 			if (TIER == 0)
 				gameController.DefeatSequence();
+			else
+				gameController.PlayCaptureAudio(true);
 		}
 		
 		healthBar.SetPercentage(HealthFraction);
