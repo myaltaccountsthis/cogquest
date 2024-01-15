@@ -493,7 +493,8 @@ public class GameController : MonoBehaviour
 
 	void OnApplicationQuit()
 	{
-		SaveData();
+		if(!menuManager.gameOverScreen.activeSelf) 
+			SaveData();
 	}
 	
 	void OnGUI()
