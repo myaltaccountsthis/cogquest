@@ -256,7 +256,7 @@ MonoBehaviour:
     - Copper
     - Iron
     values: c800000096000000
-  deletable: 0
+  deletable: 1
   team: 1
   active: 0
   otherSpriteRenderers:

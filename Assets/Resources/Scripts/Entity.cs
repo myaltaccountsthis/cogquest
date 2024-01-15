@@ -19,7 +19,8 @@ public abstract class Entity : MonoBehaviour
     [SerializeField]
     protected DataDictionary<string, int> cost;
     public bool deletable;
-    public int team;
+	public bool CanDestroy => Occupied && deletable;
+	public int team;
 
     public bool active;
 
@@ -162,7 +163,7 @@ public abstract class Entity : MonoBehaviour
             team = int.Parse(teamStr);
 
         UpdateSpriteColor();
-		healthBar.SetPercentage(health);
+		healthBar.SetPercentage(HealthFraction);
 	}
 
     public virtual void UpdateSpriteColor()

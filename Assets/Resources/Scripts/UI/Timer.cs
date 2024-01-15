@@ -18,9 +18,12 @@ public class Timer : MonoBehaviour
 
 	public void SetTime(float timer)
 	{
-		int time = Mathf.CeilToInt(Mathf.Max(0f, timer));
-		int min = time / 60, sec = time % 60;
-		main.text = string.Format("{0}:{1:D2}", min, sec);
+		int time;
+		if (timer < 0f)
+			time = Mathf.FloorToInt(-timer);
+		else
+			time = Mathf.CeilToInt(timer);
+		main.text = GameController.FormatMinutesSeconds(time);
 		//minutes.text = min.ToString();
 		//seconds.text = string.Format("{0:D2}", sec);
 	}

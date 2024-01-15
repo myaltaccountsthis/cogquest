@@ -242,7 +242,7 @@ MonoBehaviour:
   cost:
     keys:
     - Wood
-    values: 64000000
+    values: 3c000000
   deletable: 1
   team: 0
   active: 0

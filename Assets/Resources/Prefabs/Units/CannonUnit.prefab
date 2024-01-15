@@ -257,7 +257,7 @@ MonoBehaviour:
     - Stone
     - Copper
     values: 6400000064000000c8000000
-  deletable: 0
+  deletable: 1
   team: 1
   active: 0
   otherSpriteRenderers:
