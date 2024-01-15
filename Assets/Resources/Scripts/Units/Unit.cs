@@ -260,7 +260,7 @@ public abstract class Unit : Entity
 		
 		isAttacking = true;
 		behavior = UnitBehavior.Attacking;
-		attackAudio.Play();
+		if(!attackAudio.isPlaying) attackAudio.Play();
 		DoAttack();
 		Invoke(nameof(TestDoneAttacking), attackInterval);
 
