@@ -13,13 +13,11 @@ public class Init : MonoBehaviour
 		Application.targetFrameRate = 60;
 		QualitySettings.vSyncCount = 1;
 		dataManager = GetComponent<DataManager>();
-		GameController.isPaused = false;
-		AudioListener.pause = false;
+		GameController.SetPaused(false);
 	}
 	
 	public void ChangeScene(string scene)
 	{
-		GameController.SetPaused(false);
 		GameController gameController = FindFirstObjectByType<GameController>();
 		if (gameController != null)
 			gameController.SaveData();
@@ -27,7 +25,6 @@ public class Init : MonoBehaviour
 	}
 	
 	public void ResetAndChangeScene(string scene) {
-		// TODO: dataManager - integrate with database
 		dataManager.ResetData();
 		SceneManager.LoadScene(scene);
 	}
