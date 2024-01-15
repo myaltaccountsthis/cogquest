@@ -45,7 +45,14 @@ public class Fort : Building
 		UpdateSpriteColor();
 
 		if (Occupied)
+		{
 			gameController.OnFortOccupied(this);
+			if(TIER == 3) gameController.WinSequence();
+		}
+		else if (TIER == 0)
+		{
+			gameController.DefeatSequence();
+		}
 	}
 
 	public override void OnDamaged()

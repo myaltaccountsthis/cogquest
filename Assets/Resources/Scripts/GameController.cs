@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
 {
 	// Managers
 	private DataManager dataManager;
+	private MenuManager menuManager;
 	private BuildMenu buildMenu;
 	private SpawnMenu spawnMenu;
 
@@ -85,16 +86,10 @@ public class GameController : MonoBehaviour
 	// Time & Pause System
 	private float time = 0;
 	public static bool isPaused { get; internal set; }
-	public GameObject pauseMenu;
-	public bool Paused
+	public static void SetPaused(bool value)
 	{
-		get => isPaused;
-		set
-		{
-			isPaused = value;
-			AudioListener.pause = isPaused;
-			pauseMenu.SetActive(isPaused);
-		}
+		isPaused = value;
+		AudioListener.pause = isPaused;
 	}
 	
 	// Build and Delete Building Audio
@@ -109,6 +104,7 @@ public class GameController : MonoBehaviour
 	void Awake()
 	{
         dataManager = GameObject.Find("Init").GetComponent<DataManager>();
+        menuManager = GameObject.Find("Init").GetComponent<MenuManager>();
 		buildMenu = GameObject.Find("BuildMenu").GetComponent<BuildMenu>();
 		spawnMenu = GameObject.Find("SpawnMenu").GetComponent<SpawnMenu>();
         tilemap = GameObject.FindWithTag("Tilemap").GetComponent<Tilemap>();
@@ -226,7 +222,7 @@ public class GameController : MonoBehaviour
 				selectedBuilding.SetSpriteColor(selectedBuildingInvalidColor);
 			}
 		}
-
+		
 		timer.SetTime(dataManager.gameData.timer);
 		state.UpdateState(dataManager.gameData.timer);
 
@@ -439,7 +435,7 @@ public class GameController : MonoBehaviour
 	{
 		SaveData();
 	}
-
+	
 	void OnGUI()
 	{
 		float newFPS = 1.0f / Time.deltaTime;
@@ -528,6 +524,18 @@ public class GameController : MonoBehaviour
 		float offsetX = size.x % 2 / 2, offsetY = size.y % 2 / 2;
 		return new Vector3(Mathf.Round(pos.x - offsetX) + offsetX, Mathf.Round(pos.y - offsetY) + offsetY, 0);
 	}
+
+	public void WinSequence()
+	{
+		menuManager.SetWinScreenActive(true);
+	}
+
+	public void DefeatSequence()
+	{
+		dataManager.ResetData();
+		menuManager.SetGameOverScreenActive(true);
+	}
+	
 
 	/// <summary>
 	/// Place the selected building
