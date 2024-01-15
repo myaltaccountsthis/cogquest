@@ -2,19 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
-public class Unit : Entity
+public abstract class Unit : Entity
 {
     [SerializeField]
     protected float speed;
 	[SerializeField]
 	protected float attackRange;
 	[SerializeField]
-	private Vector2[] patrolWaypoints;
+	protected Vector2[] patrolWaypoints;
 	[SerializeField]
-	private float patrolInterval;
+	protected float patrolInterval;
 	[SerializeField]
-	private float damage;
+	protected float attackInterval;
+	[SerializeField]
+	protected float damage;
 
 	public Range range;
 	public int zoneToUnlock;
@@ -42,6 +45,7 @@ public class Unit : Entity
 	{
 		base.Start();
 
+		range.Activate();
 		Patrol();
 	}
 
@@ -79,10 +83,7 @@ public class Unit : Entity
 				}
 				else
 				{
-					Vector3 targetPos = target.transform.position;
-					if (target is Building building)
-						targetPos = building.collider.ClosestPoint(transform.position);
-					if (MoveToPoint(targetPos, attackRange))
+					if (MoveToPoint(GetTargetPos(target), attackRange))
 					{
 						Attack();
 					}
@@ -97,17 +98,28 @@ public class Unit : Entity
 				{
 					Patrol();
 				}
-				else if (!IsInRange(target.transform.position))
+				else if (!IsInRange(GetTargetPos(target)))
 				{
 					behavior = UnitBehavior.Following;
 				}
 				else
 				{
+					LookAtPoint(GetTargetPos(target));
 					Attack();
 				}
 
 				break;
 		}
+	}
+
+	private Vector3 GetTargetPos(Entity target)
+	{
+		if (target == null)
+			return Vector3.zero;
+		Vector3 targetPos = target.transform.position;
+		if (target is Building building && this is not RangedUnit)
+			targetPos = building.collider.ClosestPoint(transform.position);
+		return targetPos;
 	}
 
 	private bool IsInRange(Vector3 point)
@@ -140,10 +152,16 @@ public class Unit : Entity
 		}
 
 		transform.position += moveVector;
-		if (moveVector.magnitude > 0)
-			transform.eulerAngles = moveVector.DirectionToEulerAngles();
+		LookAtPoint(point);
 
 		return IsInRange(point, distance);
+	}
+
+	private void LookAtPoint(Vector3 point)
+	{
+		Vector3 direction = point - transform.position;
+		if (direction.magnitude > 0)
+			transform.eulerAngles = direction.DirectionToEulerAngles();
 	}
 
 	/// <summary>
@@ -168,15 +186,16 @@ public class Unit : Entity
 	public void Patrol(Vector2[] waypoints)
 	{
 		behavior = UnitBehavior.Patrolling;
-		range.shouldRetarget = true;
-		range.Rescan();
+		retargetCooldown = true;
+		patrolWaiting = false;
 		currentPatrolIndex = 0;
 		patrolWaypoints = waypoints;
 		SetNextPatrolPoint();
-		patrolWaiting = false;
-		retargetCooldown = true;
-		Invoke(nameof(AfterRetargetCooldown), 2f);
+		range.shouldRetarget = true;
+		range.Rescan();
+		CancelInvoke(nameof(AfterRetargetCooldown));
 		CancelInvoke(nameof(EnablePatrol));
+		Invoke(nameof(AfterRetargetCooldown), 1f);
 	}
 
 	private void AfterRetargetCooldown()
@@ -236,22 +255,12 @@ public class Unit : Entity
 		isAttacking = true;
 		behavior = UnitBehavior.Attacking;
 		DoAttack();
-		Invoke(nameof(TestDoneAttacking), 1);
+		Invoke(nameof(TestDoneAttacking), attackInterval);
 
 		return true;
 	}
 
-	public virtual void DoAttack()
-	{
-        // TODO move this to MeleeUnit subclass
-        foreach (Collider2D collider in transform.Find("AttackHitbox").GetComponent<Collider2D>().GetCollisions(team))
-        {
-            if (collider != null && collider.TryGetComponent(out Entity entity) && entity.team != team)
-			{
-				entity.TakeDamage(damage);
-			}
-        }
-    }
+	public abstract void DoAttack();
 
 	private void TestDoneAttacking()
 	{
@@ -274,7 +283,7 @@ public class Unit : Entity
 		if (team == 0)
 			gameObject.layer = LayerMask.NameToLayer("PlayerUnits");
 		range.team = team;
-		range.Activate();
+		//range.Activate();
 	}
 
 	public override Dictionary<string, string> GetEntitySaveData()

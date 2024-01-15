@@ -31,7 +31,12 @@ public class UIOption : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 			Image imagePrefab = Resources.Load<Image>("Prefabs/BuildingOptionImage");
 			for (int i = 1; i < sprites.Length; i++)
 			{
-				Instantiate(imagePrefab, transform).sprite = sprites[i];
+				Sprite sprite = sprites[i];
+				Image clone = Instantiate(imagePrefab, transform);
+				clone.sprite = sprite;
+				clone.rectTransform.sizeDelta = sprite.bounds.size * 40;
+				clone.rectTransform.pivot = sprite.pivot / (sprite.bounds.size * sprite.pixelsPerUnit);
+				clone.rectTransform.anchoredPosition = Vector2.zero;
 			}
 		}
 	}

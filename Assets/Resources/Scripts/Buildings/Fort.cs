@@ -1,12 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class Fort : Building
 {
-    private GameController gameController;
 
 	[SerializeField]
     private int TIER;
@@ -18,8 +15,6 @@ public class Fort : Building
 
 	protected override void Awake() {
         base.Awake();
-
-        gameController = GameObject.Find("Canvas").GetComponent<GameController>();
     }
 
     
@@ -46,13 +41,13 @@ public class Fort : Building
 
 		if (Occupied)
 			gameController.OnFortOccupied(this);
+		else
+			gameController.OnFortLost(this);
+		healthBar.SetPercentage(HealthFraction);
 	}
 
 	public override void OnDamaged()
 	{
-		if (!Occupied)
-		{
-			gameController.OnEnemyFortDamaged();
-		}
+		base.OnDamaged();
 	}
 }

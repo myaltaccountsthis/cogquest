@@ -98,10 +98,10 @@ CircleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 63
+    m_Bits: 447
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -135,6 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 0
   shouldRetarget: 1
+  active: 0
 --- !u!1 &8865385274365504654
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,6 +148,7 @@ GameObject:
   - component: {fileID: 8532680994760311543}
   - component: {fileID: 646482880742270180}
   - component: {fileID: 1995028805216522328}
+  - component: {fileID: 2821779417578577258}
   m_Layer: 3
   m_Name: Turret1
   m_TagString: Untagged
@@ -236,7 +238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: Turret1
   displayName: Turret Mk.2
-  MAX_HEALTH: 500
+  MAX_HEALTH: 300
   cost:
     keys:
     - Wood
@@ -245,9 +247,8 @@ MonoBehaviour:
   deletable: 1
   team: 0
   active: 0
-  previewSprites:
-  - {fileID: 30516125, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
-  - {fileID: -1327927042, guid: adb356c7683c3f04faec7b743f61f964, type: 3}
+  otherSpriteRenderers:
+  - {fileID: 1691555927308242172}
   category: 3
   coalUse: 0
   fireRate: 2
@@ -300,3 +301,30 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!50 &2821779417578577258
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8865385274365504654}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

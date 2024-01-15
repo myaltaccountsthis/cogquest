@@ -55,7 +55,7 @@ public abstract class Building : Entity
     {
         List<string> list = base.GetEntityInfoList();
 		list.Add(
-			"Coal use: " + coalUse
+			(coalUse >= 0 ? "Coal use: " + coalUse : "Coal gain: " + -coalUse)
 		);
 		return list;
     }

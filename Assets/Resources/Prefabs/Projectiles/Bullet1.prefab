@@ -102,7 +102,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -173,13 +173,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: Bullet1
   displayName: Bullet
-  MAX_HEALTH: 2
+  MAX_HEALTH: 8
   cost:
     keys: []
     values: 
   deletable: 0
   team: 0
   active: 0
-  previewSprites: []
+  otherSpriteRenderers: []
   speed: 5
   lifetime: 5

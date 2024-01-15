@@ -40,9 +40,19 @@ public class Projectile : Entity
 		{
 			// Use max health as damage
 			entity.TakeDamage(MAX_HEALTH);
+			Destroy(gameObject);
 		}
+	}
 
-		Destroy(gameObject);
+	void OnTriggerEnter2D(Collider2D collider)
+	{
+		Entity entity = collider.GetComponent<Entity>();
+		if (entity != null && entity.team != team)
+		{
+			// Use max health as damage
+			entity.TakeDamage(MAX_HEALTH);
+			Destroy(gameObject);
+		}
 	}
 
 	public override void LoadEntitySaveData(Dictionary<string, string> saveData)
@@ -53,6 +63,16 @@ public class Projectile : Entity
 			timeAlive = float.Parse(timeAliveStr);
 
 		GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(Vector3.up) * speed;
+
+		Collider2D collider = GetComponent<Collider2D>();
+		if (team == 0)
+		{
+			collider.excludeLayers = LayerMask.GetMask("PlayerUnits", "Projectiles");
+		}
+		else
+		{
+			collider.excludeLayers = LayerMask.GetMask("Units", "Projectiles");
+		}
 	}
 
 	public override Dictionary<string, string> GetEntitySaveData()

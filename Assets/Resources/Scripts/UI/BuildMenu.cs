@@ -79,13 +79,14 @@ public class BuildMenu : MonoBehaviour
 			int i = int.Parse(ctx.control.name) - 1;
 			if (i < options.childCount)
 			{
-				SelectBuildAction(BuildAction.Build);
 				options.GetChild(i).GetComponent<Button>().onClick.Invoke();
 			}
 		};
 		cycleCategory.performed += ctx =>
 		{
-			LoadCategory(categoryOptions[(categoryOptions.IndexOf(categoryName.text) + 1) % categoryOptions.Count]);
+			int n = categoryOptions.Count;
+			int i = (categoryOptions.IndexOf(categoryName.text) + (Input.GetKey(KeyCode.LeftShift) ? n - 1 : 1)) % n;
+			LoadCategory(categoryOptions[i]);
 		};
 	}
 
@@ -218,8 +219,7 @@ public class BuildMenu : MonoBehaviour
 
 	private void SelectBuilding(Building building)
 	{
-		if (gameController.currentBuildAction != BuildAction.Build)
-			return;
+		SelectBuildAction(BuildAction.Build);
 
 		selectedOption = building.entityName;
 		UpdateInfo();

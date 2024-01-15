@@ -173,13 +173,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: Bullet0
   displayName: Bullet
-  MAX_HEALTH: 10
+  MAX_HEALTH: 5
   cost:
     keys: []
     values: 
   deletable: 0
   team: 0
   active: 0
-  previewSprites: []
+  otherSpriteRenderers: []
   speed: 5
   lifetime: 5
