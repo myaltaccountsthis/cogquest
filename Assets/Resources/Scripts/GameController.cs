@@ -245,10 +245,7 @@ public class GameController : MonoBehaviour
 		}
 
 		// Update Timer
-		if (dataManager.gameData.timer > 0)
-			timer.SetTime(dataManager.gameData.timer);
-		else
-			timer.SetTime(dataManager.gameData.totalTime);
+		timer.SetTime(dataManager.gameData.timer);
 		state.UpdateState(dataManager.gameData.timer);
 
 		// Check if mouse is on UI
@@ -277,12 +274,13 @@ public class GameController : MonoBehaviour
 			
 			if (entity is Building)
 			{
-				selectionBox.anchoredPosition = result.transform.position;
-				selectionBox.sizeDelta = result.collider.GetComponent<BoxCollider2D>().size;
+				Bounds bounds = result.collider.GetComponent<Collider2D>().bounds;
+				selectionBox.anchoredPosition = bounds.center;
+				selectionBox.sizeDelta = bounds.size;
 				//selectionBox.transform.localScale = (Vector3)result.collider.GetComponent<BoxCollider2D>().size + new Vector3(.1f, .1f, 1);
 				selectionBox.gameObject.SetActive(true);
 
-				selectionBoxImage.color = currentBuildAction == BuildAction.Delete && entity.deletable ? selectionBoxDeleteColor : selectionBoxHoverColor;
+				selectionBoxImage.color = currentBuildAction == BuildAction.Delete && entity.CanDestroy ? selectionBoxDeleteColor : selectionBoxHoverColor;
 			}
 
 			// Update info text
@@ -437,16 +435,35 @@ public class GameController : MonoBehaviour
 
 		// Random enemy spawning (only if timer is negative)
 		float t = -(dataManager.gameData.timer - Time.deltaTime);
-		if (t >= 0 && IntervalPassed(dataManager.gameData.map.enemySpawnInterval))
+		if (t >= 0 && IntervalPassed(dataManager.gameData.map.enemySpawnInterval, -dataManager.gameData.timer + dataManager.gameData.map.enemySpawnInterval))
 		{
 			// Update shadows if attack just started
-			if (dataManager.gameData.timer >= 0)
+			// Additional check in case there is no next zone, but timer should be frozen
+			int nextZoneIndex = dataManager.gameData.map.furthestZone + 1;
+			if (dataManager.gameData.timer >= 0 && nextZoneIndex < dataManager.gameData.map.zones.Length)
+			{
 				UpdateShadows();
+
+				// Also enable all enemies' range in next zone
+				Zone zone = dataManager.gameData.map.zones[nextZoneIndex];
+				Rect zoneRect = new Rect(zone.posX, zone.posY, zone.sizeX, zone.sizeY);
+				foreach (Entity entity in entities.Where(entity => zoneRect.Contains(entity.transform.position)))
+				{
+					if (entity is Turret turret && !turret.range.active)
+						turret.range.Activate();
+					else if (entity is Unit unit && !unit.range.active)
+					{
+						unit.range.Activate();
+						unit.LoadEntitySaveData(GetAggroEnemyPatrolData(nextZoneIndex));
+						unit.Patrol();
+					}
+				}
+			}
 			// Spawn units for each fort that is alive
 			foreach (Fort fort in entities.Where(entity => entity is Fort fort && !fort.Occupied && fort.Tier <= dataManager.gameData.map.furthestZone + 1)
 				.Select(entity => (Fort)entity).ToArray())
 			{
-				SpawnRandomEnemyUnit(fort, Mathf.FloorToInt((2 + 2f * fort.Tier) * (.8f + t / 240f)));
+				SpawnRandomEnemyUnit(fort, Mathf.FloorToInt((0f + 3f * fort.Tier) * (.8f + t / 240f)));
 			}
 		}
 
@@ -476,9 +493,11 @@ public class GameController : MonoBehaviour
 	
 	void OnGUI()
 	{
+		if (GameController.isPaused)
+			return;
 		float newFPS = 1.0f / Time.deltaTime;
 		fps = Mathf.Lerp(fps, newFPS, 0.03f);
-        GUI.Label(new Rect(2, Screen.height - 22, 15, 20), ((int)fps).ToString());
+        GUI.Label(new Rect(2, Screen.height - 22, 24, 20), ((int)fps).ToString());
 	}
 
 	public HealthBar InstantiateHealthBar()
@@ -491,11 +510,16 @@ public class GameController : MonoBehaviour
 	/// </summary>
 	/// <param name="interval">Period of how often true should be returned</param>
 	/// <returns>True if the interval was passed</returns>
-	public bool IntervalPassed(float interval)
+	public bool IntervalPassed(float interval, float t)
 	{
 		// Add constant so all numbers are positive
-		float t = dataManager.gameData.totalTime;
 		return (t + Time.deltaTime) % interval < t % interval;
+	}
+
+	public bool IntervalPassed(float interval)
+	{
+		float t = dataManager.gameData.totalTime;
+		return IntervalPassed(interval, t);
 	}
 
 	/// <summary>
@@ -648,7 +672,7 @@ public class GameController : MonoBehaviour
 		if (hoveredEntity == null)
 			return;
 
-		if (!hoveredEntity.deletable)
+		if (!hoveredEntity.CanDestroy)
 			return;
 
 		Building building = (Building)hoveredEntity;
@@ -826,7 +850,7 @@ public class GameController : MonoBehaviour
 	/// <param name="fort">Fort to spawn at for team number</param>
 	/// <param name="unit">Unit prefab</param>
 	/// <param name="saveData">Additional save data (patrolWaypoints, patrolMode)</param>
-	public void SpawnUnit(Fort fort, Unit unit, Dictionary<string, string> saveData)
+	public Unit SpawnUnit(Fort fort, Unit unit, Dictionary<string, string> saveData)
 	{
 		Vector2 randomSpawn = (Vector2)fort.transform.position + UnityEngine.Random.insideUnitCircle * 2f;
 
@@ -834,7 +858,20 @@ public class GameController : MonoBehaviour
 		saveData["posY"] = randomSpawn.y.ToString();
 		saveData["team"] = fort.team.ToString();
 		saveData["class"] = unit.entityName;
-		AddEntity(saveData);
+		return (Unit)AddEntity(saveData);
+	}
+
+	public Dictionary<string, string> GetAggroEnemyPatrolData(int tier)
+	{
+		// Select previous forts (Tier < fort.Tier) and arrange them in descending order (furthest from player fort first)
+		Vector2[] previousForts = entities.Where(entity => entity is Fort f && f.Tier < tier)
+			.OrderByDescending(entity => ((Fort)entity).Tier)
+			.Select(entity => (Vector2)entity.transform.position).ToArray();
+		return new Dictionary<string, string>()
+		{
+			{ "patrolWaypoints", Unit.PatrolWaypointsToString(previousForts) },
+			{ "patrolMode", "Waypoints" }
+		};
 	}
 
 	/// <summary>
@@ -842,17 +879,8 @@ public class GameController : MonoBehaviour
 	/// </summary>
 	public void SpawnAggroEnemyUnit(Fort fort, Unit unit)
 	{
-		// Select previous forts (Tier < fort.Tier) and arrange them in descending order (furthest from player fort first)
-		Vector2[] previousForts = entities.Where(entity => entity is Fort f && f.Tier < fort.Tier)
-			.OrderByDescending(entity => ((Fort)entity).Tier)
-			.Select(entity => (Vector2)entity.transform.position).ToArray();
-		Dictionary<string, string> saveData = new Dictionary<string, string>()
-		{
-			{ "patrolWaypoints", Unit.PatrolWaypointsToString(previousForts) },
-			{ "patrolMode", "Waypoints" }
-		};
-
-		SpawnUnit(fort, unit, saveData);
+		// Manually activate range
+		SpawnUnit(fort, unit, GetAggroEnemyPatrolData(fort.Tier)).range.Activate();
 	}
 
 	public void OpenSpawnMenu(Fort fort)
@@ -938,7 +966,13 @@ public class GameController : MonoBehaviour
 	public string GetPlayTimeFormatted()
 	{
 		int time = (int)dataManager.gameData.totalTime;
-		return (time / 60) + ":" + (time % 60);
+		return FormatMinutesSeconds(time);
+	}
+
+	public static string FormatMinutesSeconds(int time)
+	{
+		int min = time / 60, sec = time % 60;
+		return string.Format("{0}:{1:D2}", min, sec);
 	}
 }
 

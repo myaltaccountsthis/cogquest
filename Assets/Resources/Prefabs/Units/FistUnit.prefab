@@ -254,7 +254,7 @@ MonoBehaviour:
     keys:
     - Wood
     values: 28000000
-  deletable: 0
+  deletable: 1
   team: 1
   active: 0
   otherSpriteRenderers:
@@ -275,6 +275,7 @@ MonoBehaviour:
   animFramesPerSecond: 5
   loopAnim: 0
   animSpriteRenderer: {fileID: 8944378374763332401}
+  buildingDamageMultiplier: 1
 --- !u!1 &6146321294851742123
 GameObject:
   m_ObjectHideFlags: 0

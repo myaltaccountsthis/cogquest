@@ -243,7 +243,7 @@ MonoBehaviour:
     keys:
     - Copper
     - Iron
-    values: 96000000c8000000
+    values: 90010000fa000000
   deletable: 1
   team: 0
   active: 0

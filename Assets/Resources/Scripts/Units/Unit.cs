@@ -48,7 +48,9 @@ public abstract class Unit : Entity
 	{
 		base.Start();
 
-		range.Activate();
+		// Automatically activate range if spawned by player
+		if (Occupied)
+			range.Activate();
 		Patrol();
 	}
 
@@ -184,6 +186,11 @@ public abstract class Unit : Entity
 		{
 			behavior = UnitBehavior.Patrolling;
 			//currentPatrolIndex = 0;
+			if (patrolWaypoints.Length == 0)
+			{
+				patrolWaypoints = new Vector2[] { transform.position };
+				patrolMode = PatrolMode.Point;
+			}
 			SetNextPatrolPoint();
 			range.shouldRetarget = true;
 		}
@@ -272,6 +279,17 @@ public abstract class Unit : Entity
 	private void TestDoneAttacking()
 	{
 		isAttacking = false;
+	}
+
+	public override void OnDamaged()
+	{
+		base.OnDamaged();
+
+		// If player attacks patrolling enemy unit
+		if (!range.active)
+		{
+			range.Activate();
+		}
 	}
 
 	public override void LoadEntitySaveData(Dictionary<string, string> saveData)
