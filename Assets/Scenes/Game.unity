@@ -19361,6 +19361,22 @@ PrefabInstance:
       propertyPath: gameOverScreen
       value: 
       objectReference: {fileID: 1124283499}
+    - target: {fileID: 4250415791198403863, guid: 2a6c44125448af045b56395d38fdd242, type: 3}
+      propertyPath: pauseAction.m_SingletonActionBindings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4250415791198403863, guid: 2a6c44125448af045b56395d38fdd242, type: 3}
+      propertyPath: pauseAction.m_SingletonActionBindings.Array.data[0].m_Id
+      value: 179587f1-361a-4a17-ab36-de30737d9da3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4250415791198403863, guid: 2a6c44125448af045b56395d38fdd242, type: 3}
+      propertyPath: pauseAction.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <Keyboard>/escape
+      objectReference: {fileID: 0}
+    - target: {fileID: 4250415791198403863, guid: 2a6c44125448af045b56395d38fdd242, type: 3}
+      propertyPath: pauseAction.m_SingletonActionBindings.Array.data[0].m_Action
+      value: Pause
+      objectReference: {fileID: 0}
     - target: {fileID: 7956602674067217316, guid: 2a6c44125448af045b56395d38fdd242, type: 3}
       propertyPath: m_Name
       value: Init

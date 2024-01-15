@@ -42,15 +42,10 @@ public class Fort : Building
 		if (Occupied)
 		{
 			gameController.OnFortOccupied(this);
-			if(TIER == 3)
-				gameController.WinSequence();
 		}
 		else
 		{
 			gameController.OnFortLost(this);
-
-			if (TIER == 0)
-				gameController.DefeatSequence();
 		}
 		
 		healthBar.SetPercentage(HealthFraction);

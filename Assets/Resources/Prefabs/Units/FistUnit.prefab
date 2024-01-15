@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 3132802396355152754}
   - component: {fileID: 5580536966285401971}
   - component: {fileID: 3451135767727754599}
-  - component: {fileID: 2279231899696690773}
+  - component: {fileID: -5009976707158169593}
   m_Layer: 6
   m_Name: FistUnit
   m_TagString: Untagged
@@ -188,7 +188,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 894
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -235,7 +235,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &2279231899696690773
+--- !u!114 &-5009976707158169593
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -244,7 +244,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4558414828242811027}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70eb7b46cdd3534439edc7a6790f04c0, type: 3}
+  m_Script: {fileID: 11500000, guid: 309fd7dd57f11564086da3dcb4c767b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   entityName: FistUnit
@@ -258,6 +258,7 @@ MonoBehaviour:
   team: 1
   active: 0
   otherSpriteRenderers:
+  - {fileID: 3252070660369668361}
   - {fileID: 8944378374763332401}
   speed: 2
   attackRange: 0.3
@@ -267,9 +268,13 @@ MonoBehaviour:
   damage: 10
   range: {fileID: 2580395351750146306}
   zoneToUnlock: 0
-  fistSprites:
+  animSprites:
   - {fileID: -108998210, guid: 257d6e6733e2b6d4bac7795c1bcca90b, type: 3}
   - {fileID: 2141407663, guid: 257d6e6733e2b6d4bac7795c1bcca90b, type: 3}
+  animFrames: 0100000000000000
+  animFramesPerSecond: 5
+  loopAnim: 0
+  animSpriteRenderer: {fileID: 8944378374763332401}
 --- !u!1 &6146321294851742123
 GameObject:
   m_ObjectHideFlags: 0

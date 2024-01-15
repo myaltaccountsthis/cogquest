@@ -43,6 +43,7 @@ public class Range : MonoBehaviour
 			if (collider != null)
 				OnTriggerEnter2D(collider);
 		}
+		Retarget();
 	}
 
 	void OnTriggerEnter2D(Collider2D other)

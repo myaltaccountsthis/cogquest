@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public abstract class Unit : Entity
 {
@@ -29,7 +28,7 @@ public abstract class Unit : Entity
 	private Entity currentTarget = null;
 	private int currentPatrolIndex;
 	private bool patrolWaiting = false;
-	private bool isAttacking = false;
+	protected bool isAttacking = false;
 	private bool retargetCooldown = false;
 
 	protected override void Awake()

@@ -23,7 +23,12 @@ public class MenuManager : MonoBehaviour
         pauseAction.Enable();
     }
 
-    public void TogglePauseMenuActive()
+	void OnDisable()
+	{
+		pauseAction.Disable();
+	}
+
+	public void TogglePauseMenuActive()
     {
         SetPauseMenuActive(!GameController.isPaused);
     }
