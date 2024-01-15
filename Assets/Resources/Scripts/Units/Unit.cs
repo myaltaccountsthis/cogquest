@@ -51,6 +51,9 @@ public abstract class Unit : Entity
 
 	protected override void Update()
 	{
+		if (GameController.isPaused)
+			return;
+
 		if (!active)
 			return;
 

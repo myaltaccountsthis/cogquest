@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2862251433589268713}
   - component: {fileID: 2744638039543691420}
   - component: {fileID: 8388914248765545122}
+  - component: {fileID: 4250415791198403863}
   m_Layer: 0
   m_Name: Init
   m_TagString: Untagged
@@ -57,9 +58,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08cefd2741a38bb4caebdae5cb9f4209, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entities: []
-  TileNames: 67007700
-  Tiles:
-  - {fileID: 11400000, guid: 311193f70f3aa2f40a87c9dc739aa49c, type: 2}
-  - {fileID: 11400000, guid: ec837c2c7e046ee42a76e520cb8a14e5, type: 2}
   mapFile: {fileID: 4900000, guid: 07d8d11dfbd839c41a74fe5e38f2072f, type: 3}
+--- !u!114 &4250415791198403863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7956602674067217316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f46d03500e2402a9c57b11c3bb179f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pauseAction:
+    m_Name: Pause
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: e1c225f6-492a-43d1-975f-bd25b3331183
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: b48e010f-2bf7-4b7b-ab5b-6fa7f5912766
+      m_Path: <Keyboard>/escape
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Pause
+      m_Flags: 0
+    m_Flags: 0
+  pauseMenu: {fileID: 0}
+  winScreen: {fileID: 0}
+  gameOverScreen: {fileID: 0}
