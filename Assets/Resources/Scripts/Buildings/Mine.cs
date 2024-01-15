@@ -31,6 +31,9 @@ public class Mine : Building
         return GetNumValidTiles(tilemap) > 0;
 	}
 
+    /// <summary>
+    /// Returns number of mineable tiles under the mine
+    /// </summary>
     private int GetNumValidTiles(Tilemap tilemap)
     {
         int num = 0;
@@ -47,6 +50,9 @@ public class Mine : Building
         return num;
     }
 
+    /// <summary>
+    /// Updates dictionary of what resources the mine is currently mining
+    /// </summary>
     public void UpdateResources(Tilemap tilemap)
     {
         resources.Clear();

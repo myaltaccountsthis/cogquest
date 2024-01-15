@@ -165,6 +165,92 @@
     {
       "keys": ["class", "posX", "posY", "rotation", "team"],
       "values": ["Fort3", "89", "17", "0", "1"]
+    },
+
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["FistUnit", "29", "17", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["DrillUnit", "33", "21", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["DrillUnit", "33", "13", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["CannonUnit", "59", "21", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["DrillUnit", "55", "17", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["CannonUnit", "63", "17", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["CannonUnit", "59", "13", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["CannonUnit", "89", "21", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["CannonUnit", "89", "13", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["CannonUnit", "93", "17", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["DrillUnit", "85", "17", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["CannonUnit", "93", "13", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["CannonUnit", "93", "21", "90", "1"]
+    },
+
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Turret1", "31.5", "15.5", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Turret1", "31.5", "18.5", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Turret2", "57.5", "15.5", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Turret2", "57.5", "18.5", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Turret3", "87.5", "14.5", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Turret3", "87.5", "15.5", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Turret3", "87.5", "18.5", "90", "1"]
+    },
+    {
+      "keys": ["class", "posX", "posY", "rotation", "team"],
+      "values": ["Turret3", "87.5", "19.5", "90", "1"]
     }
   ]
 }

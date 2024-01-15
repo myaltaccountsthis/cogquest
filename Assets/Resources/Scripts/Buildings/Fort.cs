@@ -33,6 +33,9 @@ public class Fort : Building
 		base.LoadEntitySaveData(saveData);
 	}
 
+	/// <summary>
+	/// Updates the fort's color and information based on team
+	/// </summary>
 	public override void OnDestroyed()
 	{
 		team = team == 0 ? 1 : 0;

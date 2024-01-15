@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,10 +11,12 @@ public class MenuManager : MonoBehaviour
     public GameObject pauseMenu;
     public GameObject winScreen;
     public GameObject gameOverScreen;
+    private GameController gameController;
     
     void Awake()
     {
         pauseAction.performed += ctx => TogglePauseMenuActive();
+        gameController = GameObject.Find("Canvas").GetComponent<GameController>();
     }
 
     void OnEnable()
@@ -37,6 +38,7 @@ public class MenuManager : MonoBehaviour
     public void SetWinScreenActive(bool active)
     {
         GameController.SetPaused(active);
+        winScreen.transform.Find("TimeElapsed").Find("Time").GetComponent<TextMeshProUGUI>().text = gameController.GetPlayTimeFormatted();
         winScreen.SetActive(active);
     }
 

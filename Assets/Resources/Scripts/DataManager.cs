@@ -131,6 +131,7 @@ public class GameData
 {
 	public int score = 0;
 	public float timer = 60f;
+	public float totalTime = 0f;
 	//public int unlockedZones = 1;
 	// resources is not directly editable, need to instantiate a new one on save
 	public DataDictionary<string, int> resources = new();
