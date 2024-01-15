@@ -92,6 +92,7 @@ public class GameController : MonoBehaviour
 	{
 		isPaused = value;
 		AudioListener.pause = isPaused;
+		Time.timeScale = value ? 0f : 1f;
 	}
 	
 	// Build and Delete Building Audio
@@ -201,6 +202,11 @@ public class GameController : MonoBehaviour
 		//	{ "team", "1" },
 		//	{ "class", "TestUnit" }
 		//});
+
+		//for (int i = 0; i < zones.Length; i++)
+		//{
+		//	Debug.Log(i + " " + string.Join(", ", GetAvailableUnits(i).Select(unit => unit.displayName)));
+		//}
 		
 		// audio start and end pos
 		buildAudio.time = (buildAudioRange.x < 0 || buildAudioRange.x > buildAudio.clip.length) ? 0 : buildAudioRange.x;
@@ -431,7 +437,7 @@ public class GameController : MonoBehaviour
 			foreach (Fort fort in entities.Where(entity => entity is Fort fort && !fort.Occupied && fort.Tier <= dataManager.gameData.map.furthestZone + 1)
 				.Select(entity => (Fort)entity).ToArray())
 			{
-				SpawnRandomEnemyUnit(fort, Mathf.FloorToInt((1 + t / 120f) * (1 + fort.Tier)));
+				SpawnRandomEnemyUnit(fort, Mathf.FloorToInt((2 + 2f * fort.Tier) * (.8f + t / 240f)));
 			}
 		}
 
@@ -671,7 +677,7 @@ public class GameController : MonoBehaviour
 	/// <summary>
 	/// If enemy fort was damaged, set timer to 0
 	/// </summary>
-	public void OnEnemyFortDamaged()
+	public void OnEnemyInvaded()
 	{
 		if (dataManager.gameData.timer > 0f)
 			dataManager.gameData.timer = .001f;
@@ -860,7 +866,7 @@ public class GameController : MonoBehaviour
 		Unit[] units = GetAvailableUnits(fort.Tier).ToArray();
 		for (int i = 0; i < count; i++)
 		{
-			SpawnAggroEnemyUnit(fort, units[UnityEngine.Random.Range(0, units.Length - 1)]);
+			SpawnAggroEnemyUnit(fort, units[UnityEngine.Random.Range(0, units.Length)]);
 		}
 	}
 
@@ -881,11 +887,15 @@ public class GameController : MonoBehaviour
 	public void OnFortOccupied(Fort fort)
 	{
 		UnlockNewZone(fort.Tier);
+		if (fort.Tier == 3)
+			WinSequence();
 	}
 
 	public void OnFortLost(Fort fort)
 	{
 		UpdateShadows();
+		if (fort.Tier == 0)
+			DefeatSequence();
 	}
 
 	/// <summary>

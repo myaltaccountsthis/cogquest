@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangedUnit : Unit
+public class RangedUnit : AnimatedUnit
 {
 	[SerializeField]
 	private Projectile projectilePrefab;
@@ -14,6 +14,8 @@ public class RangedUnit : Unit
 
 	public override void DoAttack()
 	{
+		base.DoAttack();
+
 		Dictionary<string, string> entityData = projectilePrefab.GetEntitySaveData();
 		Vector2 pos = transform.TransformPoint(Vector3.up * .375f);
 		entityData["posX"] = pos.x.ToString();

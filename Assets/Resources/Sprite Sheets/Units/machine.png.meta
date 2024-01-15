@@ -131,15 +131,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Drill
+      name: Drill0
       rect:
         serializedVersion: 2
-        x: 140
-        y: 130
-        width: 32
-        height: 35
+        x: 151
+        y: 151
+        width: 10
+        height: 14
       alignment: 9
-      pivot: {x: 0.5, y: 0.45714286}
+      pivot: {x: 0.5, y: -0.35714287}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -307,7 +307,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -315,6 +315,27 @@ TextureImporter:
       bones: []
       spriteID: 39bd1d6629046a9489f46aa4dc7e87ce
       internalID: 235297448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Drill1
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 139
+        width: 10
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5, y: -0.35714287}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4202c1164fa387428040c830033e2cb
+      internalID: 1755657930
       vertices: []
       indices: 
       edges: []
@@ -333,7 +354,8 @@ TextureImporter:
       Cannon: 1383740910
       CannonBase: 235297448
       CannonFire: -592253751
-      Drill: -1714332881
+      Drill0: -1714332881
+      Drill1: 1755657930
       DrillBase: -1235218681
       FistBase: 1345109450
       Fists0: -108998210

@@ -18,7 +18,10 @@ public class Init : MonoBehaviour
 	
 	public void ChangeScene(string scene)
 	{
-		GameController.isPaused = false;
+		GameController.SetPaused(false);
+		GameController gameController = FindFirstObjectByType<GameController>();
+		if (gameController != null)
+			gameController.SaveData();
 		SceneManager.LoadScene(scene);
 	}
 	
