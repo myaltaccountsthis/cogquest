@@ -33,7 +33,7 @@ public class SpawnMenu : MonoBehaviour
 		foreach (Unit unit in units)
 		{
 			RectTransform option = Instantiate(optionPrefab, container);
-			option.anchoredPosition = new Vector2(i % 3 * 45, i / 3 * -45);
+			option.anchoredPosition = new Vector2(i % 2 * 45, i / 2 * -45);
 			UIOption buildOption = option.GetComponent<UIOption>();
 			buildOption.onPointerEnter = () => SelectHoverUnit(unit);
 			buildOption.onPointerExit = () => StopHoverUnit();

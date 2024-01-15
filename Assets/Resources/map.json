@@ -160,11 +160,11 @@
     },
     {
       "keys": ["class", "posX", "posY", "rotation", "team"],
-      "values": ["Fort2", "59", "17", "0", "2"]
+      "values": ["Fort2", "59", "17", "0", "1"]
     },
     {
       "keys": ["class", "posX", "posY", "rotation", "team"],
-      "values": ["Fort3", "89", "17", "0", "3"]
+      "values": ["Fort3", "89", "17", "0", "1"]
     }
   ]
 }

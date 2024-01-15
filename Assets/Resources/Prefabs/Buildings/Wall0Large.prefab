@@ -109,8 +109,7 @@ MonoBehaviour:
   deletable: 1
   team: 0
   active: 0
-  previewSprites:
-  - {fileID: -2001872518, guid: 4be285d0d3d647a4483e63783a693d91, type: 3}
+  otherSpriteRenderers: []
   category: 2
   coalUse: 0
 --- !u!61 &-604198625429001121
@@ -180,7 +179,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 648
+    m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0

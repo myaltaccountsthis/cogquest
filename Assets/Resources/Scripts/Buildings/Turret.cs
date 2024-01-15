@@ -12,10 +12,7 @@ public class Turret : Building
 	
 	public Range range;
 	public Transform gun;
-
-	private GameController gameController;
 	
-	private SpriteRenderer gunSpriteRenderer;
 	[SerializeField]
 	private Projectile bulletPrefab;
 
@@ -32,15 +29,19 @@ public class Turret : Building
 	{
 		base.Awake();
 
-		gameController = GameObject.Find("Canvas").GetComponent<GameController>();
-		gunSpriteRenderer = gun.GetComponent<SpriteRenderer>();
-		bulletPrefab = Resources.Load<Projectile>("Prefabs/Bullet");
 		//gun.GetComponent<Range>().onEnemyDetected += OnEnemyDetected;
 
 		range.team = team;
 		timeBetweenAttacks = 1f / fireRate;
 		canShoot = false;
 		Invoke(nameof(CooldownDebounce), 1f);
+	}
+
+	protected override void Start()
+	{
+		base.Start();
+
+		range.Activate();
 	}
 
 	protected override void Update()
@@ -71,12 +72,12 @@ public class Turret : Building
 	{
 		canShoot = false;
 
-		// TODO make this shoot a bullet
 		Dictionary<string, string> entityData = bulletPrefab.GetEntitySaveData();
 		Vector2 bulletPos = gun.TransformPoint(new Vector3(0f, collider.size.y / 2));
 		entityData["posX"] = bulletPos.x.ToString();
 		entityData["posY"] = bulletPos.y.ToString();
 		entityData["rotation"] = rotation.ToString();
+		entityData["team"] = team.ToString();
 		gameController.AddEntity(entityData);
 
 		Invoke(nameof(CooldownDebounce), timeBetweenAttacks);
@@ -87,22 +88,18 @@ public class Turret : Building
 		canShoot = true;
 	}
 
-	//private void OnEnemyDetected(Entity other)
-	//{
-
-	//}
+	protected override List<string> GetEntityInfoList()
+	{
+		List<string> list = base.GetEntityInfoList();
+		list.Add(string.Format("Damage: {0}\nFire Rate: {1}", bulletPrefab.maxHealth, fireRate));
+		return list;
+	}
 
 	public override void LoadEntitySaveData(Dictionary<string, string> saveData)
 	{
 		base.LoadEntitySaveData(saveData);
 
 		range.team = team;
-		range.Activate();
-	}
-
-	public override void SetSpriteColor(Color color)
-	{
-		base.SetSpriteColor(color);
-		gunSpriteRenderer.color = color;
+		//range.Activate();
 	}
 }

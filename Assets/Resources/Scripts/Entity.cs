@@ -1,14 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public abstract class Entity : MonoBehaviour
 {
     public string entityName;
     public string displayName;
 
-    [SerializeField]
+    protected GameController gameController;
+    public HealthBar healthBar { get; private set; }
+
+	[SerializeField]
     protected float MAX_HEALTH;
+    public float maxHealth => MAX_HEALTH;
     public float health { get; protected set; }
     [SerializeField]
     protected DataDictionary<string, int> cost;
@@ -17,12 +23,13 @@ public abstract class Entity : MonoBehaviour
 
     public bool active;
 
-	protected SpriteRenderer spriteRenderer;
-	public bool Occupied => team == 0;
-	public static readonly Color UNOCCUPIED_COLOR = Color.red;
-	public static readonly Color OCCUPIED_COLOR = Color.white;
+    protected SpriteRenderer spriteRenderer;
+    private new Collider2D collider;
+    public bool Occupied => team == 0;
+    public static readonly Color UNOCCUPIED_COLOR = new Color(1f, .3f, .3f);
+    public static readonly Color OCCUPIED_COLOR = Color.white;
 
-	public float HealthFraction => health / MAX_HEALTH;
+    public float HealthFraction => health / MAX_HEALTH;
 
     public Dictionary<string, int> Cost {
         get => cost.ToDictionary();
@@ -31,7 +38,24 @@ public abstract class Entity : MonoBehaviour
     /// <summary>
     /// In order from bottom to top
     /// </summary>
-    public Sprite[] previewSprites;
+    public Sprite[] previewSprites
+    {
+        get
+        {
+            return allSpriteRenderers.Select(sr => sr.sprite).ToArray();
+        }
+    }
+
+    public SpriteRenderer[] allSpriteRenderers
+    {
+        get
+        {
+			List<SpriteRenderer> list = new() { GetComponent<SpriteRenderer>() };
+            list.AddRange(otherSpriteRenderers);
+            return list.ToArray();
+		}
+    }
+    public SpriteRenderer[] otherSpriteRenderers;
 
     protected virtual float rotation
     {
@@ -43,6 +67,10 @@ public abstract class Entity : MonoBehaviour
         health = MAX_HEALTH;
         active = false;
 		spriteRenderer = GetComponent<SpriteRenderer>();
+        collider = GetComponent<Collider2D>();
+        gameController = GameObject.Find("Canvas").GetComponent<GameController>();
+        healthBar = gameController.InstantiateHealthBar();
+        healthBar.SetActive(false);
 
 		Debug.Assert(GetComponent<SpriteRenderer>().sortingLayerName != "Default", "Entity sorting layer should not be default");
     }
@@ -61,6 +89,8 @@ public abstract class Entity : MonoBehaviour
         
         if (!active)
             return;
+
+        healthBar.SetPosition(collider);
 	}
 
 	public virtual void DoMouseDown()
@@ -84,16 +114,29 @@ public abstract class Entity : MonoBehaviour
         {
             OnDestroyed();
         }
-    }
+	}
 
     public virtual void OnDamaged()
     {
+		healthBar.SetPercentage(HealthFraction);
+        healthBar.ResetFade();
+        healthBar.SetActive(true);
 
-    }
+		if (!Occupied)
+		{
+			gameController.OnEnemyFortDamaged();
+		}
+	}
 
     public virtual void OnDestroyed()
     {
 		Destroy(gameObject);
+	}
+
+	void OnDestroy()
+	{
+        if (healthBar != null)
+		    Destroy(healthBar.gameObject);
 	}
 
 	public Vector3Int GetIntPosition()
@@ -114,6 +157,7 @@ public abstract class Entity : MonoBehaviour
             team = int.Parse(teamStr);
 
         UpdateSpriteColor();
+		healthBar.SetPercentage(health);
 	}
 
     public virtual void UpdateSpriteColor()
@@ -139,7 +183,7 @@ public abstract class Entity : MonoBehaviour
 
     protected virtual List<string> GetEntityInfoList()
     {
-        return new List<string> { "Name: " + displayName, string.Format("Health: {0}/{1}", health, MAX_HEALTH) };
+        return new List<string> { "Name: " + displayName, string.Format("Health: {0}/{1}", active ? health : MAX_HEALTH, MAX_HEALTH) };
     }
 
     public string GetEntityInfo()
@@ -150,8 +194,12 @@ public abstract class Entity : MonoBehaviour
 	/// <summary>
 	/// Change all sprite renderers in this building to a certain color (used for turrets)
 	/// </summary>
-	public virtual void SetSpriteColor(Color color)
+	public void SetSpriteColor(Color color)
 	{
 		spriteRenderer.color = color;
-	}
+        foreach (SpriteRenderer sr in otherSpriteRenderers)
+        {
+            sr.color = color;
+        }
+    }
 }
