@@ -96,7 +96,6 @@ GameObject:
   - component: {fileID: 5580536966285401971}
   - component: {fileID: 3451135767727754599}
   - component: {fileID: 2764830479354178586}
-  - component: {fileID: 8768948906852377318}
   m_Layer: 6
   m_Name: DrillUnit
   m_TagString: Untagged
@@ -189,7 +188,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 894
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -260,6 +259,7 @@ MonoBehaviour:
   team: 1
   active: 0
   otherSpriteRenderers:
+  - {fileID: 3252070660369668361}
   - {fileID: 8944378374763332401}
   speed: 1.5
   attackRange: 0.55
@@ -269,102 +269,13 @@ MonoBehaviour:
   damage: 4
   range: {fileID: 2580395351750146306}
   zoneToUnlock: 1
---- !u!82 &8768948906852377318
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4558414828242811027}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 75438ea0053555943879eceacbc5043f, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  animSprites:
+  - {fileID: -1714332881, guid: 257d6e6733e2b6d4bac7795c1bcca90b, type: 3}
+  - {fileID: 1755657930, guid: 257d6e6733e2b6d4bac7795c1bcca90b, type: 3}
+  animFrames: 0100000000000000
+  animFramesPerSecond: 10
+  loopAnim: 1
+  animSpriteRenderer: {fileID: 8944378374763332401}
 --- !u!1 &6146321294851742123
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,8 +397,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.375}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.45714286}
-    oldSize: {x: 1, y: 1.09375}
+    pivot: {x: 0.5, y: -0.35714287}
+    oldSize: {x: 0.3125, y: 0.4375}
     newSize: {x: 0.3125, y: 0.4375}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

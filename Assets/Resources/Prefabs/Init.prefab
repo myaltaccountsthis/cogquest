@@ -78,15 +78,7 @@ MonoBehaviour:
     m_Id: e1c225f6-492a-43d1-975f-bd25b3331183
     m_Processors: 
     m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: b48e010f-2bf7-4b7b-ab5b-6fa7f5912766
-      m_Path: <Keyboard>/escape
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Pause
-      m_Flags: 0
+    m_SingletonActionBindings: []
     m_Flags: 0
   pauseMenu: {fileID: 0}
   winScreen: {fileID: 0}

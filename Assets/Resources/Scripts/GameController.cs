@@ -92,6 +92,7 @@ public class GameController : MonoBehaviour
 	{
 		isPaused = value;
 		AudioListener.pause = isPaused;
+		Time.timeScale = value ? 0f : 1f;
 	}
 	
 	// Build and Delete Building Audio
@@ -195,6 +196,8 @@ public class GameController : MonoBehaviour
 		LoadEntitiesFromData();
 		UpdateResourcesUI();
 		UpdateShadows();
+
+		// Set bounds based on zones
 		Zone[] zones = dataManager.gameData.map.zones;
 		bounds = new BoundsInt(zones.Min(zone => zone.posX), zones.Min(zone => zone.posY), 0,
 			zones.Max(zone => zone.posX + zone.sizeX), zones.Max(zone => zone.posY + zone.sizeY), 0);
@@ -208,6 +211,11 @@ public class GameController : MonoBehaviour
 		//	{ "team", "1" },
 		//	{ "class", "TestUnit" }
 		//});
+
+		//for (int i = 0; i < zones.Length; i++)
+		//{
+		//	Debug.Log(i + " " + string.Join(", ", GetAvailableUnits(i).Select(unit => unit.displayName)));
+		//}
 		
 		// audio start and end pos
 		buildAudio.time = (buildAudioRange.x < 0 || buildAudioRange.x > buildAudio.clip.length) ? 0 : buildAudioRange.x;
@@ -235,10 +243,15 @@ public class GameController : MonoBehaviour
 				selectedBuilding.SetSpriteColor(selectedBuildingInvalidColor);
 			}
 		}
-		
-		timer.SetTime(dataManager.gameData.timer);
+
+		// Update Timer
+		if (dataManager.gameData.timer > 0)
+			timer.SetTime(dataManager.gameData.timer);
+		else
+			timer.SetTime(dataManager.gameData.totalTime);
 		state.UpdateState(dataManager.gameData.timer);
 
+		// Check if mouse is on UI
 		PointerEventData ped = new PointerEventData(null);
 		ped.position = Input.mousePosition;
 		List<RaycastResult> uiElements = new List<RaycastResult>();
@@ -433,7 +446,7 @@ public class GameController : MonoBehaviour
 			foreach (Fort fort in entities.Where(entity => entity is Fort fort && !fort.Occupied && fort.Tier <= dataManager.gameData.map.furthestZone + 1)
 				.Select(entity => (Fort)entity).ToArray())
 			{
-				SpawnRandomEnemyUnit(fort, Mathf.FloorToInt((1 + t / 120f) * (1 + fort.Tier)));
+				SpawnRandomEnemyUnit(fort, Mathf.FloorToInt((2 + 2f * fort.Tier) * (.8f + t / 240f)));
 			}
 		}
 
@@ -453,6 +466,7 @@ public class GameController : MonoBehaviour
 		cameraCenter.y = Mathf.Clamp(cameraCenter.y, bounds.yMin + .5f, bounds.yMax - .5f);
 		camera.transform.position = cameraCenter;
 		dataManager.gameData.timer -= Time.deltaTime;
+		dataManager.gameData.totalTime += Time.deltaTime;
 	}
 
 	void OnApplicationQuit()
@@ -480,10 +494,13 @@ public class GameController : MonoBehaviour
 	public bool IntervalPassed(float interval)
 	{
 		// Add constant so all numbers are positive
-		float t = -dataManager.gameData.timer + 300f;
+		float t = dataManager.gameData.totalTime;
 		return (t + Time.deltaTime) % interval < t % interval;
 	}
 
+	/// <summary>
+	/// Update resource UI based on current resources in your data
+	/// </summary>
 	public void UpdateResourcesUI()
 	{
 		foreach (KeyValuePair<string, Resource> pair in resourcesUI)
@@ -492,6 +509,9 @@ public class GameController : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Saves map and entities to file
+	/// </summary>
 	public void SaveData()
 	{
 		dataManager.gameData.map.entities = SaveEntitiesToData();
@@ -499,6 +519,9 @@ public class GameController : MonoBehaviour
 		dataManager.SaveMapUncompressed();
 	}
 
+	/// <summary>
+	/// Creates all map tiles based on the map.json file
+	/// </summary>
 	private void LoadMapTiles()
 	{
 		tilemap.ClearAllTiles();
@@ -514,6 +537,9 @@ public class GameController : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Creates an entity and adds it to the entity folder
+	/// </summary>
 	public Entity AddEntity(Dictionary<string, string> entityData)
 	{
 		Entity entity = Instantiate(entityPrefabs[entityData["class"]], entityFolder);
@@ -527,6 +553,9 @@ public class GameController : MonoBehaviour
 		return entity;
 	}
 
+	/// <summary>
+	/// Loads all saved entities from data
+	/// </summary>
 	private void LoadEntitiesFromData()
 	{
 		foreach (Dictionary<string, string> entityData in dataManager.gameData.map.entities.Select(data => data.ToDictionary()))
@@ -548,6 +577,9 @@ public class GameController : MonoBehaviour
 		return new Vector2(point.x, point.y);
 	}
 
+	/// <summary>
+	/// Rounds position to snap to grid (used for placing buildings)
+	/// </summary>
 	public Vector3 RoundToGrid(Vector3 pos, Vector2 size)
 	{
 		float offsetX = size.x % 2 / 2, offsetY = size.y % 2 / 2;
@@ -608,6 +640,9 @@ public class GameController : MonoBehaviour
 		return true;
 	}
 
+	/// <summary>
+	/// Deletes a selected building and refunds at most half the materials used
+	/// </summary>
 	public void DeleteSelectedBuilding()
 	{
 		if (hoveredEntity == null)
@@ -658,7 +693,7 @@ public class GameController : MonoBehaviour
 	/// <summary>
 	/// If enemy fort was damaged, set timer to 0
 	/// </summary>
-	public void OnEnemyFortDamaged()
+	public void OnEnemyInvaded()
 	{
 		if (dataManager.gameData.timer > 0f)
 			dataManager.gameData.timer = .001f;
@@ -694,6 +729,9 @@ public class GameController : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Selects build action, destroys preview if not in build mode
+	/// </summary>
 	public void SelectBuildAction(BuildAction buildAction)
 	{
 		if (buildAction != currentBuildAction)
@@ -721,6 +759,9 @@ public class GameController : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Updates shadows for each zone. Further zones will be harder to see
+	/// </summary>
 	public void UpdateShadows()
 	{
 		int furthestZoneIndex = dataManager.gameData.map.furthestZone;
@@ -754,6 +795,9 @@ public class GameController : MonoBehaviour
 		buildMenu.SetHoveredResourceCost(entity);
 	}
 
+	/// <summary>
+	/// Spawns unit if enough resources and occupied fort
+	/// </summary>
 	public bool SpawnPlayerUnit(Fort fort, Unit unit)
 	{
 		if (!fort.Occupied || !unit.Cost.All(pair => dataManager.resources[pair.Key] >= pair.Value))
@@ -793,6 +837,9 @@ public class GameController : MonoBehaviour
 		AddEntity(saveData);
 	}
 
+	/// <summary>
+	/// Spawns a unit that will attack the player's base
+	/// </summary>
 	public void SpawnAggroEnemyUnit(Fort fort, Unit unit)
 	{
 		// Select previous forts (Tier < fort.Tier) and arrange them in descending order (furthest from player fort first)
@@ -827,12 +874,15 @@ public class GameController : MonoBehaviour
 		spawnMenu.CloseMenu();
 	}
 
+	/// <summary>
+	/// Spawns a random possible unit given the fort and tier
+	/// </summary>
 	public void SpawnRandomEnemyUnit(Fort fort, int count = 1)
 	{
 		Unit[] units = GetAvailableUnits(fort.Tier).ToArray();
 		for (int i = 0; i < count; i++)
 		{
-			SpawnAggroEnemyUnit(fort, units[UnityEngine.Random.Range(0, units.Length - 1)]);
+			SpawnAggroEnemyUnit(fort, units[UnityEngine.Random.Range(0, units.Length)]);
 		}
 	}
 
@@ -853,13 +903,20 @@ public class GameController : MonoBehaviour
 	public void OnFortOccupied(Fort fort)
 	{
 		UnlockNewZone(fort.Tier);
+		if (fort.Tier == 3)
+			WinSequence();
 	}
 
 	public void OnFortLost(Fort fort)
 	{
 		UpdateShadows();
+		if (fort.Tier == 0)
+			DefeatSequence();
 	}
 
+	/// <summary>
+	/// Updates data and gives peace time based on zone tier
+	/// </summary>
 	private void UnlockNewZone(int zone)
 	{
 		if (zone > dataManager.gameData.map.furthestZone)
@@ -873,6 +930,15 @@ public class GameController : MonoBehaviour
 			}
 		}
 		UpdateShadows();
+	}
+
+	/// <summary>
+	/// Returns the total playtime in mm:ss format
+	/// </summary>
+	public string GetPlayTimeFormatted()
+	{
+		int time = (int)dataManager.gameData.totalTime;
+		return (time / 60) + ":" + (time % 60);
 	}
 }
 

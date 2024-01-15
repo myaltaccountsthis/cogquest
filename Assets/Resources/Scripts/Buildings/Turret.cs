@@ -54,6 +54,7 @@ public class Turret : Building
 
 		base.Update();
 
+		// Aim towards a target and shoot if angle is close
 		Entity target = range.target;
 		if (target != null)
 		{
@@ -68,6 +69,9 @@ public class Turret : Building
 		}
 	}
 
+	/// <summary>
+	/// Create a bullet projectile to damage enemies
+	/// </summary>
 	private void Shoot()
 	{
 		canShoot = false;

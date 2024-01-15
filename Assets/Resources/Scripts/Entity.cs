@@ -26,7 +26,7 @@ public abstract class Entity : MonoBehaviour
     protected SpriteRenderer spriteRenderer;
     private new Collider2D collider;
     public bool Occupied => team == 0;
-    public static readonly Color UNOCCUPIED_COLOR = new Color(1f, .3f, .3f);
+    public static readonly Color UNOCCUPIED_COLOR = new Color(1f, .5f, .5f);
     public static readonly Color OCCUPIED_COLOR = Color.white;
 
     public float HealthFraction => health / MAX_HEALTH;
@@ -127,12 +127,11 @@ public abstract class Entity : MonoBehaviour
 		healthBar.SetPercentage(HealthFraction);
         healthBar.ResetFade();
         healthBar.SetActive(true);
-        
-		if (!Occupied)
-		{
-			gameController.OnEnemyFortDamaged();
-		}
-	}
+        if (this is Fort && !Occupied)
+        {
+            gameController.OnEnemyInvaded();
+        }
+    }
 
     public virtual void OnDestroyed()
     {

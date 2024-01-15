@@ -27,11 +27,17 @@ public abstract class Building : Entity
 		collider = GetComponent<BoxCollider2D>();
 	}
 
+	/// <summary>
+	/// Get what tiles the building is placed on
+	/// </summary>
 	public TileBase[] GetOverlappingTiles(Tilemap tilemap)
 	{
 		return tilemap.GetTilesBlock(collider.ColliderToBoundsInt());
 	}
 
+	/// <summary>
+	/// Check if the building can be placed on the tile
+	/// </summary>
 	public virtual bool IsValidLocation(Tilemap tilemap)
 	{
 		if (Physics2D.BoxCastAll(transform.position, GetCollisionSize(), 0f, Vector2.zero, 0f, GameController.buildingShadowLayerMask).Length > 0)

@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: Wall3Large
   displayName: Large Iron Wall
-  MAX_HEALTH: 4000
+  MAX_HEALTH: 2400
   cost:
     keys:
     - Iron

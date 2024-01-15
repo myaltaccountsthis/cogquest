@@ -98,12 +98,24 @@ public class BuildMenu : MonoBehaviour
 		// Update category UI
 		LoadCategory(BuildingCategory.Harvesters);
 		SelectBuildAction(BuildAction.Pan);
+	}
 
+	void OnEnable()
+	{
 		selectBuild.Enable();
 		selectDelete.Enable();
 		selectPan.Enable();
 		selectOption.Enable();
 		cycleCategory.Enable();
+	}
+
+	void OnDisable()
+	{
+		selectBuild.Disable();
+		selectDelete.Disable();
+		selectPan.Disable();
+		selectOption.Disable();
+		cycleCategory.Disable();
 	}
 
 	private void SelectBuildAction(BuildAction buildAction)

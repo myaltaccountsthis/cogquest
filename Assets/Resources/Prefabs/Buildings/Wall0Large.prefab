@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: Wall0Large
   displayName: Large Wooden Wall
-  MAX_HEALTH: 1200
+  MAX_HEALTH: 600
   cost:
     keys:
     - Wood

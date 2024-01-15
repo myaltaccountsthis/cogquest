@@ -17,11 +17,10 @@ public class DataManager : MonoBehaviour
 	void Awake()
 	{
         FILE_PATH = Application.persistentDataPath + "/gamedata.dat";
-        resources = new Dictionary<string, int>();
         resources = new Dictionary<string, int>
         {
 	        { "Coal", 0 },
-	        { "Wood", 20 },
+	        { "Wood", 40 },
 	        { "Stone", 0 },
 	        { "Copper", 0 },
 	        { "Iron", 0 }
@@ -61,6 +60,10 @@ public class DataManager : MonoBehaviour
 			}
 			else
 			{
+				// Center camera on first zone
+				Zone firstZone = gameData.map.zones[0];
+				gameData.cameraPosition = new Vector3(firstZone.posX + firstZone.sizeX / 2, firstZone.posY + firstZone.sizeY / 2, Camera.main.transform.position.z);
+				
 				Debug.Log("Created data");
 			}
 		}
@@ -68,10 +71,6 @@ public class DataManager : MonoBehaviour
 		{
 			Debug.LogWarning("Failed to load data, resorting to default values.\n" + e.ToString());
 		}
-		
-		// Center camera on first zone
-		Zone firstZone = gameData.map.zones[0];
-		gameData.cameraPosition = new Vector3(firstZone.posX + firstZone.sizeX / 2, firstZone.posY + firstZone.sizeY / 2, Camera.main.transform.position.z);
 	}
 
 	// Save the current data (only game controller should call this in game)
@@ -131,6 +130,7 @@ public class GameData
 {
 	public int score = 0;
 	public float timer = 60f;
+	public float totalTime = 0f;
 	//public int unlockedZones = 1;
 	// resources is not directly editable, need to instantiate a new one on save
 	public DataDictionary<string, int> resources = new();
@@ -178,7 +178,7 @@ public class Map
 	/// Entities to save/load (DataManager uses its own variable b/c dynamic list)
 	/// </summary>
 	public DataDictionary<string, string>[] entities = new DataDictionary<string, string>[0];
-	public float enemySpawnInterval = 15f;
+	public float enemySpawnInterval = 30f;
 }
 
 [Serializable]
