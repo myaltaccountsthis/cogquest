@@ -145,7 +145,7 @@ public abstract class Unit : Entity
 	/// </summary>
 	/// <returns>true if point was reached this frame</returns>
 	private bool MoveToPoint(Vector3 point, float distance = 0)
-	{
+	{		
 		Vector3 direction = point - transform.position;
 		float moveDistance = Time.deltaTime * speed;
 		Vector3 moveVector;
@@ -159,7 +159,7 @@ public abstract class Unit : Entity
 			moveVector = direction.normalized * moveDistance;
 		}
 
-		transform.position += moveVector;
+		transform.position = gameController.GetBoundedPoint(transform.position + moveVector);
 		LookAtPoint(point);
 
 		return IsInRange(point, distance);
@@ -225,9 +225,14 @@ public abstract class Unit : Entity
 	{
 		if (patrolMode == PatrolMode.Point)
 		{
-			float angle = Random.value * Mathf.PI * 2;
-			// No need to worry about adjusting angle from unit circle to heading
-			currentPatrolWaypoint = patrolWaypoints[currentPatrolIndex] + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 2f;
+			if (currentPatrolWaypoint == patrolWaypoints[currentPatrolIndex])
+			{
+				float angle = Random.value * Mathf.PI * 2;
+				// No need to worry about adjusting angle from unit circle to heading
+				currentPatrolWaypoint = patrolWaypoints[currentPatrolIndex] + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 2f;
+			}
+			else
+				currentPatrolWaypoint = patrolWaypoints[currentPatrolIndex];
 		}
 		else
 		{

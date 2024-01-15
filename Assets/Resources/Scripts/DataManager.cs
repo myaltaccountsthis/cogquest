@@ -20,7 +20,7 @@ public class DataManager : MonoBehaviour
         resources = new Dictionary<string, int>
         {
 	        { "Coal", 0 },
-	        { "Wood", 40 },
+	        { "Wood", 35 },
 	        { "Stone", 0 },
 	        { "Copper", 0 },
 	        { "Iron", 0 }
@@ -131,7 +131,7 @@ public class DataManager : MonoBehaviour
 public class GameData
 {
 	public int score = 0;
-	public float timer = 60f;
+	public float timer = 90f;
 	public float totalTime = 0f;
 	//public int unlockedZones = 1;
 	// resources is not directly editable, need to instantiate a new one on save

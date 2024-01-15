@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour
 	public TileBase[] Tiles;
 	public Dictionary<char, TileBase> tiles;
     public Tilemap tilemap { get; private set; }
+	private PolygonCollider2D polygonCollider;
 
 	// Entity loading
 	[HideInInspector] public List<Entity> entities;
@@ -116,6 +117,7 @@ public class GameController : MonoBehaviour
 		buildMenu = GameObject.Find("BuildMenu").GetComponent<BuildMenu>();
 		spawnMenu = GameObject.Find("SpawnMenu").GetComponent<SpawnMenu>();
         tilemap = GameObject.FindWithTag("Tilemap").GetComponent<Tilemap>();
+		polygonCollider = tilemap.GetComponent<PolygonCollider2D>();
 		shadows = new List<Image>();
 		shadowFolder = GameObject.Find("Shadows").GetComponent<Transform>();
 		shadow = Resources.Load<GameObject>("Prefabs/Shadow").GetComponent<Image>();
@@ -745,7 +747,7 @@ public class GameController : MonoBehaviour
 		selectedBuilding = Instantiate(building);
 		// To avoid collisions with actual entities, set layer to default
 		// Only the first gameObject needs to be changed bc others should be Default
-		selectedBuilding.GetComponent<SpriteRenderer>().gameObject.layer = LayerMask.NameToLayer("Default");
+		selectedBuilding.GetComponent<SpriteRenderer>().gameObject.layer = LayerMask.NameToLayer("TransparentFX");
 		int order = 10;
 		foreach (SpriteRenderer spriteRenderer in selectedBuilding.allSpriteRenderers)
 		{
@@ -972,6 +974,16 @@ public class GameController : MonoBehaviour
 	{
 		int time = (int)dataManager.gameData.totalTime;
 		return FormatMinutesSeconds(time);
+	}
+
+	public bool IsInBounds(Vector3 pos)
+	{
+		return polygonCollider.OverlapPoint(pos);
+	}
+
+	public Vector3 GetBoundedPoint(Vector3 pos)
+	{
+		return polygonCollider.ClosestPoint(pos);
 	}
 
 	public static string FormatMinutesSeconds(int time)

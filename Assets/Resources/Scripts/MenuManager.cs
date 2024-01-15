@@ -31,6 +31,8 @@ public class MenuManager : MonoBehaviour
 
 	public void TogglePauseMenuActive()
     {
+        if (winScreen.activeInHierarchy || gameOverScreen.activeInHierarchy)
+            return;
         SetPauseMenuActive(!GameController.isPaused);
     }
 

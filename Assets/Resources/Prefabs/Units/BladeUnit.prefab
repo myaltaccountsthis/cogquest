@@ -250,7 +250,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: BladeUnit
   displayName: Wall Cutter Mech
-  MAX_HEALTH: 250
+  MAX_HEALTH: 350
   cost:
     keys:
     - Copper
