@@ -6503,7 +6503,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 429133306}
         m_TargetAssemblyTypeName: Init, Assembly-CSharp
-        m_MethodName: ChangeScene
+        m_MethodName: ResetAndChangeScene
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -19451,7 +19451,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 429133306}
         m_TargetAssemblyTypeName: Init, Assembly-CSharp
-        m_MethodName: ChangeScene
+        m_MethodName: ResetAndChangeScene
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -39,7 +39,7 @@ public class Projectile : Entity
 	void OnCollisionEnter2D(Collision2D collision)
 	{
 		Entity entity = collision.gameObject.GetComponent<Entity>();
-		if (entity != null && entity.team != team)
+		if (entity != null && entity.team != team && entity.isActiveAndEnabled)
 		{
 			// Use max health as damage
 			entity.TakeDamage(MAX_HEALTH);
@@ -50,7 +50,7 @@ public class Projectile : Entity
 	void OnTriggerEnter2D(Collider2D collider)
 	{
 		Entity entity = collider.GetComponent<Entity>();
-		if (entity != null && entity.team != team)
+		if (entity != null && entity.team != team && entity.isActiveAndEnabled)
 		{
 			// Use max health as damage
 			entity.TakeDamage(MAX_HEALTH);
