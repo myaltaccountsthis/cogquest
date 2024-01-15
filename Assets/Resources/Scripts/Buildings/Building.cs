@@ -76,7 +76,7 @@ public abstract class Building : Entity
 
 	public void PlayDamagedAudio()
 	{
-		AudioSource.PlayClipAtPoint(buildingDamageAudio.clip, transform.position);
+		AudioSource.PlayClipAtPoint(buildingDamageAudio.clip, transform.position, buildingDamageAudio.volume);
 	}
 }
 

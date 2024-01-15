@@ -936,6 +936,7 @@ public class GameController : MonoBehaviour
 		UnlockNewZone(fort.Tier);
 		if (fort.Tier == 3)
 			WinSequence();
+		PlayCaptureAudio(false);
 	}
 
 	public void OnFortLost(Fort fort)
@@ -943,6 +944,7 @@ public class GameController : MonoBehaviour
 		UpdateShadows();
 		if (fort.Tier == 0)
 			DefeatSequence();
+		PlayCaptureAudio(true);
 	}
 
 	/// <summary>
