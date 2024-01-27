@@ -278,6 +278,7 @@ MonoBehaviour:
   animFramesPerSecond: 1
   loopAnim: 0
   animSpriteRenderer: {fileID: 8944378374763332401}
+  treadAnimator: {fileID: 8437264015831075466}
   projectilePrefab: {fileID: 7792734265649637247, guid: f29e61bf4a354e14bb6bcc17e201c3f1, type: 3}
 --- !u!82 &6919515346370830269
 AudioSource:
@@ -385,6 +386,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3797363875273677759}
   - component: {fileID: 9066867519752652470}
+  - component: {fileID: 8437264015831075466}
   m_Layer: 6
   m_Name: Treads
   m_TagString: Untagged
@@ -459,6 +461,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &8437264015831075466
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5557050796821238422}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 005f89705c195ae4aacd95e3db449ed4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 1
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6146321294851742123
 GameObject:
   m_ObjectHideFlags: 0

@@ -276,6 +276,7 @@ MonoBehaviour:
   animFramesPerSecond: 5
   loopAnim: 0
   animSpriteRenderer: {fileID: 8944378374763332401}
+  treadAnimator: {fileID: 609642765846776508}
   buildingDamageMultiplier: 1
 --- !u!82 &5813724457059335388
 AudioSource:
@@ -541,6 +542,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6629648353720781448}
   - component: {fileID: 3252070660369668361}
+  - component: {fileID: 609642765846776508}
   m_Layer: 6
   m_Name: Treads
   m_TagString: Untagged
@@ -615,3 +617,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &609642765846776508
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8318685014052623046}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 005f89705c195ae4aacd95e3db449ed4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 1
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

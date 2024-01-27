@@ -106,6 +106,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -215,11 +228,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Treads0
+      name: Treads00
       rect:
         serializedVersion: 2
-        x: 69
-        y: 170
+        x: 0
+        y: 166
         width: 22
         height: 24
       alignment: 0
@@ -340,6 +353,342 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Treads01
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 166
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b97b5dd28e654e34aa48483ab10a05ed
+      internalID: -1009805706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads02
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 166
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cca78647fa8b06c40bcbdd31cf2efd19
+      internalID: -586783929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads03
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 166
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 43b12d21a4b545846972118b0bea477a
+      internalID: -1913569744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads04
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 166
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 86b8a1f33237a9f439ca908b0cfb2ddf
+      internalID: -1877090420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads05
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 166
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b59effd9bfcc194bae94a03cb576eb0
+      internalID: -957325615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads06
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 166
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10ab1c37eb3934c41b1e1ddb59c50b61
+      internalID: 99199995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads07
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 166
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 691d9dc6647dfef448688033df8f20b7
+      internalID: 807788209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads08
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 166
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90b3a18c17cced143b5cb2bd7ef07fba
+      internalID: 259043388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads11
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 142
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4cb1df1eed987cb46bb9619769b73b1e
+      internalID: -112018670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads12
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 142
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 831570c6eb31bda4e90e95b3a2ba93fb
+      internalID: 922172890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads13
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 142
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fdd264640f44ac9489cecdff4ceb8fe2
+      internalID: -1356464361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads14
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 142
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31a294f9d6adb37489ab2b3781585f8a
+      internalID: -1474980518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads09
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 166
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c9b22c5646193442bd33f1f630bb9cf
+      internalID: -1370323049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads10
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 166
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c4fe9f55e2e47c64cb9d3f5e69cd56ca
+      internalID: 1431553512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads15
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 142
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8dbc1870f5508b04e85e78f6245890b2
+      internalID: -1181157078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treads16
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 142
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 638522df2898f59498679bec588d178c
+      internalID: -2020594092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -361,7 +710,23 @@ TextureImporter:
       Fists0: -108998210
       Fists1: 2141407663
       MachineBase: -283370370
-      Treads0: 1503562557
+      Treads00: 1503562557
+      Treads01: -1009805706
+      Treads02: -586783929
+      Treads03: -1913569744
+      Treads04: -1877090420
+      Treads05: -957325615
+      Treads06: 99199995
+      Treads07: 807788209
+      Treads08: 259043388
+      Treads09: -1370323049
+      Treads10: 1431553512
+      Treads11: -112018670
+      Treads12: 922172890
+      Treads13: -1356464361
+      Treads14: -1474980518
+      Treads15: -1181157078
+      Treads16: -2020594092
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

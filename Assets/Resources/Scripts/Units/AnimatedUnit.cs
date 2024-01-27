@@ -14,12 +14,33 @@ public class AnimatedUnit : Unit
 	private float animTimeBetweenFrames;
 	private int animFrameIndex;
 
+	[SerializeField]
+	private Animator treadAnimator;
+
 	protected override void Awake()
 	{
 		base.Awake();
 
 		animTimeBetweenFrames = 1 / animFramesPerSecond;
 		animFrameIndex = 0;
+	}
+
+	protected override void Update()
+	{
+		base.Update();
+
+		if (treadAnimator != null)
+		{
+			if (IsMoving)
+			{
+				treadAnimator.enabled = true;
+				treadAnimator.speed = speed * 2.66667f;
+			}
+			else
+			{
+				treadAnimator.enabled = false;
+			}
+		}
 	}
 
 	public override void DoAttack()

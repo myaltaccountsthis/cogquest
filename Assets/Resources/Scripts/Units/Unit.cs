@@ -21,7 +21,7 @@ public abstract class Unit : Entity
 	public Range range;
 	public int zoneToUnlock;
 
-	private UnitBehavior behavior = UnitBehavior.None;
+	protected UnitBehavior behavior = UnitBehavior.None;
 	private PatrolMode patrolMode = PatrolMode.Waypoints;
 	private Vector2 currentPatrolWaypoint;
 
@@ -30,6 +30,8 @@ public abstract class Unit : Entity
 	private bool patrolWaiting = false;
 	protected bool isAttacking = false;
 	private bool retargetCooldown = false;
+
+	public bool IsMoving => behavior == UnitBehavior.Patrolling && !patrolWaiting || behavior == UnitBehavior.Following;
 
 	private AudioSource attackAudio;
 
